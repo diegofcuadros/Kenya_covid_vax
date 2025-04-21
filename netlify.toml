@@ -1,16 +1,12 @@
 [build]
   # Directory to publish
   publish = "./"
-  # Add a simple build command to trigger our plugin
-  command = "echo 'Running build process to inject environment variables'"
+  # Use our build script
+  command = "bash build.sh"
 
 # Environment variables - consider moving sensitive keys to Netlify UI
 [build.environment]
   NODE_VERSION = "16.15.0"
-
-# Use our custom plugin to inject environment variables
-[[plugins]]
-  package = "./netlify-plugin-env.js"
 
 # Redirect all 404s to the index page
 [[redirects]]
