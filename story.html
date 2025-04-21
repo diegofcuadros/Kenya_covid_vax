@@ -257,7 +257,11 @@
             map_as_image: false,
             call_to_action: true,
             call_to_action_text: 'Explore More',
-            call_to_action_link: 'explorer.html'
+            call_to_action_link: 'explorer.html',
+            storymap: {
+                language: 'en',
+                map_type: 'osm:standard'
+            }
         };
         
         // StoryMap data with chapters
@@ -423,10 +427,19 @@
         
         // Initialize StoryMap
         document.addEventListener('DOMContentLoaded', function() {
-            storymap = new KLStoryMap.StoryMap('storymap-embed', storymap_data, storymap_options);
-            window.onresize = function() {
-                storymap.updateDisplay();
-            };
+            try {
+                console.log("Initializing StoryMap...");
+                storymap = new KLStoryMap.StoryMap('storymap-embed', storymap_data, storymap_options);
+                console.log("StoryMap created successfully");
+                
+                // Handle window resize
+                window.onresize = function() {
+                    storymap.updateDisplay();
+                };
+            } catch (e) {
+                console.error("Error initializing StoryMap:", e);
+                document.getElementById('storymap-embed').innerHTML = '<div style="padding: 20px; text-align: center;"><h3>Error loading StoryMap</h3><p>Please check browser console for details</p></div>';
+            }
             
             // Initialize sidebar toggle
             const sidebarToggle = document.getElementById('sidebar-toggle');

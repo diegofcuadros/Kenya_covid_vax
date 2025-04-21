@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "county_id": "001",
+        "county_name": "Nairobi",
+        "vaccination_rate": 35.6,
+        "vaccination_rate_category": "35-40",
+        "development_index": 76.2,
+        "development_index_category": "very-high",
+        "cluster": 6,
+        "cluster_category": "6",
+        "cluster_name": "Urban High-Dev"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [36.7, -1.4],
+            [36.9, -1.4],
+            [36.9, -1.1],
+            [36.7, -1.1],
+            [36.7, -1.4]
+          ]
+        ]
+      }
+    }
+  ]
+} 
