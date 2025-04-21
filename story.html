@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spatial Journey: COVID-19 Vaccination in Kenya</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- StoryMapJS -->
+    <link rel="stylesheet" href="https://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css">
+    <script type="text/javascript" src="https://cdn.knightlab.com/libs/storymapjs/latest/js/storymap.js"></script>
+    
+    <!-- Mapbox GL JS (for embedded maps) -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    
+    <!-- D3.js for charts -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/storymap-overrides.css">
+    
+    <style>
+        #storymap-embed {
+            width: 100%;
+            height: 100vh;
+        }
+        
+        .storymap-attribution {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 11px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 2px 5px;
+            border-radius: 3px;
+            z-index: 1000;
+        }
+        
+        .story-sidebar {
+            position: fixed;
+            top: 60px;
+            right: 0;
+            width: 300px;
+            height: calc(100vh - 60px);
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 800;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            transform: translateX(100%);
+        }
+        
+        .story-sidebar.active {
+            transform: translateX(0);
+        }
+        
+        .sidebar-toggle {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 900;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .sidebar-content {
+            padding: 20px;
+        }
+        
+        .sidebar-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        
+        .sidebar-header h3 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .chart-container {
+            margin-bottom: 30px;
+        }
+        
+        .chart-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        
+        .chart {
+            width: 100%;
+            height: 200px;
+            background-color: white;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+        
+        .chapter-nav {
+            margin-top: 30px;
+        }
+        
+        .chapter-nav h4 {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        
+        .chapter-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .chapter-item {
+            padding: 8px 10px;
+            margin-bottom: 5px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 0.85rem;
+        }
+        
+        .chapter-item:hover {
+            background-color: rgba(33, 102, 172, 0.1);
+        }
+        
+        .chapter-item.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Dark theme adjustments */
+        .dark-theme .story-sidebar {
+            background-color: rgba(18, 18, 18, 0.95);
+        }
+        
+        .dark-theme .chart {
+            background-color: #222;
+        }
+        
+        .dark-theme .storymap-attribution {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+        }
+        
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .story-sidebar {
+                width: 100%;
+            }
+            
+            .sidebar-toggle {
+                top: 70px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main header with navigation -->
+    <header class="main-header">
+        <div class="logo">
+            <h1>COVID-19 Vaccination in Kenya</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="story.html" class="active" aria-current="page">Story Map</a></li>
+                <li><a href="explorer.html">Map Explorer</a></li>
+                <li><a href="results.html">Results</a></li>
+                <li><a href="policy.html">Policy</a></li>
+                <li><a href="team.html">Team</a></li>
+            </ul>
+        </nav>
+        <button class="toggle-theme">
+            <span class="light-icon">☀️</span>
+            <span class="dark-icon">🌙</span>
+        </button>
+    </header>
+
+    <!-- StoryMap container -->
+    <div id="storymap-embed"></div>
+    <div class="storymap-attribution">Data: Kenya Demographic and Health Survey 2022</div>
+    
+    <!-- Toggle button for the sidebar -->
+    <button class="sidebar-toggle" id="sidebar-toggle">
+        ≡
+    </button>
+    
+    <!-- Sidebar with additional data -->
+    <div class="story-sidebar" id="story-sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-header">
+                <h3>Supporting Data</h3>
+                <p>Interactive visualizations for each chapter</p>
+            </div>
+            
+            <!-- Charts for context -->
+            <div class="chart-container">
+                <div class="chart-title">COVID-19 Vaccination vs. Development Index</div>
+                <div class="chart" id="chart-scatter"></div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Predictors of Vaccination Rate</div>
+                <div class="chart" id="chart-predictors"></div>
+            </div>
+            
+            <!-- Chapter navigation -->
+            <div class="chapter-nav">
+                <h4>Story Chapters</h4>
+                <ul class="chapter-list" id="chapter-list">
+                    <li class="chapter-item active" data-slide="0">Introduction</li>
+                    <li class="chapter-item" data-slide="1">Urban High-Dev</li>
+                    <li class="chapter-item" data-slide="2">Peri-urban & Semi-urban</li>
+                    <li class="chapter-item" data-slide="3">Agricultural Regions</li>
+                    <li class="chapter-item" data-slide="4">Rural Trans & Remote</li>
+                    <li class="chapter-item" data-slide="5">Structural Drivers</li>
+                    <li class="chapter-item" data-slide="6">Climate & Environment</li>
+                    <li class="chapter-item" data-slide="7">Inequity Metrics</li>
+                    <li class="chapter-item" data-slide="8">Policy Pathways</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize StoryMapJS
+        let storymap;
+        
+        // StoryMap configuration
+        const storymap_options = {
+            width: '100%',
+            height: '100%',
+            font_css: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
+            calculate_zoom: false,
+            map_type: 'stamen:terrain',
+            map_background_color: '#f8f8f8',
+            map_as_image: false,
+            call_to_action: true,
+            call_to_action_text: 'Explore More',
+            call_to_action_link: 'explorer.html'
+        };
+        
+        // StoryMap data with chapters
+        const storymap_data = {
+            storymap: {
+                slides: [
+                    {
+                        type: "overview",
+                        text: {
+                            headline: "COVID-19 Vaccination Coverage in Kenya",
+                            text: "<p>A geospatial journey exploring the structural determinants of vaccination inequities across Kenya.</p><p>National average: 27% with stark urban-rural divides.</p>"
+                        },
+                        media: {
+                            url: "https://via.placeholder.com/800x600.png?text=Kenya+COVID-19+Vaccination+Overview",
+                            caption: "Kenya's vaccination coverage varies dramatically by region",
+                            credit: "University of Cincinnati Digital Epidemiology Laboratory"
+                        },
+                        location: {
+                            lat: 0.0236,
+                            lon: 37.9062,
+                            zoom: 6
+                        }
+                    },
+                    {
+                        uniqueid: "urbanhighdev",
+                        text: {
+                            headline: "Urban High Development Areas",
+                            text: "<p>Clusters with the highest vaccination rates (>31%) are in major urban centers like Nairobi and Mombasa.</p><p>Strong financial inclusion, healthcare access, and better living conditions all contribute to better outcomes.</p>"
+                        },
+                        media: {
+                            url: "https://via.placeholder.com/800x600.png?text=Urban+High+Development+Cluster",
+                            caption: "Urban High-Dev areas achieve the highest vaccination rates in Kenya",
+                            credit: "KDHS 2022"
+                        },
+                        location: {
+                            lat: -1.2921,
+                            lon: 36.8219, // Nairobi
+                            zoom: 10
+                        }
+                    },
+                    {
+                        uniqueid: "periurban",
+                        text: {
+                            headline: "Peri-urban & Semi-urban Areas",
+                            text: "<p>These transition zones between urban centers and rural areas show intermediate vaccination rates (20-30%).</p><p>They benefit from partial access to urban infrastructure but face challenges with last-mile delivery.</p>"
+                        },
+                        media: {
+                            url: "https://via.placeholder.com/800x600.png?text=Peri-urban+%26+Semi-urban+Clusters",
+                            caption: "Peri-urban and Semi-urban clusters show the gradient of access",
+                            credit: "KDHS 2022"
+                        },
+                        location: {
+                            lat: -1.1018,
+                            lon: 37.0144, // Thika
+                            zoom: 10
+                        }
+                    },
+                    {
+                        uniqueid: "agricultural",
+                        text: {
+                            headline: "Agricultural Regions",
+                            text: "<p>Agriculturally productive regions exhibit moderate vaccination coverage (15-25%).</p><p>Better child immunization infrastructure and living conditions support higher coverage compared to other rural areas.</p>"
+                        },
+                        media: {
+                            url: "https://via.placeholder.com/800x600.png?text=Agricultural+Regions",
+                            caption: "Agricultural regions benefit from established infrastructure",
+                            credit: "KDHS 2022"
+                        },
+                        location: {
+                            lat: -0.3706,
+                            lon: 37.1483, // Nyeri
+                            zoom: 9
+                        }
+                    },
+                    {
+                        uniqueid: "ruralremote",
+                        text: {
+                            headline: "Rural Trans & Remote Areas",
+                            text: "<p>The lowest vaccination rates (5-8%) are found in northern and northeastern Kenya.</p><p>These areas face multiple challenges: limited healthcare access, poor financial inclusion, and adverse environmental conditions.</p>"
+                        },
+                        media: {
+                            url: "https://via.placeholder.com/800x600.png?text=Rural+Remote+Areas",
+                            caption: "Rural Remote areas face the most severe access challenges",
+                            credit: "KDHS 2022"
+                        },
+                        location: {
+                            lat: 0.4536,
+                            lon: 39.6401, // Garissa
+                            zoom: 8
+                        }
+                    },
+                    {
+                        uniqueid: "structuraldrivers",
+                        text: {
+                            headline: "Structural Drivers of Vaccination",
+                            text: "<p>Key determinants include financial access (bank accounts), household crowding, and distance to healthcare facilities.</p><p>Random Forest analysis shows sleeping room density and bank access are the strongest predictors.</p>"
+                        },
+                        media: {
+                            url: "https://via.placeholder.com/800x600.png?text=Structural+Drivers+of+Vaccination",
+                            caption: "Structural determinants shape vaccine access more than individual choices",
+                            credit: "University of Cincinnati Digital Epidemiology Laboratory"
+                        },
+                        location: {
+                            lat: 0.0236,
+                            lon: 37.9062,
+                            zoom: 6
+                        }
+                    },
+                    {
+                        uniqueid: "climate",
+                        text: {
+                            headline: "Climate & Environmental Factors",
+                            text: "<p>Environmental variables significantly impact vaccine delivery and uptake.</p><p>Higher NO₂ levels (a proxy for development) correlate with better vaccination rates, while seasonal precipitation creates accessibility challenges.</p>"
+                        },
+                        media: {
+                            url: "https://via.placeholder.com/800x600.png?text=Climate+%26+Environmental+Factors",
+                            caption: "Environmental factors create significant barriers to vaccine delivery",
+                            credit: "BIOCLIM v2.1 & Google Earth Engine"
+                        },
+                        location: {
+                            lat: 3.1157,
+                            lon: 35.5988, // Turkana - flood prone
+                            zoom: 8
+                        }
+                    },
+                    {
+                        uniqueid: "inequity",
+                        text: {
+                            headline: "Measuring Vaccination Inequity",
+                            text: "<p>Wealth-based disparities (ECI = 0.044) exceed immunization-linked disparities (ECI = 0.025), highlighting financial barriers as the primary exclusionary factor.</p><p>Counties with similar levels of routine immunization show vastly different COVID-19 vaccination rates.</p>"
+                        },
+                        media: {
+                            url: "https://via.placeholder.com/800x600.png?text=Vaccination+Inequity+Metrics",
+                            caption: "Erreygers Concentration Index reveals patterns of inequality",
+                            credit: "University of Cincinnati Digital Epidemiology Laboratory"
+                        },
+                        location: {
+                            lat: 0.0236,
+                            lon: 37.9062,
+                            zoom: 6
+                        }
+                    },
+                    {
+                        uniqueid: "policy",
+                        text: {
+                            headline: "Policy Pathways to Vaccine Equity",
+                            text: "<p>Recommended interventions include:</p><ul><li>Mobile vaccination units for remote areas</li><li>Financial support via M-Pesa</li><li>Integration with routine immunization programs</li><li>Climate-resilient infrastructure investments</li></ul>"
+                        },
+                        media: {
+                            url: "https://via.placeholder.com/800x600.png?text=Policy+Recommendations",
+                            caption: "Targeted interventions can address specific barriers to vaccine access",
+                            credit: "University of Cincinnati Digital Epidemiology Laboratory"
+                        },
+                        location: {
+                            lat: 0.0236,
+                            lon: 37.9062,
+                            zoom: 6
+                        }
+                    }
+                ]
+            }
+        };
+        
+        // Initialize StoryMap
+        document.addEventListener('DOMContentLoaded', function() {
+            storymap = new KLStoryMap.StoryMap('storymap-embed', storymap_data, storymap_options);
+            window.onresize = function() {
+                storymap.updateDisplay();
+            };
+            
+            // Initialize sidebar toggle
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('story-sidebar');
+            
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                sidebarToggle.textContent = sidebar.classList.contains('active') ? '×' : '≡';
+            });
+            
+            // Initialize chapter navigation
+            const chapterItems = document.querySelectorAll('.chapter-item');
+            
+            chapterItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const slideIndex = this.getAttribute('data-slide');
+                    storymap.goTo(slideIndex);
+                    
+                    // Update active class
+                    chapterItems.forEach(chapter => chapter.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // On mobile, close sidebar after selection
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                        sidebarToggle.textContent = '≡';
+                    }
+                });
+            });
+            
+            // Initialize charts
+            createScatterPlot();
+            createPredictorsChart();
+            
+            // Theme toggle
+            const themeToggle = document.querySelector('.toggle-theme');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('dark-theme');
+                    
+                    // Update charts for dark mode
+                    createScatterPlot();
+                    createPredictorsChart();
+                });
+            }
+        });
+        
+        // Create scatter plot for Vaccination vs Development Index
+        function createScatterPlot() {
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#f0f0f0' : '#333333';
+            const bgColor = isDarkMode ? '#222' : '#fff';
+            
+            // Sample data - in production, this would be loaded from a JSON file
+            const data = [
+                {cluster: "Urban High-Dev", vacRate: 33.21, devIndex: 82.3, population: 10000},
+                {cluster: "Urban Mixed", vacRate: 31.51, devIndex: 71.4, population: 8000},
+                {cluster: "Peri-urban", vacRate: 28.33, devIndex: 61.7, population: 12000},
+                {cluster: "Semi-urban", vacRate: 26.92, devIndex: 54.3, population: 15000},
+                {cluster: "Rural Dev", vacRate: 19.44, devIndex: 47.2, population: 18000},
+                {cluster: "Rural Trans", vacRate: 6.56, devIndex: 32.1, population: 8000},
+                {cluster: "Rural Remote", vacRate: 7.84, devIndex: 24.9, population: 6000}
+            ];
+            
+            // Clear previous chart
+            d3.select("#chart-scatter").html("");
+            
+            // Set up SVG
+            const width = document.getElementById('chart-scatter').clientWidth;
+            const height = 200;
+            const margin = {top: 20, right: 20, bottom: 40, left: 50};
+            
+            const svg = d3.select("#chart-scatter")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            
+            // Set up scales
+            const x = d3.scaleLinear()
+                .domain([0, 100])
+                .range([0, width - margin.left - margin.right]);
+            
+            const y = d3.scaleLinear()
+                .domain([0, 40])
+                .range([height - margin.top - margin.bottom, 0]);
+            
+            const size = d3.scaleLinear()
+                .domain([d3.min(data, d => d.population), d3.max(data, d => d.population)])
+                .range([5, 15]);
+            
+            const color = d3.scaleOrdinal()
+                .domain(data.map(d => d.cluster))
+                .range(["#bf5b17", "#7fc97f", "#ffff99", "#386cb0", "#beaed4", "#fdc086", "#f0027f"]);
+            
+            // Add X axis
+            svg.append("g")
+                .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(5))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", height - margin.top)
+                .text("Development Index")
+                .style("fill", textColor)
+                .style("font-size", "10px");
+            
+            // Add Y axis
+            svg.append("g")
+                .call(d3.axisLeft(y).ticks(5))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -margin.left + 15)
+                .attr("x", -(height - margin.top - margin.bottom) / 2)
+                .text("Vaccination Rate (%)")
+                .style("fill", textColor)
+                .style("font-size", "10px");
+            
+            // Add dots
+            svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", d => x(d.devIndex))
+                .attr("cy", d => y(d.vacRate))
+                .attr("r", d => size(d.population))
+                .style("fill", d => color(d.cluster))
+                .style("opacity", 0.7)
+                .style("stroke", "white")
+                .style("stroke-width", 1);
+        }
+        
+        // Create bar chart for Predictors
+        function createPredictorsChart() {
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#f0f0f0' : '#333333';
+            const bgColor = isDarkMode ? '#222' : '#fff';
+            
+            // Sample data based on Random Forest importance
+            const data = [
+                {feature: "Sleeping Rooms", importance: 0.30},
+                {feature: "Bank Access", importance: 0.12},
+                {feature: "Altitude", importance: 0.07},
+                {feature: "NO2 Levels", importance: 0.07},
+                {feature: "Temperature", importance: 0.06},
+                {feature: "Child Ratio", importance: 0.03}
+            ];
+            
+            // Sort data by importance
+            data.sort((a, b) => b.importance - a.importance);
+            
+            // Clear previous chart
+            d3.select("#chart-predictors").html("");
+            
+            // Set up SVG
+            const width = document.getElementById('chart-predictors').clientWidth;
+            const height = 200;
+            const margin = {top: 20, right: 20, bottom: 60, left: 80};
+            
+            const svg = d3.select("#chart-predictors")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            
+            // Set up scales
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.importance)])
+                .range([0, width - margin.left - margin.right]);
+            
+            const y = d3.scaleBand()
+                .domain(data.map(d => d.feature))
+                .range([0, height - margin.top - margin.bottom])
+                .padding(0.1);
+            
+            // Add X axis
+            svg.append("g")
+                .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(5))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", height - margin.top + 5)
+                .text("Feature Importance")
+                .style("fill", textColor)
+                .style("font-size", "10px");
+            
+            // Add Y axis
+            svg.append("g")
+                .call(d3.axisLeft(y))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            // Add bars
+            svg.selectAll(".bar")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", 0)
+                .attr("y", d => y(d.feature))
+                .attr("width", d => x(d.importance))
+                .attr("height", y.bandwidth())
+                .attr("fill", "#2166ac");
+            
+            // Add value labels
+            svg.selectAll(".label")
+                .data(data)
+                .enter()
+                .append("text")
+                .attr("class", "label")
+                .attr("x", d => x(d.importance) + 5)
+                .attr("y", d => y(d.feature) + y.bandwidth() / 2)
+                .attr("dy", ".35em")
+                .text(d => d.importance.toFixed(2))
+                .style("fill", textColor)
+                .style("font-size", "9px");
+        }
+    </script>
+</body>
+</html>

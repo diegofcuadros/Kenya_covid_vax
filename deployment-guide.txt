@@ -1,0 +1,266 @@
+# Deployment Guide: Kenya COVID-19 Vaccination Website
+
+This guide provides step-by-step instructions for setting up, deploying, and maintaining the Kenya COVID-19 Vaccination Coverage website using GitHub and Netlify.
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+1. A GitHub account
+2. A Netlify account (free tier is sufficient)
+3. A Mapbox account with an access token
+4. Git installed on your local machine
+5. Basic knowledge of HTML, CSS, and JavaScript
+
+## Local Development Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/username/kenya-covid-vax.git
+cd kenya-covid-vax
+```
+
+### 2. Configure Mapbox Token
+
+Replace the placeholder Mapbox token in the following files:
+
+- `js/map-config.js`
+
+```javascript
+// Replace this line
+mapboxgl.accessToken = 'pk.eyJ1IjoieW91cmFjY291bnQiLCJhIjoiY2xhbXBsZXRva2VuaXNub3R2YWxpZCJ9.replacewiththistokenfrommapbox';
+
+// With your actual token
+mapboxgl.accessToken = 'pk.eyJ1Ijoi...[your actual token]...';
+```
+
+> ⚠️ **Important**: Never commit your Mapbox token to a public repository. For local development, it's fine to include it directly in the code, but for production deployment, we'll use Netlify environment variables.
+
+### 3. Run a Local Server
+
+You can use any local development server. Here are a few options:
+
+**Using Python:**
+
+```bash
+# Python 3
+python -m http.server 8000
+
+# Python 2
+python -m SimpleHTTPServer 8000
+```
+
+**Using Node.js:**
+
+```bash
+# Install serve globally (if you haven't already)
+npm install -g serve
+
+# Run the server
+serve
+```
+
+### 4. Open in Browser
+
+Open your browser and navigate to:
+
+```
+http://localhost:8000
+```
+
+or the URL provided by your local server.
+
+## GitHub Repository Setup
+
+### 1. Create a New Repository on GitHub
+
+- Go to GitHub and create a new repository named `kenya-covid-vax`
+- Make it public or private according to your needs
+
+### 2. Initialize Local Repository and Push to GitHub
+
+If you've cloned the existing repository, update the remote URL:
+
+```bash
+git remote set-url origin https://github.com/your-username/kenya-covid-vax.git
+git push -u origin main
+```
+
+If you're starting from scratch:
+
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/your-username/kenya-covid-vax.git
+git push -u origin main
+```
+
+### 3. Prepare for Production
+
+Create a `.gitignore` file to avoid committing sensitive information:
+
+```
+# .gitignore
+node_modules/
+.DS_Store
+.env
+*.log
+```
+
+### 4. Add a Branch Protection Rule (Optional)
+
+For collaborative projects, add a branch protection rule for the main branch:
+
+1. Go to Settings > Branches
+2. Add rule for branch: `main`
+3. Select "Require pull request reviews before merging"
+4. Click "Create"
+
+## Netlify Deployment
+
+### 1. Connect to GitHub
+
+1. Log in to Netlify
+2. Click "New site from Git"
+3. Select GitHub as the continuous deployment provider
+4. Authorize Netlify to access your GitHub account
+5. Select your `kenya-covid-vax` repository
+
+### 2. Configure Build Settings
+
+Configure the build settings as follows:
+
+- **Build command**: Leave empty (no build required)
+- **Publish directory**: Leave empty (root directory)
+
+### 3. Set Up Environment Variables
+
+Add your Mapbox token as an environment variable:
+
+1. Navigate to Site settings > Build & deploy > Environment
+2. Click "Edit variables"
+3. Add a new variable:
+   - Key: `MAPBOX_TOKEN`
+   - Value: `pk.eyJ1Ijoi...[your actual token]...`
+
+### 4. Deploy the Site
+
+Click "Deploy site" to start the deployment process. Netlify will provide a randomly generated subdomain for your site.
+
+### 5. Set Up a Custom Domain (Optional)
+
+To use a custom domain:
+
+1. Go to Domain settings
+2. Click "Add custom domain"
+3. Enter your domain name
+4. Follow the instructions to configure DNS settings
+
+## Continuous Deployment
+
+With the GitHub and Netlify integration, any changes pushed to the main branch will automatically trigger a new deployment.
+
+### Making Changes
+
+1. Make changes to your local repository
+2. Commit the changes:
+   ```bash
+   git add .
+   git commit -m "Description of changes"
+   git push origin main
+   ```
+3. Netlify will automatically detect the changes and deploy the updated site
+
+## Monitoring and Analytics
+
+### 1. Set Up Netlify Analytics (Optional)
+
+1. Navigate to the Analytics tab in your Netlify dashboard
+2. Click "Enable Netlify Analytics" (note: this is a paid feature)
+
+### 2. Add Google Analytics (Optional)
+
+1. Create a Google Analytics account and get your tracking ID
+2. Add the Google Analytics script to your `index.html` and other HTML files:
+
+```html
+<!-- Add this before the closing </head> tag -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GA_TRACKING_ID');
+</script>
+```
+
+Replace `GA_TRACKING_ID` with your actual Google Analytics tracking ID.
+
+## Data Updates
+
+### Updating JSON Data Files
+
+To update the data displayed on the website:
+
+1. Update the corresponding JSON files in the `data/` directory:
+   - `data/vaccination-rates.json`
+   - `data/development-index.json`
+   - `data/clusters.json`
+
+2. Commit and push the changes:
+   ```bash
+   git add data/
+   git commit -m "Update data files with latest information"
+   git push origin main
+   ```
+
+3. Netlify will automatically deploy the site with the updated data
+
+## Troubleshooting
+
+### Map Not Loading
+
+1. Check the browser console for errors
+2. Verify that your Mapbox token is correct and has the necessary permissions
+3. Ensure the Mapbox token environment variable is set correctly on Netlify
+
+### Page Not Updating After Deployment
+
+1. Check the Netlify deployment logs for errors
+2. Try clearing your browser cache
+3. Check if the Netlify cache needs to be cleared (Site settings > Build & deploy > Clear cache and deploy site)
+
+### CORS Issues with Data Files
+
+If you encounter CORS issues when fetching data:
+
+1. Ensure that you're using relative paths for data files
+2. Add the following to your `netlify.toml` file:
+
+```toml
+[[headers]]
+  for = "/data/*"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
+```
+
+## Maintenance Checklist
+
+Regularly perform the following maintenance tasks:
+
+- [ ] Update data files with the latest information
+- [ ] Check Netlify deployment status for any issues
+- [ ] Review website analytics for user behavior and issues
+- [ ] Test the website on different devices and browsers
+- [ ] Update dependencies and libraries as needed
+
+## Contact Support
+
+If you encounter any issues or need assistance:
+
+- For website technical issues: File an issue on the GitHub repository
+- For data-related questions: Contact the research team at [research-team-email]
+- For deployment issues: Refer to Netlify support documentation at https://docs.netlify.com/

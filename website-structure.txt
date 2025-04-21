@@ -1,0 +1,95 @@
+# Kenya COVID-19 Vaccination Coverage Website
+
+## Project Structure
+```
+kenya-covid-vax/
+├── index.html                   # Landing page with hero map
+├── story.html                   # StoryMapJS narrative
+├── explorer.html                # Interactive map explorer
+├── methods.html                 # Data & methods visualization
+├── results.html                 # Results gallery
+├── policy.html                  # Policy recommendations
+├── team.html                    # Team & contact
+├── css/
+│   ├── main.css                 # Main styles
+│   ├── map-styles.css           # Map-specific styles
+│   └── storymap-overrides.css   # Custom StoryMapJS styling
+├── js/
+│   ├── main.js                  # Main site functionality
+│   ├── map-config.js            # Mapbox configuration
+│   ├── data-loader.js           # Data loading utilities
+│   ├── charts.js                # D3/Chart.js visualizations
+│   ├── storymap-config.js       # StoryMapJS setup
+│   └── policy-visualizer.js     # Policy recommendation visualizations
+├── data/
+│   ├── kenya-counties.geojson   # Kenya county boundaries
+│   ├── vaccination-rates.json   # Vaccination data by county
+│   ├── clusters.json            # K-means cluster assignments
+│   ├── development-index.json   # Development Index data
+│   ├── random-forest.json       # Random Forest importance results
+│   └── policy-scenarios.json    # Policy impact scenarios
+└── img/
+    ├── logos/                   # University logos, etc.
+    ├── authors/                 # Team photos
+    ├── icons/                   # UI icons 
+    └── methods/                 # Method visualization graphics
+```
+
+## Tech Stack
+
+1. **Mapping & Geospatial**
+   - Mapbox GL JS for interactive maps
+   - StoryMapJS for narrative sequence
+   - Turf.js for geospatial analysis
+
+2. **Data Visualization**
+   - D3.js for custom visualizations
+   - Chart.js for simpler charts
+   - Plotly.js for statistical plots
+
+3. **Frontend Framework**
+   - Vanilla JavaScript (ES6+)
+   - CSS3 with Flexbox/Grid
+   - Optional: Alpine.js for lightweight reactivity
+
+4. **Performance Optimization**
+   - Lazy loading for maps and images
+   - GeoJSON simplification for faster rendering
+   - Data clustering for point density visualization
+
+5. **Deployment**
+   - GitHub for version control
+   - Netlify for hosting
+   - Continuous deployment via GitHub Actions
+
+## Implementation Steps & Timeline
+
+### Phase 1: Setup & Core Map Infrastructure (Week 1)
+- Create GitHub repository structure
+- Setup Netlify deployment
+- Implement base Mapbox map with Kenya boundaries
+- Create responsive layout framework
+
+### Phase 2: Data Processing & Visualization (Week 2)
+- Process GeoJSON county data with vaccination rates
+- Implement choropleth visualization
+- Create interactive tooltips and legends
+- Build chart components for result visualization
+
+### Phase 3: StoryMapJS Narrative (Week 3)
+- Configure StoryMapJS with custom styling
+- Create narrative chapters with map focal points
+- Integrate supporting visualizations for each chapter
+- Connect StoryMapJS to Mapbox for custom map control
+
+### Phase 4: Interactive Components (Week 4)
+- Build layer toggle controls for map explorer
+- Implement county-level drill-down dashboards
+- Create animated transitions between map states
+- Develop policy recommendation visualizers
+
+### Phase 5: Mobile Optimization & Launch (Week 5)
+- Optimize for mobile viewing experience
+- Conduct cross-browser testing
+- Performance optimization
+- Documentation and final deployment

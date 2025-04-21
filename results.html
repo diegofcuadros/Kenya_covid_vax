@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results Gallery - COVID-19 Vaccination in Kenya</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- D3.js for Charts -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <style>
+        .results-container {
+            max-width: 1200px;
+            margin: 80px auto 40px;
+            padding: 0 20px;
+        }
+        
+        .results-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .results-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+        
+        .dark-theme .results-header h1 {
+            color: var(--primary-light);
+        }
+        
+        .results-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .gallery-controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .gallery-control {
+            padding: 8px 16px;
+            background-color: white;
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .dark-theme .gallery-control {
+            background-color: #222;
+            color: var(--primary-light);
+            border-color: var(--primary-light);
+        }
+        
+        .gallery-control:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .gallery-control.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .dark-theme .gallery-control.active {
+            background-color: var(--primary-light);
+            color: #111;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .result-card {
+            background-color: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+        
+        .dark-theme .result-card {
+            background-color: #222;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .result-image {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dark-theme .result-image {
+            background-color: #333;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .result-content {
+            padding: 20px;
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+        
+        .dark-theme .result-title {
+            color: var(--primary-light);
+        }
+        
+        .result-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .result-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .result-tag {
+            padding: 4px 10px;
+            background-color: rgba(33, 102, 172, 0.1);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+        
+        .dark-theme .result-tag {
+            background-color: rgba(67, 147, 195, 0.2);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-normal);
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: var(--radius-md);
+            max-width: 90%;
+            max-height: 90%;
+            width: 1000px;
+            overflow: auto;
+            position: relative;
+        }
+        
+        .dark-theme .modal-content {
+            background-color: #222;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .dark-theme .modal-close {
+            background-color: #333;
+            color: var(--primary-light);
+        }
+        
+        .modal-image {
+            width: 100%;
+            max-height: 600px;
+            object-fit: contain;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dark-theme .modal-image {
+            background-color: #333;
+        }
+        
+        .modal-details {
+            padding: 30px;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+        
+        .dark-theme .modal-title {
+            color: var(--primary-light);
+        }
+        
+        .modal-description {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .modal-metadata {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        
+        .dark-theme .modal-metadata {
+            border-bottom-color: #444;
+        }
+        
+        .metadata-item {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .metadata-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 200px;
+        }
+        
+        .metadata-value {
+            color: var(--text-secondary);
+        }
+        
+        .modal-explanation {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+        
+        .modal-explanation p {
+            margin-bottom: 15px;
+        }
+        
+        .modal-explanation ul {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        
+        .modal-explanation li {
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-header h1 {
+                font-size: 2rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                max-height: 95%;
+            }
+            
+            .modal-details {
+                padding: 20px;
+            }
+            
+            .modal-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main header with navigation -->
+    <header class="main-header">
+        <div class="logo">
+            <h1>COVID-19 Vaccination in Kenya</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="story.html">Story Map</a></li>
+                <li><a href="explorer.html">Map Explorer</a></li>
+                <li><a href="results.html" class="active" aria-current="page">Results</a></li>
+                <li><a href="policy.html">Policy</a></li>
+                <li><a href="team.html">Team</a></li>
+            </ul>
+        </nav>
+        <button class="toggle-theme">
+            <span class="light-icon">☀️</span>
+            <span class="dark-icon">🌙</span>
+        </button>
+    </header>
+
+    <!-- Main results container -->
+    <div class="results-container">
+        <div class="results-header">
+            <h1>Key Findings & Visualizations</h1>
+            <p>This gallery presents the main results from our geospatial analysis of COVID-19 vaccination coverage across Kenya, exploring the structural determinants that shape vaccine access and equity.</p>
+        </div>
+        
+        <!-- Gallery Controls -->
+        <div class="gallery-controls">
+            <button class="gallery-control active" data-filter="all">All Results</button>
+            <button class="gallery-control" data-filter="maps">Maps</button>
+            <button class="gallery-control" data-filter="charts">Charts</button>
+            <button class="gallery-control" data-filter="vaccination">Vaccination Coverage</button>
+            <button class="gallery-control" data-filter="development">Development Index</button>
+            <button class="gallery-control" data-filter="clusters">Clusters</button>
+            <button class="gallery-control" data-filter="equity">Equity Analysis</button>
+        </div>
+        
+        <!-- Results Grid -->
+        <div class="results-grid">
+            <!-- Figure 1: Conceptual Model -->
+            <div class="result-card" data-categories="maps,vaccination,development">
+                <div class="result-image">
+                    <img src="img/results/conceptual-model.png" alt="Conceptual Model" class="chart-container">
+                </div>
+                <div class="result-content">
+                    <h3 class="result-title">Conceptual Model</h3>
+                    <p class="result-description">Illustrating the hypothesized factors influencing COVID-19 vaccination uptake in Kenya, including socioeconomic, health infrastructure, and environmental determinants.</p>
+                    <div class="result-tags">
+                        <span class="result-tag">Figure 1</span>
+                        <span class="result-tag">Conceptual Framework</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Figure 2: Random Forest Importance -->
+            <div class="result-card" data-categories="charts,development">
+                <div class="result-image">
+                    <div id="random-forest-chart" class="chart-container"></div>
+                </div>
+                <div class="result-content">
+                    <h3 class="result-title">Predictors of Vaccination</h3>
+                    <p class="result-description">Random Forest analysis reveals that housing conditions (sleeping rooms per person), financial inclusion (bank access), and environmental factors are the strongest predictors of vaccination rates.</p>
+                    <div class="result-tags">
+                        <span class="result-tag">Figure 2</span>
+                        <span class="result-tag">Machine Learning</span>
+                        <span class="result-tag">Feature Importance</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Figure 3A: Development Index vs. Vaccination -->
+            <div class="result-card" data-categories="charts,development,vaccination">
+                <div class="result-image">
+                    <div id="di-vax-scatter" class="chart-container"></div>
+                </div>
+                <div class="result-content">
+                    <h3 class="result-title">Development Index vs. Vaccination Rates</h3>
+                    <p class="result-description">Strong positive relationship between Development Index and vaccination coverage, with distinct clustering by geographic region and development level.</p>
+                    <div class="result-tags">
+                        <span class="result-tag">Figure 3A</span>
+                        <span class="result-tag">Correlation</span>
+                        <span class="result-tag">Socioeconomic Factors</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Figure 3B: Key DI Components -->
+            <div class="result-card" data-categories="charts,development">
+                <div class="result-image">
+                    <div id="di-components" class="chart-container"></div>
+                </div>
+                <div class="result-content">
+                    <h3 class="result-title">Development Index Components</h3>
+                    <p class="result-description">Breakdown of key Development Index components (bank access, immunization infrastructure, living conditions) across the seven geographic clusters.</p>
+                    <div class="result-tags">
+                        <span class="result-tag">Figure 3B</span>
+                        <span class="result-tag">Comparative Analysis</span>
+                        <span class="result-tag">Cluster Disparities</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Figure 3C: Clusters Map -->
+            <div class="result-card" data-categories="maps,clusters">
+                <div class="result-image">
+                    <img src="img/results/clusters-map.png" alt="Geographic Clusters Map" class="chart-container">
+                </div>
+                <div class="result-content">
+                    <h3 class="result-title">Geographic Distribution of Clusters</h3>
+                    <p class="result-description">Spatial mapping of the seven distinct clusters across Kenya, revealing the geographic patterns of development and vaccination disparities.</p>
+                    <div class="result-tags">
+                        <span class="result-tag">Figure 3C</span>
+                        <span class="result-tag">Spatial Clusters</span>
+                        <span class="result-tag">K-Means</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Figure 4A: Bivariate Map - Vaccination & Immunization -->
+            <div class="result-card" data-categories="maps,vaccination">
+                <div class="result-image">
+                    <img src="img/results/vax-immunization-map.png" alt="Vaccination & Immunization Map" class="chart-container">
+                </div>
+                <div class="result-content">
+                    <h3 class="result-title">COVID-19 Vaccination vs. Child Immunization</h3>
+                    <p class="result-description">Bivariate choropleth map showing the spatial relationship between COVID-19 vaccination rates and routine child immunization coverage.</p>
+                    <div class="result-tags">
+                        <span class="result-tag">Figure 4A</span>
+                        <span class="result-tag">Bivariate Map</span>
+                        <span class="result-tag">Healthcare Infrastructure</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Figure 4B: Scatterplot - Vaccination vs. Immunization -->
+            <div class="result-card" data-categories="charts,vaccination">
+                <div class="result-image">
+                    <div id="vax-immunization-scatter" class="chart-container"></div>
+                </div>
+                <div class="result-content">
+                    <h3 class="result-title">Vaccination vs. Child Immunization Rates</h3>
+                    <p class="result-description">Scatterplot illustrating the positive association between COVID-19 vaccination rates and child immunization coverage at the cluster level.</p>
+                    <div class="result-tags">
+                        <span class="result-tag">Figure 4B</span>
+                        <span class="result-tag">Correlation</span>
+                        <span class="result-tag">Healthcare Capacity</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Figure 4C: Bivariate Map - Vaccination & Wealth -->
+            <div class="result-card" data-categories="maps,vaccination,equity">
+                <div class="result-image">
+                    <img src="img/results/vax-wealth-map.png" alt="Vaccination & Wealth Map" class="chart-container">
+                </div>
+                <div class="result-content">
+                    <h3 class="result-title">COVID-19 Vaccination vs. Wealth Index</h3>
+                    <p class="result-description">Bivariate choropleth map showing the spatial relationship between COVID-19 vaccination rates and wealth distribution.</p>
+                    <div class="result-tags">
+                        <span class="result-tag">Figure 4C</span>
+                        <span class="result-tag">Bivariate Map</span>
+                        <span class="result-tag">Economic Factors</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Figure 4D: Scatterplot - Vaccination vs. Wealth -->
+            <div class="result-card" data-categories="charts,vaccination,equity">
+                <div class="result-image">
+                    <div id="vax-wealth-scatter" class="chart-container"></div>
+                </div>
+                <div class="result-content">
+                    <h3 class="result-title">Vaccination vs. Wealth Index</h3>
+                    <p class="result-description">Scatterplot showing the relationship between COVID-19 vaccination rates and wealth index, highlighting socioeconomic disparities in vaccine access.</p>
+                    <div class="result-tags">
+                        <span class="result-tag">Figure 4D</span>
+                        <span class="result-tag">Correlation</span>
+                        <span class="result-tag">Wealth Disparity</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Figure 4E: ECI for Immunization -->
+            <div class="result-card" data-categories="charts,equity">
+                <div class="result-image">
+                    <div id="eci-immunization" class="chart-container"></div>
+                </div>
+                <div class="result-content">
+                    <h3 class="result-title">Immunization-based Equity Analysis</h3>
+                    <p class="result-description">Concentration curve and Erreygers Concentration Index (ECI = 0.025) showing moderate inequities in COVID-19 vaccination based on immunization infrastructure.</p>
+                    <div class="result-tags">
+                        <span class="result-tag">Figure 4E</span>
+                        <span class="result-tag">Concentration Curve</span>
+                        <span class="result-tag">Equity Measure</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Figure 4F: ECI for Wealth -->
+            <div class="result-card" data-categories="charts,equity">
+                <div class="result-image">
+                    <div id="eci-wealth" class="chart-container"></div>
+                </div>
+                <div class="result-content">
+                    <h3 class="result-title">Wealth-based Equity Analysis</h3>
+                    <p class="result-description">Concentration curve and Erreygers Concentration Index (ECI = 0.044) showing more pronounced wealth-based inequities in COVID-19 vaccination coverage.</p>
+                    <div class="result-tags">
+                        <span class="result-tag">Figure 4F</span>
+                        <span class="result-tag">Concentration Curve</span>
+                        <span class="result-tag">Economic Barriers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for detailed view -->
+    <div class="modal-overlay" id="result-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">×</button>
+            <div class="modal-image" id="modal-image">
+                <!-- Image or chart will be rendered here -->
+            </div>
+            <div class="modal-details">
+                <h2 class="modal-title" id="modal-title">Result Title</h2>
+                <div class="modal-metadata">
+                    <div class="metadata-item">
+                        <div class="metadata-label">Figure Number:</div>
+                        <div class="metadata-value" id="modal-figure">Figure X</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">Data Source:</div>
+                        <div class="metadata-value" id="modal-source">KDHS 2022</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">Methodology:</div>
+                        <div class="metadata-value" id="modal-method">K-Means Clustering</div>
+                    </div>
+                </div>
+                <div class="modal-explanation" id="modal-explanation">
+                    <!-- Detailed explanation will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize charts
+            createRandomForestChart();
+            createDIVaxScatter();
+            createDIComponents();
+            createVaxImmunizationScatter();
+            createVaxWealthScatter();
+            createECIImmunization();
+            createECIWealth();
+            
+            // Setup gallery controls
+            const galleryControls = document.querySelectorAll('.gallery-control');
+            const resultCards = document.querySelectorAll('.result-card');
+            
+            galleryControls.forEach(control => {
+                control.addEventListener('click', function() {
+                    // Deactivate all controls
+                    galleryControls.forEach(c => c.classList.remove('active'));
+                    
+                    // Activate clicked control
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Show/hide cards based on filter
+                    resultCards.forEach(card => {
+                        if (filter === 'all' || card.getAttribute('data-categories').includes(filter)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Setup modal functionality
+            const modal = document.getElementById('result-modal');
+            const modalClose = document.getElementById('modal-close');
+            
+            resultCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Get data from clicked card
+                    const title = this.querySelector('.result-title').textContent;
+                    const description = this.querySelector('.result-description').textContent;
+                    const tags = this.querySelectorAll('.result-tag');
+                    
+                    let figure = '';
+                    tags.forEach(tag => {
+                        if (tag.textContent.includes('Figure')) {
+                            figure = tag.textContent;
+                        }
+                    });
+                    
+                    // Update modal content
+                    document.getElementById('modal-title').textContent = title;
+                    document.getElementById('modal-figure').textContent = figure;
+                    
+                    // Clone the image or chart
+                    const imageContainer = this.querySelector('.result-image').cloneNode(true);
+                    document.getElementById('modal-image').innerHTML = '';
+                    document.getElementById('modal-image').appendChild(imageContainer.firstElementChild);
+                    
+                    // Set metadata and explanation based on the figure
+                    setModalContent(figure);
+                    
+                    // Show modal
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            modalClose.addEventListener('click', function() {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Close modal on outside click
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Toggle theme
+            const themeToggle = document.querySelector('.toggle-theme');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('dark-theme');
+                    
+                    // Recreate charts with appropriate colors
+                    createRandomForestChart();
+                    createDIVaxScatter();
+                    createDIComponents();
+                    createVaxImmunizationScatter();
+                    createVaxWealthScatter();
+                    createECIImmunization();
+                    createECIWealth();
+                });
+            }
+        });
+        
+        // Set detailed content for modal based on figure number
+        function setModalContent(figure) {
+            let source, method, explanation;
+            
+            switch(figure.trim()) {
+                case 'Figure 1':
+                    source = 'Research Framework';
+                    method = 'Conceptual Model';
+                    explanation = `
+                        <p>The conceptual model illustrates the complex interplay of factors that influence COVID-19 vaccination uptake in Kenya. It demonstrates how structural determinants create cascading effects that ultimately shape individual access to vaccines.</p>
+                        <p>Key pathways include:</p>
+                        <ul>
+                            <li><strong>Socioeconomic factors</strong> (wealth, education, financial access) that impact ability to travel to vaccination sites and overcome opportunity costs</li>
+                            <li><strong>Healthcare infrastructure</strong> including facility distribution, immunization programs, and human resources that determine service availability</li>
+                            <li><strong>Environmental determinants</strong> such as climate events, geography, and pollution levels that influence physical accessibility</li>
+                            <li><strong>Demographic characteristics</strong> like household composition and age structure that affect vaccination prioritization</li>
+                        </ul>
+                        <p>The model emphasizes that vaccination disparities are not merely the result of individual hesitancy, but rather reflect systemic inequities in resource distribution and access.</p>
+                    `;
+                    break;
+                    
+                case 'Figure 2':
+                    source = 'Random Forest Regression Analysis';
+                    method = 'Machine Learning, Feature Importance';
+                    explanation = `
+                        <p>Random Forest regression analysis was employed to quantify the relative importance of various predictors in determining COVID-19 vaccination rates across Kenya. This machine learning approach provides insight into which structural factors have the strongest influence on vaccination outcomes.</p>
+                        <p>Key findings:</p>
+                        <ul>
+                            <li><strong>Housing conditions</strong> (number of sleeping rooms per household member) emerged as the most influential predictor (importance score: 0.30), likely serving as a comprehensive proxy for wealth and living standards</li>
+                            <li><strong>Financial inclusion</strong> (bank account access) ranked second (0.12), highlighting the importance of economic factors in vaccine access</li>
+                            <li><strong>Environmental factors</strong> including altitude (0.07), NO₂ levels (0.07), and temperature (0.06) collectively accounted for a substantial portion of the variance, underscoring how geographic and climatic conditions shape healthcare access</li>
+                            <li><strong>Demographic composition</strong> (child ratio: 0.03) and healthcare infrastructure (immunization rate: 0.03) also emerged as significant, though less influential, predictors</li>
+                        </ul>
+                        <p>Notably, direct socioeconomic indicators like wealth index showed relatively lower predictive importance when compared to housing conditions and financial access, suggesting that specific aspects of socioeconomic status (like banking and housing) may better capture the mechanisms through which economic factors influence vaccination.</p>
+                    `;
+                    break;
+                    
+                case 'Figure 3A':
+                    source = 'Development Index & COVID-19 Vaccination Rates';
+                    method = 'Composite Index Correlation';
+                    explanation = `
+                        <p>This scatterplot demonstrates the relationship between the Development Index (DI) and COVID-19 vaccination rates across seven distinct clusters in Kenya. The Development Index is a composite score (0-100) that combines living conditions, financial access, healthcare indicators, environmental factors, and demographics.</p>
+                        <p>Key insights:</p>
+                        <ul>
+                            <li>A strong positive linear relationship exists between development level and vaccination coverage (r = 0.93)</li>
+                            <li><strong>Urban High-Dev clusters</strong> (DI: 82.3) achieve the highest vaccination rates (33.2%), while <strong>Rural Remote clusters</strong> (DI: 24.9) have the lowest (7.8%)</li>
+                            <li>The steep gradient between cluster types illustrates how development levels create distinct vaccination outcomes</li>
+                            <li>Circle sizes represent relative population, highlighting that many Kenyans live in lower-development regions with poor vaccination coverage</li>
+                        </ul>
+                        <p>This visualization provides compelling evidence that vaccination rates follow development patterns, with structural advantages and disadvantages closely linked to vaccine access. The clear clustering pattern also validates the K-means classification approach used to categorize regions.</p>
+                    `;
+                    break;
+                    
+                case 'Figure 3B':
+                    source = 'Development Index Components Analysis';
+                    method = 'Component Decomposition by Cluster';
+                    explanation = `
+                        <p>This bar chart decomposes the Development Index into three key components across the seven cluster types, revealing the distinct combination of advantages and disadvantages each region faces.</p>
+                        <p>Key patterns:</p>
+                        <ul>
+                            <li><strong>Financial inclusion</strong> (measured by bank account access) shows the most dramatic disparity, with Urban High-Dev clusters having nearly 6 times higher access than Rural Remote areas</li>
+                            <li><strong>Living conditions</strong> (measured by sleeping rooms per household member) follow a similar pattern but with less extreme differences</li>
+                            <li><strong>Immunization coverage</strong> shows the least variation across clusters, suggesting that routine childhood vaccination infrastructure reaches more evenly across the country than COVID-19 vaccination efforts</li>
+                            <li>Urban clusters consistently outperform rural clusters across all components, though with varying magnitudes of advantage</li>
+                        </ul>
+                        <p>This decomposition highlights that financial inclusion—the ability to access banking services—may be a critical bottleneck for COVID-19 vaccination in rural areas. While basic immunization infrastructure exists even in remote regions, the additional costs and logistical challenges of COVID-19 vaccination appear to amplify existing financial disparities.</p>
+                    `;
+                    break;
+                    
+                case 'Figure 3C':
+                    source = 'Kenya Demographic and Health Survey 2022';
+                    method = 'K-Means Spatial Clustering';
+                    explanation = `
+                        <p>This map displays the geographic distribution of the seven distinct clusters identified through K-means clustering analysis. The clustering algorithm incorporated vaccination rates, development indicators, and geographic coordinates to identify regions with similar characteristics.</p>
+                        <p>Spatial patterns revealed:</p>
+                        <ul>
+                            <li><strong>Urban High-Dev clusters</strong> (brown) are concentrated in major cities like Nairobi, Mombasa, and around Mt. Kenya region</li>
+                            <li><strong>Urban Mixed clusters</strong> (green) appear primarily in Nairobi County, representing diverse urban neighborhoods</li>
+                            <li><strong>Peri-urban and Semi-urban clusters</strong> (yellow and blue) form rings around urban centers, showing the urban-to-rural gradient</li>
+                            <li><strong>Rural Dev clusters</strong> (purple) dominate agricultural highlands and more economically productive rural areas</li>
+                            <li><strong>Rural Trans clusters</strong> (orange) appear in transitional semi-arid zones</li>
+                            <li><strong>Rural Remote clusters</strong> (pink) are concentrated in the northern and northeastern arid/semi-arid regions</li>
+                        </ul>
+                        <p>The clear spatial patterning demonstrates that vaccination disparities follow established development corridors, with proximity to urban centers and agricultural productivity zones strongly influencing vaccination access. The clustering also reveals the stark north-south divide in Kenya's development and health infrastructure.</p>
+                    `;
+                    break;
+                    
+                case 'Figure 4A':
+                    source = 'Kenya Demographic and Health Survey 2022';
+                    method = 'Bivariate Choropleth Mapping';
+                    explanation = `
+                        <p>This bivariate choropleth map shows the spatial relationship between COVID-19 vaccination rates and routine child immunization coverage. The color scheme uses a two-dimensional scale: one dimension (blue) for COVID-19 vaccination and another (red) for childhood immunization.</p>
+                        <p>Spatial patterns of interest:</p>
+                        <ul>
+                            <li><strong>Dark purple regions</strong> (central and western Kenya highlands) have both high COVID-19 vaccination and high child immunization, indicating strong overall health systems</li>
+                            <li><strong>Light blue regions</strong> have low vaccination but moderate immunization, suggesting specific barriers to COVID-19 vaccine delivery despite existing immunization infrastructure</li>
+                            <li><strong>Neutral regions</strong> have moderate levels of both measures, typically in transition zones between urban and rural areas</li>
+                            <li>Northern and northeastern counties show consistently low values for both measures (lightest colors), reflecting compound healthcare disadvantages</li>
+                        </ul>
+                        <p>The map reveals that regions with strong routine immunization systems generally achieved better COVID-19 vaccination coverage, but the relationship is not perfect. Some areas maintained reasonable childhood immunization despite poor COVID-19 coverage, suggesting that pandemic-specific factors (like cold chain requirements, information access, or adult-focused service design) created additional barriers beyond those affecting routine child vaccination.</p>
+                    `;
+                    break;
+                    
+                case 'Figure 4B':
+                    source = 'Kenya Demographic and Health Survey 2022';
+                    method = 'Correlation Analysis';
+                    explanation = `
+                        <p>This scatterplot illustrates the relationship between COVID-19 vaccination rates and child immunization coverage across different regions of Kenya. Each point represents a cluster of survey locations, with color indicating the cluster type.</p>
+                        <p>Key observations:</p>
+                        <ul>
+                            <li>A positive correlation (r = 0.78) exists between routine immunization coverage and COVID-19 vaccination rates</li>
+                            <li>Urban and peri-urban clusters (upper right quadrant) benefit from both strong routine immunization systems and good COVID-19 vaccination access</li>
+                            <li>Rural remote and transitional clusters (lower left quadrant) face dual disadvantages in both vaccination systems</li>
+                            <li>Several points fall below the trend line, indicating areas where COVID-19 vaccination lags behind what would be expected based on their immunization infrastructure</li>
+                        </ul>
+                        <p>This visualization suggests that existing immunization infrastructure provided a foundation for COVID-19 vaccination efforts, but additional barriers specific to the pandemic response created disparities even in areas with reasonable routine vaccination systems. The pattern supports the recommendation to leverage existing immunization networks while addressing the unique challenges of adult COVID-19 vaccination.</p>
+                    `;
+                    break;
+                    
+                case 'Figure 4C':
+                    source = 'Kenya Demographic and Health Survey 2022';
+                    method = 'Bivariate Choropleth Mapping';
+                    explanation = `
+                        <p>This bivariate choropleth map illustrates the spatial relationship between COVID-19 vaccination rates and wealth levels. The color scheme combines blue (for vaccination rates) and green (for wealth index) to create a composite visualization.</p>
+                        <p>Spatial patterns revealed:</p>
+                        <ul>
+                            <li><strong>Dark green areas</strong> (primarily around Nairobi, central highlands, and major urban centers) have both high wealth and high vaccination rates</li>
+                            <li><strong>Light green areas</strong> have high wealth but moderate vaccination, suggesting factors beyond economic status affect vaccine uptake in these regions</li>
+                            <li><strong>Light yellow areas</strong> have low values for both measures, concentrated in northern and coastal counties</li>
+                            <li>Very few areas display high vaccination despite low wealth (which would appear in blue), highlighting the strong influence of economic factors</li>
+                        </ul>
+                        <p>The map demonstrates a stronger spatial alignment between wealth and vaccination compared to the immunization-vaccination relationship seen in Figure 4A. This suggests economic factors may be more deterministic for COVID-19 vaccination access than pre-existing health infrastructure. The pattern reinforces findings from other analyses that financial barriers play a critical role in vaccination disparities.</p>
+                    `;
+                    break;
+                    
+                case 'Figure 4D':
+                    source = 'Kenya Demographic and Health Survey 2022';
+                    method = 'Correlation Analysis';
+                    explanation = `
+                        <p>This scatterplot shows the relationship between COVID-19 vaccination rates and wealth index values across different regions of Kenya. Each point represents a cluster of survey locations, with color indicating the cluster type.</p>
+                        <p>Key insights:</p>
+                        <ul>
+                            <li>A strong positive correlation (r = 0.85) exists between wealth and vaccination rates, even stronger than the immunization-vaccination relationship</li>
+                            <li>The relationship appears somewhat non-linear, with vaccination rates increasing more rapidly at higher wealth levels</li>
+                            <li>Urban clusters demonstrate both high wealth and high vaccination (upper right)</li>
+                            <li>Rural remote clusters show consistently low values for both measures (lower left)</li>
+                            <li>The dispersion around the trend line is less than in the immunization-vaccination scatter, suggesting wealth is a more consistent predictor</li>
+                        </ul>
+                        <p>This visualization provides compelling evidence that economic factors play a critical role in COVID-19 vaccination access. The stronger correlation with wealth compared to immunization infrastructure suggests that financial barriers—such as transportation costs, lost wages, or information access—may be more decisive than physical proximity to healthcare facilities in determining who receives COVID-19 vaccines in Kenya.</p>
+                    `;
+                    break;
+                    
+                case 'Figure 4E':
+                    source = 'Kenya Demographic and Health Survey 2022';
+                    method = 'Erreygers Concentration Index (ECI)';
+                    explanation = `
+                        <p>This concentration curve and Erreygers Concentration Index (ECI) quantify inequities in COVID-19 vaccination coverage based on routine immunization infrastructure. The diagonal line represents perfect equality, while the curve shows the actual distribution of COVID-19 vaccination relative to immunization coverage.</p>
+                        <p>Key findings:</p>
+                        <ul>
+                            <li>The ECI value of 0.025 indicates a moderate pro-immunization (and by extension, pro-healthcare access) distribution of COVID-19 vaccines</li>
+                            <li>The curve lies below the diagonal line, confirming that areas with better immunization infrastructure received disproportionately higher COVID-19 vaccination coverage</li>
+                            <li>The relatively modest ECI value suggests that while disparities exist, they are not extreme when measured against healthcare infrastructure</li>
+                            <li>The greatest deviation from the line of equality occurs in the middle of the distribution, indicating that middle-performing areas in terms of immunization saw the largest relative disadvantage in COVID-19 vaccination</li>
+                        </ul>
+                        <p>This equity analysis demonstrates that COVID-19 vaccination efforts in Kenya built upon existing immunization systems, with regions having stronger healthcare infrastructure receiving somewhat better COVID-19 vaccination coverage. However, the moderate ECI value suggests that other factors beyond healthcare infrastructure also played significant roles in determining vaccine distribution.</p>
+                    `;
+                    break;
+                    
+                case 'Figure 4F':
+                    source = 'Kenya Demographic and Health Survey 2022';
+                    method = 'Erreygers Concentration Index (ECI)';
+                    explanation = `
+                        <p>This concentration curve and Erreygers Concentration Index (ECI) quantify wealth-based inequities in COVID-19 vaccination coverage. The diagonal line represents perfect equality, while the curve shows the actual distribution of COVID-19 vaccination relative to wealth.</p>
+                        <p>Key findings:</p>
+                        <ul>
+                            <li>The ECI value of 0.044 indicates a more pronounced pro-rich distribution of COVID-19 vaccines compared to the immunization-based ECI (0.025)</li>
+                            <li>The curve shows a greater deviation from the line of equality than the immunization-based curve, confirming stronger wealth-based disparities</li>
+                            <li>The greatest inequities appear at the lower end of the wealth distribution, with the poorest segments receiving disproportionately lower vaccination coverage</li>
+                            <li>The higher ECI value for wealth compared to immunization suggests economic factors create stronger barriers to vaccine access than healthcare infrastructure alone</li>
+                        </ul>
+                        <p>This equity analysis provides quantitative evidence that financial barriers played a more significant role in creating vaccination disparities than differences in healthcare infrastructure. The finding supports policy recommendations focused on economic interventions, such as transportation subsidies or mobile money incentives, to overcome wealth-based exclusion from vaccination services.</p>
+                    `;
+                    break;
+                    
+                default:
+                    source = 'Kenya Demographic and Health Survey 2022';
+                    method = 'Geospatial Analysis';
+                    explanation = '<p>Detailed explanation not available for this figure.</p>';
+            }
+            
+            document.getElementById('modal-source').textContent = source;
+            document.getElementById('modal-method').textContent = method;
+            document.getElementById('modal-explanation').innerHTML = explanation;
+        }
+        
+        // Chart creation functions
+        function createRandomForestChart() {
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#f0f0f0' : '#333333';
+            const bgColor = isDarkMode ? '#222' : '#fff';
+            
+            // Sample data for Random Forest feature importance
+            const data = [
+                {feature: "Sleeping Rooms per Person", importance: 0.30},
+                {feature: "Bank Account Access", importance: 0.12},
+                {feature: "Altitude", importance: 0.07},
+                {feature: "NO₂ Levels", importance: 0.07},
+                {feature: "Min Temperature", importance: 0.06},
+                {feature: "Child Ratio", importance: 0.03},
+                {feature: "Immunization Rate", importance: 0.03},
+                {feature: "Precipitation", importance: 0.02},
+                {feature: "Travel Time", importance: 0.01},
+                {feature: "Roof Material", importance: 0.01}
+            ];
+            
+            // Clear previous chart
+            d3.select("#random-forest-chart").html("");
+            
+            const width = document.getElementById('random-forest-chart').clientWidth || 400;
+            const height = document.getElementById('random-forest-chart').clientHeight || 300;
+            const margin = {top: 30, right: 30, bottom: 40, left: 160};
+            
+            const svg = d3.select("#random-forest-chart")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            
+            // Add background
+            svg.append("rect")
+                .attr("width", width - margin.left - margin.right)
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("fill", bgColor);
+            
+            // Set up scales
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.importance)])
+                .range([0, width - margin.left - margin.right]);
+            
+            const y = d3.scaleBand()
+                .domain(data.map(d => d.feature))
+                .range([0, height - margin.top - margin.bottom])
+                .padding(0.2);
+            
+            // Add X axis
+            svg.append("g")
+                .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(5))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", height - margin.top)
+                .text("Importance Score")
+                .style("fill", textColor)
+                .style("font-size", "12px");
+            
+            // Add Y axis
+            svg.append("g")
+                .call(d3.axisLeft(y))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            // Add bars
+            svg.selectAll(".bar")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", 0)
+                .attr("y", d => y(d.feature))
+                .attr("width", d => x(d.importance))
+                .attr("height", y.bandwidth())
+                .attr("fill", "#2166ac");
+            
+            // Add value labels
+            svg.selectAll(".label")
+                .data(data)
+                .enter()
+                .append("text")
+                .attr("class", "label")
+                .attr("x", d => x(d.importance) + 5)
+                .attr("y", d => y(d.feature) + y.bandwidth() / 2)
+                .attr("dy", ".35em")
+                .text(d => d.importance.toFixed(2))
+                .style("fill", textColor)
+                .style("font-size", "10px");
+            
+            // Add title
+            svg.append("text")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", -10)
+                .attr("text-anchor", "middle")
+                .style("font-size", "14px")
+                .style("font-weight", "bold")
+                .style("fill", textColor)
+                .text("Random Forest Feature Importance");
+        }
+        
+        function createDIVaxScatter() {
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#f0f0f0' : '#333333';
+            const bgColor = isDarkMode ? '#222' : '#fff';
+            
+            // Sample data
+            const data = [
+                {cluster: "Urban High-Dev", di: 82.3, vax: 33.21, population: 10000},
+                {cluster: "Urban Mixed", di: 71.4, vax: 31.51, population: 8000},
+                {cluster: "Peri-urban", di: 61.7, vax: 28.33, population: 12000},
+                {cluster: "Semi-urban", di: 54.3, vax: 26.92, population: 15000},
+                {cluster: "Rural Dev", di: 47.2, vax: 19.44, population: 18000},
+                {cluster: "Rural Trans", di: 32.1, vax: 6.56, population: 8000},
+                {cluster: "Rural Remote", di: 24.9, vax: 7.84, population: 6000}
+            ];
+            
+            // Clear previous chart
+            d3.select("#di-vax-scatter").html("");
+            
+            const width = document.getElementById('di-vax-scatter').clientWidth || 400;
+            const height = document.getElementById('di-vax-scatter').clientHeight || 300;
+            const margin = {top: 40, right: 50, bottom: 60, left: 60};
+            
+            const svg = d3.select("#di-vax-scatter")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            
+            // Add background
+            svg.append("rect")
+                .attr("width", width - margin.left - margin.right)
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("fill", bgColor);
+            
+            // Set up scales
+            const x = d3.scaleLinear()
+                .domain([0, 100])
+                .range([0, width - margin.left - margin.right]);
+            
+            const y = d3.scaleLinear()
+                .domain([0, 40])
+                .range([height - margin.top - margin.bottom, 0]);
+            
+            const size = d3.scaleLinear()
+                .domain([d3.min(data, d => d.population), d3.max(data, d => d.population)])
+                .range([5, 15]);
+            
+            const color = d3.scaleOrdinal()
+                .domain(data.map(d => d.cluster))
+                .range(["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f", "#bf5b17"]);
+            
+            // Add X axis
+            svg.append("g")
+                .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(5))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", height - margin.top)
+                .text("Development Index (0-100)")
+                .style("fill", textColor)
+                .style("font-size", "12px");
+            
+            // Add Y axis
+            svg.append("g")
+                .call(d3.axisLeft(y).ticks(5))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -margin.left + 15)
+                .attr("x", -(height - margin.top - margin.bottom) / 2)
+                .text("COVID-19 Vaccination Rate (%)")
+                .style("fill", textColor)
+                .style("font-size", "12px");
+            
+            // Add a trend line
+            const lineData = data.sort((a, b) => a.di - b.di);
+            
+            const line = d3.line()
+                .x(d => x(d.di))
+                .y(d => y(d.vax));
+            
+            svg.append("path")
+                .datum(lineData)
+                .attr("fill", "none")
+                .attr("stroke", "#999")
+                .attr("stroke-width", 1.5)
+                .attr("stroke-dasharray", "4,4")
+                .attr("d", line);
+            
+            // Add dots
+            svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", d => x(d.di))
+                .attr("cy", d => y(d.vax))
+                .attr("r", d => size(d.population))
+                .style("fill", d => color(d.cluster))
+                .style("opacity", 0.7)
+                .style("stroke", "white")
+                .style("stroke-width", 1.5);
+            
+            // Add labels
+            svg.selectAll(".label")
+                .data(data)
+                .enter()
+                .append("text")
+                .attr("class", "label")
+                .attr("x", d => x(d.di) + size(d.population) + 5)
+                .attr("y", d => y(d.vax))
+                .attr("dy", ".35em")
+                .text(d => d.cluster)
+                .style("fill", textColor)
+                .style("font-size", "9px");
+            
+            // Add title
+            svg.append("text")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", -20)
+                .attr("text-anchor", "middle")
+                .style("font-size", "14px")
+                .style("font-weight", "bold")
+                .style("fill", textColor)
+                .text("Development Index vs. Vaccination Rate");
+        }
+        
+        function createDIComponents() {
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#f0f0f0' : '#333333';
+            const bgColor = isDarkMode ? '#222' : '#fff';
+            
+            // Sample data
+            const data = [
+                {cluster: "Urban High-Dev", bank: 72, immunization: 91, housing: 83},
+                {cluster: "Urban Mixed", bank: 84, immunization: 93, housing: 89},
+                {cluster: "Peri-urban", bank: 51, immunization: 87, housing: 63},
+                {cluster: "Semi-urban", bank: 47, immunization: 86, housing: 60},
+                {cluster: "Rural Dev", bank: 41, immunization: 82, housing: 55},
+                {cluster: "Rural Trans", bank: 27, immunization: 72, housing: 38},
+                {cluster: "Rural Remote", bank: 13, immunization: 57, housing: 24}
+            ];
+            
+            // Clear previous chart
+            d3.select("#di-components").html("");
+            
+            const width = document.getElementById('di-components').clientWidth || 400;
+            const height = document.getElementById('di-components').clientHeight || 300;
+            const margin = {top: 40, right: 80, bottom: 60, left: 60};
+            
+            const svg = d3.select("#di-components")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            
+            // Add background
+            svg.append("rect")
+                .attr("width", width - margin.left - margin.right)
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("fill", bgColor);
+            
+            // Set up scales
+            const x = d3.scaleBand()
+                .domain(data.map(d => d.cluster))
+                .range([0, width - margin.left - margin.right])
+                .padding(0.2);
+            
+            const y = d3.scaleLinear()
+                .domain([0, 100])
+                .range([height - margin.top - margin.bottom, 0]);
+            
+            const color = d3.scaleOrdinal()
+                .domain(["bank", "immunization", "housing"])
+                .range(["#1f78b4", "#33a02c", "#e31a1c"]);
+            
+            // Reshape data for grouped bars
+            const keys = ["bank", "immunization", "housing"];
+            
+            // Add X axis
+            svg.append("g")
+                .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
+                .call(d3.axisBottom(x))
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-35)")
+                .style("fill", textColor)
+                .style("font-size", "10px");
+            
+            // Add Y axis
+            svg.append("g")
+                .call(d3.axisLeft(y).ticks(5))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -margin.left + 15)
+                .attr("x", -(height - margin.top - margin.bottom) / 2)
+                .text("Score (0-100)")
+                .style("fill", textColor)
+                .style("font-size", "12px");
+            
+            // Add grouped bars
+            const xSubgroup = d3.scaleBand()
+                .domain(keys)
+                .range([0, x.bandwidth()])
+                .padding(0.1);
+            
+            svg.append("g")
+                .selectAll("g")
+                .data(data)
+                .join("g")
+                .attr("transform", d => `translate(${x(d.cluster)},0)`)
+                .selectAll("rect")
+                .data(d => keys.map(key => ({key, value: d[key]})))
+                .join("rect")
+                .attr("x", d => xSubgroup(d.key))
+                .attr("y", d => y(d.value))
+                .attr("width", xSubgroup.bandwidth())
+                .attr("height", d => height - margin.top - margin.bottom - y(d.value))
+                .attr("fill", d => color(d.key));
+            
+            // Add legend
+            const legend = svg.append("g")
+                .attr("transform", `translate(${width - margin.left - margin.right + 10}, 0)`);
+            
+            const legendItems = [
+                {key: "bank", label: "Bank Access"},
+                {key: "immunization", label: "Immunization Coverage"},
+                {key: "housing", label: "Living Conditions"}
+            ];
+            
+            legend.selectAll("rect")
+                .data(legendItems)
+                .enter()
+                .append("rect")
+                .attr("x", 0)
+                .attr("y", (d, i) => i * 20)
+                .attr("width", 12)
+                .attr("height", 12)
+                .attr("fill", d => color(d.key));
+            
+            legend.selectAll("text")
+                .data(legendItems)
+                .enter()
+                .append("text")
+                .attr("x", 20)
+                .attr("y", (d, i) => i * 20 + 9)
+                .text(d => d.label)
+                .style("font-size", "10px")
+                .style("fill", textColor);
+            
+            // Add title
+            svg.append("text")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", -20)
+                .attr("text-anchor", "middle")
+                .style("font-size", "14px")
+                .style("font-weight", "bold")
+                .style("fill", textColor)
+                .text("Development Index Components by Cluster");
+        }
+        
+        function createVaxImmunizationScatter() {
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#f0f0f0' : '#333333';
+            const bgColor = isDarkMode ? '#222' : '#fff';
+            
+            // Sample data
+            const data = [
+                {cluster: "Urban High-Dev", immunization: 91.4, vax: 33.21},
+                {cluster: "Urban Mixed", immunization: 93.1, vax: 31.51},
+                {cluster: "Peri-urban", immunization: 86.8, vax: 28.33},
+                {cluster: "Semi-urban", immunization: 87.5, vax: 26.92},
+                {cluster: "Rural Dev", immunization: 82.6, vax: 19.44},
+                {cluster: "Rural Trans", immunization: 74.8, vax: 6.56},
+                {cluster: "Rural Remote", immunization: 56.2, vax: 7.84}
+            ];
+            
+            // Clear previous chart
+            d3.select("#vax-immunization-scatter").html("");
+            
+            const width = document.getElementById('vax-immunization-scatter').clientWidth || 400;
+            const height = document.getElementById('vax-immunization-scatter').clientHeight || 300;
+            const margin = {top: 40, right: 30, bottom: 60, left: 60};
+            
+            const svg = d3.select("#vax-immunization-scatter")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            
+            // Add background
+            svg.append("rect")
+                .attr("width", width - margin.left - margin.right)
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("fill", bgColor);
+            
+            // Set up scales
+            const x = d3.scaleLinear()
+                .domain([50, 100])
+                .range([0, width - margin.left - margin.right]);
+            
+            const y = d3.scaleLinear()
+                .domain([0, 40])
+                .range([height - margin.top - margin.bottom, 0]);
+            
+            const color = d3.scaleOrdinal()
+                .domain(data.map(d => d.cluster))
+                .range(["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f", "#bf5b17"]);
+            
+            // Add X axis
+            svg.append("g")
+                .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(5))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", height - margin.top)
+                .text("Child Immunization Coverage (%)")
+                .style("fill", textColor)
+                .style("font-size", "12px");
+            
+            // Add Y axis
+            svg.append("g")
+                .call(d3.axisLeft(y).ticks(5))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -margin.left + 15)
+                .attr("x", -(height - margin.top - margin.bottom) / 2)
+                .text("COVID-19 Vaccination Rate (%)")
+                .style("fill", textColor)
+                .style("font-size", "12px");
+            
+            // Add a trend line
+            const lineGenerator = d3.line()
+                .x(d => x(d[0]))
+                .y(d => y(d[1]));
+            
+            // Simple linear regression for trend line
+            const xValues = data.map(d => d.immunization);
+            const yValues = data.map(d => d.vax);
+            
+            const meanX = d3.mean(xValues);
+            const meanY = d3.mean(yValues);
+            const ssXY = d3.sum(data.map((d, i) => (d.immunization - meanX) * (d.vax - meanY)));
+            const ssXX = d3.sum(data.map(d => Math.pow(d.immunization - meanX, 2)));
+            const slope = ssXY / ssXX;
+            const intercept = meanY - slope * meanX;
+            
+            const minX = d3.min(xValues);
+            const maxX = d3.max(xValues);
+            const lineData = [
+                [minX, minX * slope + intercept],
+                [maxX, maxX * slope + intercept]
+            ];
+            
+            svg.append("path")
+                .datum(lineData)
+                .attr("fill", "none")
+                .attr("stroke", "#999")
+                .attr("stroke-width", 1.5)
+                .attr("stroke-dasharray", "4,4")
+                .attr("d", lineGenerator);
+            
+            // Add dots
+            svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", d => x(d.immunization))
+                .attr("cy", d => y(d.vax))
+                .attr("r", 8)
+                .style("fill", d => color(d.cluster))
+                .style("opacity", 0.7)
+                .style("stroke", "white")
+                .style("stroke-width", 1.5);
+            
+            // Add labels
+            svg.selectAll(".label")
+                .data(data)
+                .enter()
+                .append("text")
+                .attr("class", "label")
+                .attr("x", d => x(d.immunization) + 10)
+                .attr("y", d => y(d.vax))
+                .attr("dy", ".35em")
+                .text(d => d.cluster.split(' ')[0])
+                .style("fill", textColor)
+                .style("font-size", "9px");
+            
+            // Add title
+            svg.append("text")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", -20)
+                .attr("text-anchor", "middle")
+                .style("font-size", "14px")
+                .style("font-weight", "bold")
+                .style("fill", textColor)
+                .text("COVID-19 Vaccination vs. Child Immunization");
+        }
+        
+        function createVaxWealthScatter() {
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#f0f0f0' : '#333333';
+            const bgColor = isDarkMode ? '#222' : '#fff';
+            
+            // Sample data
+            const data = [
+                {cluster: "Urban High-Dev", wealth: 4.7, vax: 33.21},
+                {cluster: "Urban Mixed", wealth: 4.9, vax: 31.51},
+                {cluster: "Peri-urban", wealth: 3.8, vax: 28.33},
+                {cluster: "Semi-urban", wealth: 3.5, vax: 26.92},
+                {cluster: "Rural Dev", wealth: 2.9, vax: 19.44},
+                {cluster: "Rural Trans", wealth: 1.8, vax: 6.56},
+                {cluster: "Rural Remote", wealth: 1.3, vax: 7.84}
+            ];
+            
+            // Clear previous chart
+            d3.select("#vax-wealth-scatter").html("");
+            
+            const width = document.getElementById('vax-wealth-scatter').clientWidth || 400;
+            const height = document.getElementById('vax-wealth-scatter').clientHeight || 300;
+            const margin = {top: 40, right: 30, bottom: 60, left: 60};
+            
+            const svg = d3.select("#vax-wealth-scatter")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            
+            // Add background
+            svg.append("rect")
+                .attr("width", width - margin.left - margin.right)
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("fill", bgColor);
+            
+            // Set up scales
+            const x = d3.scaleLinear()
+                .domain([1, 5])
+                .range([0, width - margin.left - margin.right]);
+            
+            const y = d3.scaleLinear()
+                .domain([0, 40])
+                .range([height - margin.top - margin.bottom, 0]);
+            
+            const color = d3.scaleOrdinal()
+                .domain(data.map(d => d.cluster))
+                .range(["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f", "#bf5b17"]);
+            
+            // Add X axis
+            svg.append("g")
+                .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(5))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", height - margin.top)
+                .text("Wealth Index (1-5)")
+                .style("fill", textColor)
+                .style("font-size", "12px");
+            
+            // Add Y axis
+            svg.append("g")
+                .call(d3.axisLeft(y).ticks(5))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -margin.left + 15)
+                .attr("x", -(height - margin.top - margin.bottom) / 2)
+                .text("COVID-19 Vaccination Rate (%)")
+                .style("fill", textColor)
+                .style("font-size", "12px");
+            
+            // Add a trend line
+            const lineGenerator = d3.line()
+                .x(d => x(d[0]))
+                .y(d => y(d[1]));
+            
+            // Simple linear regression for trend line
+            const xValues = data.map(d => d.wealth);
+            const yValues = data.map(d => d.vax);
+            
+            const meanX = d3.mean(xValues);
+            const meanY = d3.mean(yValues);
+            const ssXY = d3.sum(data.map((d, i) => (d.wealth - meanX) * (d.vax - meanY)));
+            const ssXX = d3.sum(data.map(d => Math.pow(d.wealth - meanX, 2)));
+            const slope = ssXY / ssXX;
+            const intercept = meanY - slope * meanX;
+            
+            const minX = d3.min(xValues);
+            const maxX = d3.max(xValues);
+            const lineData = [
+                [minX, minX * slope + intercept],
+                [maxX, maxX * slope + intercept]
+            ];
+            
+            svg.append("path")
+                .datum(lineData)
+                .attr("fill", "none")
+                .attr("stroke", "#999")
+                .attr("stroke-width", 1.5)
+                .attr("stroke-dasharray", "4,4")
+                .attr("d", lineGenerator);
+            
+            // Add dots
+            svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", d => x(d.wealth))
+                .attr("cy", d => y(d.vax))
+                .attr("r", 8)
+                .style("fill", d => color(d.cluster))
+                .style("opacity", 0.7)
+                .style("stroke", "white")
+                .style("stroke-width", 1.5);
+            
+            // Add labels
+            svg.selectAll(".label")
+                .data(data)
+                .enter()
+                .append("text")
+                .attr("class", "label")
+                .attr("x", d => x(d.wealth) + 10)
+                .attr("y", d => y(d.vax))
+                .attr("dy", ".35em")
+                .text(d => d.cluster.split(' ')[0])
+                .style("fill", textColor)
+                .style("font-size", "9px");
+            
+            // Add title
+            svg.append("text")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", -20)
+                .attr("text-anchor", "middle")
+                .style("font-size", "14px")
+                .style("font-weight", "bold")
+                .style("fill", textColor)
+                .text("COVID-19 Vaccination vs. Wealth Index");
+        }
+        
+        function createECIImmunization() {
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#f0f0f0' : '#333333';
+            const bgColor = isDarkMode ? '#222' : '#fff';
+            
+            // Sample data for concentration curve
+            const numPoints = 20;
+            const points = Array.from({length: numPoints + 1}, (_, i) => {
+                const x = i / numPoints;
+                // Slight curve below diagonal (ECI = 0.025)
+                const y = Math.pow(x, 1.15);
+                return {x, y};
+            });
+            
+            // Clear previous chart
+            d3.select("#eci-immunization").html("");
+            
+            const width = document.getElementById('eci-immunization').clientWidth || 400;
+            const height = document.getElementById('eci-immunization').clientHeight || 300;
+            const margin = {top: 40, right: 30, bottom: 60, left: 60};
+            
+            const svg = d3.select("#eci-immunization")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            
+            // Add background
+            svg.append("rect")
+                .attr("width", width - margin.left - margin.right)
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("fill", bgColor);
+            
+            // Set up scales
+            const x = d3.scaleLinear()
+                .domain([0, 1])
+                .range([0, width - margin.left - margin.right]);
+            
+            const y = d3.scaleLinear()
+                .domain([0, 1])
+                .range([height - margin.top - margin.bottom, 0]);
+            
+            // Add diagonal line (equality)
+            svg.append("line")
+                .attr("x1", x(0))
+                .attr("y1", y(0))
+                .attr("x2", x(1))
+                .attr("y2", y(1))
+                .style("stroke", "#999")
+                .style("stroke-dasharray", "5,5")
+                .style("stroke-width", 1.5);
+            
+            // Add concentration curve
+            const line = d3.line()
+                .x(d => x(d.x))
+                .y(d => y(d.y))
+                .curve(d3.curveBasis);
+            
+            svg.append("path")
+                .datum(points)
+                .attr("fill", "none")
+                .attr("stroke", "#4393c3")
+                .attr("stroke-width", 2.5)
+                .attr("d", line);
+            
+            // Add area between curves to visualize inequality
+            const area = d3.area()
+                .x(d => x(d.x))
+                .y0(d => y(d.x)) // Diagonal line
+                .y1(d => y(d.y)) // Concentration curve
+                .curve(d3.curveBasis);
+            
+            svg.append("path")
+                .datum(points)
+                .attr("fill", "#4393c3")
+                .attr("fill-opacity", 0.2)
+                .attr("d", area);
+            
+            // Add X axis
+            svg.append("g")
+                .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(5).tickFormat(d3.format(".0%")))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", height - margin.top)
+                .text("Cumulative % of Population (Ranked by Immunization)")
+                .style("fill", textColor)
+                .style("font-size", "11px");
+            
+            // Add Y axis
+            svg.append("g")
+                .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(".0%")))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -margin.left + 15)
+                .attr("x", -(height - margin.top - margin.bottom) / 2)
+                .text("Cumulative % of COVID-19 Vaccination")
+                .style("fill", textColor)
+                .style("font-size", "11px");
+            
+            // Add ECI value
+            svg.append("text")
+                .attr("x", x(0.7))
+                .attr("y", y(0.3))
+                .text("ECI = 0.025")
+                .style("font-size", "14px")
+                .style("font-weight", "bold")
+                .style("fill", "#4393c3");
+            
+            // Add title
+            svg.append("text")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", -20)
+                .attr("text-anchor", "middle")
+                .style("font-size", "14px")
+                .style("font-weight", "bold")
+                .style("fill", textColor)
+                .text("Immunization-based Concentration Curve");
+        }
+        
+        function createECIWealth() {
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#f0f0f0' : '#333333';
+            const bgColor = isDarkMode ? '#222' : '#fff';
+            
+            // Sample data for concentration curve
+            const numPoints = 20;
+            const points = Array.from({length: numPoints + 1}, (_, i) => {
+                const x = i / numPoints;
+                // More pronounced curve below diagonal (ECI = 0.044)
+                const y = Math.pow(x, 1.27);
+                return {x, y};
+            });
+            
+            // Clear previous chart
+            d3.select("#eci-wealth").html("");
+            
+            const width = document.getElementById('eci-wealth').clientWidth || 400;
+            const height = document.getElementById('eci-wealth').clientHeight || 300;
+            const margin = {top: 40, right: 30, bottom: 60, left: 60};
+            
+            const svg = d3.select("#eci-wealth")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            
+            // Add background
+            svg.append("rect")
+                .attr("width", width - margin.left - margin.right)
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("fill", bgColor);
+            
+            // Set up scales
+            const x = d3.scaleLinear()
+                .domain([0, 1])
+                .range([0, width - margin.left - margin.right]);
+            
+            const y = d3.scaleLinear()
+                .domain([0, 1])
+                .range([height - margin.top - margin.bottom, 0]);
+            
+            // Add diagonal line (equality)
+            svg.append("line")
+                .attr("x1", x(0))
+                .attr("y1", y(0))
+                .attr("x2", x(1))
+                .attr("y2", y(1))
+                .style("stroke", "#999")
+                .style("stroke-dasharray", "5,5")
+                .style("stroke-width", 1.5);
+            
+            // Add concentration curve
+            const line = d3.line()
+                .x(d => x(d.x))
+                .y(d => y(d.y))
+                .curve(d3.curveBasis);
+            
+            svg.append("path")
+                .datum(points)
+                .attr("fill", "none")
+                .attr("stroke", "#d6604d")
+                .attr("stroke-width", 2.5)
+                .attr("d", line);
+            
+            // Add area between curves to visualize inequality
+            const area = d3.area()
+                .x(d => x(d.x))
+                .y0(d => y(d.x)) // Diagonal line
+                .y1(d => y(d.y)) // Concentration curve
+                .curve(d3.curveBasis);
+            
+            svg.append("path")
+                .datum(points)
+                .attr("fill", "#d6604d")
+                .attr("fill-opacity", 0.2)
+                .attr("d", area);
+            
+            // Add X axis
+            svg.append("g")
+                .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(5).tickFormat(d3.format(".0%")))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", height - margin.top)
+                .text("Cumulative % of Population (Ranked by Wealth)")
+                .style("fill", textColor)
+                .style("font-size", "11px");
+            
+            // Add Y axis
+            svg.append("g")
+                .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(".0%")))
+                .selectAll("text")
+                .style("fill", textColor);
+            
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -margin.left + 15)
+                .attr("x", -(height - margin.top - margin.bottom) / 2)
+                .text("Cumulative % of COVID-19 Vaccination")
+                .style("fill", textColor)
+                .style("font-size", "11px");
+            
+            // Add ECI value
+            svg.append("text")
+                .attr("x", x(0.7))
+                .attr("y", y(0.3))
+                .text("ECI = 0.044")
+                .style("font-size", "14px")
+                .style("font-weight", "bold")
+                .style("fill", "#d6604d");
+            
+            // Add title
+            svg.append("text")
+                .attr("x", (width - margin.left - margin.right) / 2)
+                .attr("y", -20)
+                .attr("text-anchor", "middle")
+                .style("font-size", "14px")
+                .style("font-weight", "bold")
+                .style("fill", textColor)
+                .text("Wealth-based Concentration Curve");
+        }
+    </script>
+</body>
+</html>

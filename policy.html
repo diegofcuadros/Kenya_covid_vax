@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Recommendations - COVID-19 Vaccination in Kenya</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Mapbox GL JS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <style>
+        .policy-container {
+            max-width: 1200px;
+            margin: 80px auto 40px;
+            padding: 0 20px;
+        }
+        
+        .policy-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .policy-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+        
+        .dark-theme .policy-header h1 {
+            color: var(--primary-light);
+        }
+        
+        .policy-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .policy-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .policy-item {
+            background-color: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .dark-theme .policy-item {
+            background-color: #222;
+        }
+        
+        .policy-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .policy-image {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .policy-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-normal);
+        }
+        
+        .policy-item:hover .policy-image img {
+            transform: scale(1.05);
+        }
+        
+        .policy-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .policy-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .policy-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .policy-impact {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-medium);
+        }
+        
+        .dark-theme .policy-impact {
+            border-top-color: #444;
+        }
+        
+        .impact-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        
+        .impact-stats {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .impact-stat {
+            flex: 1;
+            background-color: rgba(33, 102, 172, 0.1);
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+        }
+        
+        .dark-theme .impact-stat {
+            background-color: rgba(67, 147, 195, 0.2);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .policy-cta {
+            margin-top: 20px;
+            text-align: right;
+        }
+        
+        .policy-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+            text-decoration: none;
+        }
+        
+        .policy-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .implementation-section {
+            margin-top: 50px;
+            padding: 30px;
+            background-color: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .dark-theme .implementation-section {
+            background-color: #222;
+        }
+        
+        .implementation-header {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+        
+        .dark-theme .implementation-header {
+            color: var(--primary-light);
+        }
+        
+        .implementation-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .implementation-step {
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            background-color: var(--gray-light);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .dark-theme .implementation-step {
+            background-color: #333;
+        }
+        
+        .step-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        
+        .step-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .policy-map {
+            margin-top: 50px;
+            height: 500px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        
+        @media (max-width: 768px) {
+            .policy-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .implementation-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .policy-header h1 {
+                font-size: 2rem;
+            }
+            
+            .policy-image {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main header with navigation -->
+    <header class="main-header">
+        <div class="logo">
+            <h1>COVID-19 Vaccination in Kenya</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="story.html">Story Map</a></li>
+                <li><a href="explorer.html">Map Explorer</a></li>
+                <li><a href="results.html">Results</a></li>
+                <li><a href="policy.html" class="active" aria-current="page">Policy</a></li>
+                <li><a href="team.html">Team</a></li>
+            </ul>
+        </nav>
+        <button class="toggle-theme">
+            <span class="light-icon">☀️</span>
+            <span class="dark-icon">🌙</span>
+        </button>
+    </header>
+
+    <!-- Main policy container -->
+    <div class="policy-container">
+        <div class="policy-header">
+            <h1>Policy Recommendations</h1>
+            <p>Evidence-based interventions to address spatial inequities in COVID-19 vaccination coverage across Kenya, based on our geospatial analysis of structural determinants.</p>
+        </div>
+        
+        <!-- Policy grid -->
+        <div class="policy-grid">
+            <!-- Mobile Vaccination Units -->
+            <div class="policy-item">
+                <div class="policy-image">
+                    <img src="img/policy/mobile-units.jpg" alt="Mobile Vaccination Units">
+                </div>
+                <div class="policy-content">
+                    <h3 class="policy-title">Mobile Vaccination Units</h3>
+                    <p class="policy-description">Deploy targeted mobile vaccination units to Rural Remote and Rural Trans clusters, particularly in northern counties where facility-based approaches have proven inadequate. Coordinate with post-flood recovery efforts to reduce travel time and costs.</p>
+                    <div class="policy-impact">
+                        <h4 class="impact-title">Projected Impact</h4>
+                        <div class="impact-stats">
+                            <div class="impact-stat">
+                                <div class="stat-value">+14%</div>
+                                <div class="stat-label">Coverage in Remote Areas</div>
+                            </div>
+                            <div class="impact-stat">
+                                <div class="stat-value">-65%</div>
+                                <div class="stat-label">Travel Time</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="policy-cta">
+                        <a href="#implementation-map" class="policy-button">View Implementation Map</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Financial Inclusion -->
+            <div class="policy-item">
+                <div class="policy-image">
+                    <img src="img/policy/fintech.jpg" alt="Financial Technology Integration">
+                </div>
+                <div class="policy-content">
+                    <h3 class="policy-title">M-Pesa Integration & Subsidies</h3>
+                    <p class="policy-description">Partner with M-Pesa and other fintech platforms to offer transport stipends and partial wage compensation to low-income individuals facing opportunity costs related to vaccination. Address financial barriers that showed the highest Erreygers Concentration Index (ECI = 0.044).</p>
+                    <div class="policy-impact">
+                        <h4 class="impact-title">Projected Impact</h4>
+                        <div class="impact-stats">
+                            <div class="impact-stat">
+                                <div class="stat-value">-42%</div>
+                                <div class="stat-label">Financial Barriers</div>
+                            </div>
+                            <div class="impact-stat">
+                                <div class="stat-value">+8.5M</div>
+                                <div class="stat-label">People Reached</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="policy-cta">
+                        <a href="#implementation-plan" class="policy-button">View Implementation Plan</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Immunization Integration -->
+            <div class="policy-item">
+                <div class="policy-image">
+                    <img src="img/policy/immunization.jpg" alt="Immunization Program Integration">
+                </div>
+                <div class="policy-content">
+                    <h3 class="policy-title">Routine Immunization Integration</h3>
+                    <p class="policy-description">Integrate COVID-19 vaccination with Kenya's well-established childhood immunization programs, which reach 85% of the population. Leverage existing cold-chain logistics, community health workers, and established trust to expedite vaccine delivery in underserved areas.</p>
+                    <div class="policy-impact">
+                        <h4 class="impact-title">Projected Impact</h4>
+                        <div class="impact-stats">
+                            <div class="impact-stat">
+                                <div class="stat-value">+25%</div>
+                                <div class="stat-label">Coverage</div>
+                            </div>
+                            <div class="impact-stat">
+                                <div class="stat-value">-35%</div>
+                                <div class="stat-label">Implementation Cost</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="policy-cta">
+                        <a href="#facilities-map" class="policy-button">View Facilities Map</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Climate Resilience -->
+            <div class="policy-item">
+                <div class="policy-image">
+                    <img src="img/policy/climate.jpg" alt="Climate-Resilient Infrastructure">
+                </div>
+                <div class="policy-content">
+                    <h3 class="policy-title">Climate-Resilient Health Infrastructure</h3>
+                    <p class="policy-description">Invest in all-weather roads, drone-based deliveries, and decentralized cold storage in regions frequently affected by climate disruptions. Enhance both emergency response capabilities and routine service delivery in historically neglected regions.</p>
+                    <div class="policy-impact">
+                        <h4 class="impact-title">Projected Impact</h4>
+                        <div class="impact-stats">
+                            <div class="impact-stat">
+                                <div class="stat-value">-78%</div>
+                                <div class="stat-label">Weather Disruptions</div>
+                            </div>
+                            <div class="impact-stat">
+                                <div class="stat-value">+32%</div>
+                                <div class="stat-label">Year-Round Access</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="policy-cta">
+                        <a href="#climate-map" class="policy-button">View Vulnerability Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Implementation Plan Section -->
+        <div class="implementation-section" id="implementation-plan">
+            <h2 class="implementation-header">Implementation Roadmap</h2>
+            <div class="implementation-grid">
+                <!-- Step 1 -->
+                <div class="implementation-step">
+                    <div class="step-number">01</div>
+                    <h3 class="step-title">Priority Area Identification</h3>
+                    <p class="step-description">Use spatial analysis to identify the 15 counties with lowest vaccination rates and Development Index scores, focusing particularly on Rural Remote clusters in northern and northeastern regions.</p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="implementation-step">
+                    <div class="step-number">02</div>
+                    <h3 class="step-title">Multi-Stakeholder Partnerships</h3>
+                    <p class="step-description">Establish coordination platform between Ministry of Health, county governments, mobile network operators, fintech companies, and international partners like GAVI and WHO.</p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="implementation-step">
+                    <div class="step-number">03</div>
+                    <h3 class="step-title">Financial Mechanism Setup</h3>
+                    <p class="step-description">Develop mobile money transfer protocols for vaccination travel subsidies, with automatic verification upon vaccine administration at designated sites.</p>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="implementation-step">
+                    <div class="step-number">04</div>
+                    <h3 class="step-title">Mobile Unit Deployment</h3>
+                    <p class="step-description">Retrofit specialized vehicles with cold storage, deploy to identified priority areas on an optimized route, coordinating with local leaders and county health officials.</p>
+                </div>
+                
+                <!-- Step 5 -->
+                <div class="implementation-step">
+                    <div class="step-number">05</div>
+                    <h3 class="step-title">Immunization Integration</h3>
+                    <p class="step-description">Modify existing childhood immunization protocols to include COVID-19 vaccine administration for eligible adult family members, with training for community health workers.</p>
+                </div>
+                
+                <!-- Step 6 -->
+                <div class="implementation-step">
+                    <div class="step-number">06</div>
+                    <h3 class="step-title">Climate Resilience Investment</h3>
+                    <p class="step-description">Initiate infrastructure upgrades in highest-vulnerability areas, starting with decentralized cold storage facilities and drone delivery systems for vaccine distribution.</p>
+                </div>
+                
+                <!-- Step 7 -->
+                <div class="implementation-step">
+                    <div class="step-number">07</div>
+                    <h3 class="step-title">Spatial Monitoring System</h3>
+                    <p class="step-description">Implement real-time data dashboards tracking vaccination rates, financial disbursements, and climate disruptions, with automated alerts for potential coverage gaps.</p>
+                </div>
+                
+                <!-- Step 8 -->
+                <div class="implementation-step">
+                    <div class="step-number">08</div>
+                    <h3 class="step-title">Targeted Communications</h3>
+                    <p class="step-description">Deploy cluster-specific messaging through appropriate channels (radio for remote areas, SMS for more connected regions) with information on mobile unit schedules and subsidy eligibility.</p>
+                </div>
+                
+                <!-- Step 9 -->
+                <div class="implementation-step">
+                    <div class="step-number">09</div>
+                    <h3 class="step-title">Iterative Evaluation</h3>
+                    <p class="step-description">Conduct quarterly geospatial analyses to identify persistent gaps and emerging patterns, with rapid policy adjustments based on spatial equity metrics.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Implementation Map Section -->
+        <div class="policy-map" id="implementation-map">
+            <!-- Mapbox map will be rendered here -->
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize implementation map
+            mapboxgl.accessToken = 'pk.eyJ1IjoieW91cmFjY291bnQiLCJhIjoiY2xhbXBsZXRva2VuaXNub3R2YWxpZCJ9.replacewiththistokenfrommapbox';
+            
+            const map = new mapboxgl.Map({
+                container: 'implementation-map',
+                style: 'mapbox://styles/mapbox/light-v11',
+                center: [37.8, 0.5], // Center on Kenya
+                zoom: 5.5,
+                minZoom: 5,
+                maxZoom: 12,
+                maxBounds: [
+                    [32.5, -5], // Southwest coordinates
+                    [42.5, 5.5]  // Northeast coordinates
+                ]
+            });
+            
+            // Add zoom and rotation controls
+            map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+            
+            // Check if dark mode is enabled and apply the appropriate map style
+            if (document.body.classList.contains('dark-theme')) {
+                map.setStyle('mapbox://styles/mapbox/dark-v11');
+            }
+            
+            // Map load event
+            map.on('load', function() {
+                // Add source for Kenya counties
+                map.addSource('kenya-counties', {
+                    type: 'geojson',
+                    data: 'data/kenya-counties.geojson'
+                });
+                
+                // Add vaccination rate layer
+                map.addLayer({
+                    id: 'vaccination-layer',
+                    type: 'fill',
+                    source: 'kenya-counties',
+                    layout: {},
+                    paint: {
+                        'fill-color': [
+                            'match',
+                            ['get', 'vaccination_rate_category'],
+                            '0-5', '#67001f',
+                            '5-10', '#b2182b',
+                            '10-15', '#d6604d',
+                            '15-20', '#f4a582',
+                            '20-25', '#fddbc7',
+                            '25-30', '#f7f7f7',
+                            '30-35', '#d1e5f0',
+                            '35-40', '#92c5de',
+                            '40-45', '#4393c3',
+                            '45-50', '#2166ac',
+                            '50+', '#053061',
+                            '#ccc' // default color
+                        ],
+                        'fill-opacity': 0.7
+                    }
+                });
+                
+                // Add county outline layer
+                map.addLayer({
+                    id: 'county-outline',
+                    type: 'line',
+                    source: 'kenya-counties',
+                    layout: {},
+                    paint: {
+                        'line-color': 'rgba(255, 255, 255, 0.5)',
+                        'line-width': 0.5
+                    }
+                });
+                
+                // Add markers for mobile vaccination units
+                const mobileUnits = [
+                    { name: "Garissa", coordinates: [39.6401, 0.4536], priority: "High" },
+                    { name: "Wajir", coordinates: [40.0573, 1.7471], priority: "High" },
+                    { name: "Mandera", coordinates: [40.1008, 3.9366], priority: "High" },
+                    { name: "Marsabit", coordinates: [37.9909, 2.3354], priority: "High" },
+                    { name: "Turkana", coordinates: [35.5988, 3.1157], priority: "High" },
+                    { name: "Samburu", coordinates: [36.7820, 1.0929], priority: "Medium" },
+                    { name: "Tana River", coordinates: [39.1009, -1.4873], priority: "Medium" },
+                    { name: "West Pokot", coordinates: [35.1188, 1.7587], priority: "Medium" }
+                ];
+                
+                // Add custom markers for mobile units
+                mobileUnits.forEach(unit => {
+                    // Create a DOM element for the marker
+                    const el = document.createElement('div');
+                    el.className = 'marker';
+                    el.style.backgroundImage = 'url(img/icons/mobile-unit.png)';
+                    el.style.width = '32px';
+                    el.style.height = '32px';
+                    el.style.backgroundSize = '100%';
+                    
+                    // Add marker to map
+                    new mapboxgl.Marker(el)
+                        .setLngLat(unit.coordinates)
+                        .setPopup(new mapboxgl.Popup({ offset: 25 })
+                            .setHTML(`<h3>${unit.name} County</h3><p>Priority: ${unit.priority}</p><p>Mobile vaccination unit deployment</p>`))
+                        .addTo(map);
+                });
+                
+                // Add legend
+                const legend = document.createElement('div');
+                legend.className = 'map-legend';
+                legend.style.position = 'absolute';
+                legend.style.bottom = '20px';
+                legend.style.right = '20px';
+                legend.style.padding = '10px';
+                legend.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+                legend.style.borderRadius = '4px';
+                legend.style.zIndex = '1';
+                legend.innerHTML = `
+                    <h4 style="margin-top: 0; margin-bottom: 10px; font-size: 12px;">Vaccination Coverage & Interventions</h4>
+                    <div style="display: flex; margin-bottom: 5px; align-items: center;">
+                        <img src="img/icons/mobile-unit.png" style="width: 20px; height: 20px; margin-right: 5px;">
+                        <span style="font-size: 12px;">Mobile Vaccination Unit</span>
+                    </div>
+                    <div style="height: 10px; margin-top: 10px; margin-bottom: 5px; display: flex;">
+                        <div style="flex: 1; background-color: #67001f;"></div>
+                        <div style="flex: 1; background-color: #b2182b;"></div>
+                        <div style="flex: 1; background-color: #d6604d;"></div>
+                        <div style="flex: 1; background-color: #f4a582;"></div>
+                        <div style="flex: 1; background-color: #fddbc7;"></div>
+                        <div style="flex: 1; background-color: #f7f7f7;"></div>
+                        <div style="flex: 1; background-color: #d1e5f0;"></div>
+                        <div style="flex: 1; background-color: #92c5de;"></div>
+                        <div style="flex: 1; background-color: #4393c3;"></div>
+                        <div style="flex: 1; background-color: #2166ac;"></div>
+                        <div style="flex: 1; background-color: #053061;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 10px;">
+                        <span>5%</span>
+                        <span>25%</span>
+                        <span>50%</span>
+                    </div>
+                `;
+                document.getElementById('implementation-map').appendChild(legend);
+            });
+            
+            // Toggle theme
+            const themeToggle = document.querySelector('.toggle-theme');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('dark-theme');
+                    
+                    // Update map style based on theme
+                    if (document.body.classList.contains('dark-theme')) {
+                        map.setStyle('mapbox://styles/mapbox/dark-v11');
+                    } else {
+                        map.setStyle('mapbox://styles/mapbox/light-v11');
+                    }
+                    
+                    // Re-add layers after style change
+                    map.once('style.load', () => {
+                        // Add source for Kenya counties
+                        map.addSource('kenya-counties', {
+                            type: 'geojson',
+                            data: 'data/kenya-counties.geojson'
+                        });
+                        
+                        // Add vaccination rate layer
+                        map.addLayer({
+                            id: 'vaccination-layer',
+                            type: 'fill',
+                            source: 'kenya-counties',
+                            layout: {},
+                            paint: {
+                                'fill-color': [
+                                    'match',
+                                    ['get', 'vaccination_rate_category'],
+                                    '0-5', '#67001f',
+                                    '5-10', '#b2182b',
+                                    '10-15', '#d6604d',
+                                    '15-20', '#f4a582',
+                                    '20-25', '#fddbc7',
+                                    '25-30', '#f7f7f7',
+                                    '30-35', '#d1e5f0',
+                                    '35-40', '#92c5de',
+                                    '40-45', '#4393c3',
+                                    '45-50', '#2166ac',
+                                    '50+', '#053061',
+                                    '#ccc' // default color
+                                ],
+                                'fill-opacity': 0.7
+                            }
+                        });
+                        
+                        // Add county outline layer
+                        map.addLayer({
+                            id: 'county-outline',
+                            type: 'line',
+                            source: 'kenya-counties',
+                            layout: {},
+                            paint: {
+                                'line-color': 'rgba(255, 255, 255, 0.5)',
+                                'line-width': 0.5
+                            }
+                        });
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

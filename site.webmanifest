@@ -1,0 +1,41 @@
+{
+  "name": "Kenya COVID-19 Vaccination Dashboard",
+  "short_name": "Kenya Vax",
+  "description": "Interactive visualization of COVID-19 vaccination coverage across Kenya counties",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f7f7f7",
+  "theme_color": "#2166ac",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/img/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/img/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Story Map",
+      "short_name": "Story",
+      "description": "View the story map narrative",
+      "url": "/story.html"
+    },
+    {
+      "name": "Map Explorer",
+      "short_name": "Explorer",
+      "description": "Explore interactive data maps",
+      "url": "/explorer.html"
+    }
+  ],
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": ["health", "education", "maps", "research"]
+} 

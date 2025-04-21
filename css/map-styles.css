@@ -1,0 +1,360 @@
+/* Map Container */
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Custom Mapbox Controls */
+.mapboxgl-ctrl-group {
+    border-radius: var(--radius-sm) !important;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.dark-theme .mapboxgl-ctrl-group {
+    background-color: #333 !important;
+}
+
+.dark-theme .mapboxgl-ctrl-group button {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+
+.dark-theme .mapboxgl-ctrl-group button span {
+    filter: invert(1);
+}
+
+/* Custom Popup Styles */
+.mapboxgl-popup {
+    max-width: 300px;
+}
+
+.mapboxgl-popup-content {
+    padding: var(--space-md);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    font-family: var(--font-family);
+}
+
+.dark-theme .mapboxgl-popup-content {
+    background-color: #222;
+    color: #f0f0f0;
+}
+
+.popup-header {
+    margin-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--gray-medium);
+    padding-bottom: var(--space-sm);
+}
+
+.popup-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+    color: var(--primary-dark);
+}
+
+.dark-theme .popup-title {
+    color: var(--primary-light);
+}
+
+.popup-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.popup-content {
+    margin-bottom: var(--space-sm);
+}
+
+.popup-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-xs);
+}
+
+.popup-stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.popup-stat-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.popup-footer {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--gray-medium);
+}
+
+/* County Hover Styles */
+.county-hover {
+    fill-opacity: 0.9;
+    stroke: white;
+    stroke-width: 2px;
+    stroke-opacity: 1;
+}
+
+.dark-theme .county-hover {
+    stroke: #000;
+}
+
+/* Map Layer Transitions */
+.mapboxgl-canvas {
+    transition: opacity 0.3s ease;
+}
+
+/* Custom Cluster Styles */
+.cluster-marker {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+}
+
+.cluster-marker:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-md);
+}
+
+/* Custom Point Styles */
+.point-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--primary-light);
+    border: 2px solid white;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+}
+
+.point-marker:hover {
+    transform: scale(1.2);
+    background-color: var(--primary);
+}
+
+.dark-theme .point-marker {
+    border-color: #333;
+}
+
+/* Map Attribution */
+.mapboxgl-ctrl-attrib {
+    font-family: var(--font-family);
+    font-size: 0.75rem;
+}
+
+.dark-theme .mapboxgl-ctrl-attrib {
+    background-color: rgba(18, 18, 18, 0.8) !important;
+}
+
+.dark-theme .mapboxgl-ctrl-attrib a {
+    color: var(--primary-light) !important;
+}
+
+/* County Fill Colors - Vaccination Rate */
+.fill-0-5 {
+    fill: #67001f;
+    background-color: #67001f;
+}
+
+.fill-5-10 {
+    fill: #b2182b;
+    background-color: #b2182b;
+}
+
+.fill-10-15 {
+    fill: #d6604d;
+    background-color: #d6604d;
+}
+
+.fill-15-20 {
+    fill: #f4a582;
+    background-color: #f4a582;
+}
+
+.fill-20-25 {
+    fill: #fddbc7;
+    background-color: #fddbc7;
+}
+
+.fill-25-30 {
+    fill: #f7f7f7;
+    background-color: #f7f7f7;
+}
+
+.fill-30-35 {
+    fill: #d1e5f0;
+    background-color: #d1e5f0;
+}
+
+.fill-35-40 {
+    fill: #92c5de;
+    background-color: #92c5de;
+}
+
+.fill-40-45 {
+    fill: #4393c3;
+    background-color: #4393c3;
+}
+
+.fill-45-50 {
+    fill: #2166ac;
+    background-color: #2166ac;
+}
+
+.fill-50-plus {
+    fill: #053061;
+    background-color: #053061;
+}
+
+/* County Fill Colors - Development Index */
+.fill-di-very-low {
+    fill: #a50026;
+    background-color: #a50026;
+}
+
+.fill-di-low {
+    fill: #d73027;
+    background-color: #d73027;
+}
+
+.fill-di-low-med {
+    fill: #f46d43;
+    background-color: #f46d43;
+}
+
+.fill-di-medium {
+    fill: #fdae61;
+    background-color: #fdae61;
+}
+
+.fill-di-med-high {
+    fill: #fee090;
+    background-color: #fee090;
+}
+
+.fill-di-high {
+    fill: #e0f3f8;
+    background-color: #e0f3f8;
+}
+
+.fill-di-very-high {
+    fill: #abd9e9;
+    background-color: #abd9e9;
+}
+
+.fill-di-highest {
+    fill: #74add1;
+    background-color: #74add1;
+}
+
+/* County Fill Colors - Clusters */
+.fill-cluster-0 {
+    fill: #7fc97f;
+    background-color: #7fc97f;
+}
+
+.fill-cluster-1 {
+    fill: #beaed4;
+    background-color: #beaed4;
+}
+
+.fill-cluster-2 {
+    fill: #fdc086;
+    background-color: #fdc086;
+}
+
+.fill-cluster-3 {
+    fill: #ffff99;
+    background-color: #ffff99;
+}
+
+.fill-cluster-4 {
+    fill: #386cb0;
+    background-color: #386cb0;
+}
+
+.fill-cluster-5 {
+    fill: #f0027f;
+    background-color: #f0027f;
+}
+
+.fill-cluster-6 {
+    fill: #bf5b17;
+    background-color: #bf5b17;
+}
+
+/* Animation for Points */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.3);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+/* Highlight Animations */
+@keyframes highlight-flash {
+    0% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.3;
+    }
+}
+
+.highlight-flash {
+    animation: highlight-flash 2s infinite;
+}
+
+/* Mobile-specific map styles */
+@media (max-width: 768px) {
+    .mapboxgl-popup {
+        max-width: 250px;
+    }
+    
+    .mapboxgl-popup-content {
+        padding: var(--space-sm);
+    }
+    
+    .cluster-marker {
+        width: 24px;
+        height: 24px;
+        font-size: 0.75rem;
+    }
+    
+    .point-marker {
+        width: 8px;
+        height: 8px;
+    }
+}

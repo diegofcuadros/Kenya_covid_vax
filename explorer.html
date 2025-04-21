@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Map Explorer - COVID-19 Vaccination in Kenya</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Mapbox GL JS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    
+    <!-- D3.js for charts -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/map-styles.css">
+    
+    <style>
+        .container {
+            display: flex;
+            height: calc(100vh - 60px);
+            margin-top: 60px;
+        }
+        
+        .sidebar {
+            width: 320px;
+            background-color: white;
+            border-right: 1px solid var(--gray-medium);
+            overflow-y: auto;
+            transition: all var(--transition-normal);
+        }
+        
+        .dark-theme .sidebar {
+            background-color: #1a1a1a;
+            border-right-color: #333;
+        }
+        
+        .map-area {
+            flex: 1;
+            position: relative;
+        }
+        
+        #explorer-map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .layer-control {
+            padding: var(--space-md);
+        }
+        
+        .layer-control h3 {
+            font-size: 1.1rem;
+            margin-bottom: var(--space-md);
+            color: var(--primary);
+            border-bottom: 1px solid var(--gray-medium);
+            padding-bottom: var(--space-sm);
+        }
+        
+        .layer-group {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .layer-group h4 {
+            font-size: 0.9rem;
+            margin-bottom: var(--space-sm);
+            color: var(--text-primary);
+        }
+        
+        .layer-option {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .layer-option label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .layer-option input {
+            margin-right: var(--space-sm);
+        }
+        
+        .layer-description {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: var(--space-xs);
+            margin-left: 20px;
+        }
+        
+        .filters {
+            padding: var(--space-md);
+            border-top: 1px solid var(--gray-medium);
+        }
+        
+        .dark-theme .filters {
+            border-top-color: #333;
+        }
+        
+        .filters h3 {
+            font-size: 1.1rem;
+            margin-bottom: var(--space-md);
+            color: var(--primary);
+            border-bottom: 1px solid var(--gray-medium);
+            padding-bottom: var(--space-sm);
+        }
+        
+        .filter-group {
+            margin-bottom: var(--space-md);
+        }
+        
+        .filter-group h4 {
+            font-size: 0.9rem;
+            margin-bottom: var(--space-sm);
+            color: var(--text-primary);
+        }
+        
+        .range-slider {
+            width: 100%;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .selection-filter select {
+            width: 100%;
+            padding: var(--space-sm);
+            border: 1px solid var(--gray-medium);
+            border-radius: var(--radius-sm);
+            background-color: white;
+            font-family: var(--font-family);
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+        
+        .dark-theme .selection-filter select {
+            background-color: #333;
+            border-color: #444;
+            color: var(--text-light);
+        }
+        
+        .map-dashboard {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-md);
+            width: 280px;
+            z-index: 10;
+            transition: all var(--transition-normal);
+        }
+        
+        .dark-theme .map-dashboard {
+            background-color: rgba(26, 26, 26, 0.9);
+        }
+        
+        .dashboard-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+            color: var(--primary);
+        }
+        
+        .dashboard-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xs);
+            font-size: 0.875rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .dashboard-chart {
+            height: 120px;
+            margin-top: var(--space-sm);
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+        
+        .dark-theme .dashboard-chart {
+            background-color: rgba(51, 51, 51, 0.5);
+        }
+        
+        .mobile-toggle {
+            display: none;
+            position: absolute;
+            top: 70px;
+            left: 10px;
+            z-index: 100;
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border: none;
+            border-radius: 50%;
+            box-shadow: var(--shadow-md);
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .dark-theme .mobile-toggle {
+            background-color: #333;
+            color: var(--primary-light);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 50%;
+                border-right: none;
+                border-bottom: 1px solid var(--gray-medium);
+            }
+            
+            .map-area {
+                height: 50%;
+            }
+            
+            .mobile-toggle {
+                display: flex;
+            }
+            
+            .sidebar.collapsed {
+                height: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+            
+            .map-area.expanded {
+                height: 100%;
+            }
+            
+            .map-dashboard {
+                width: calc(100% - 40px);
+                left: 20px;
+                bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main header with navigation -->
+    <header class="main-header">
+        <div class="logo">
+            <h1>COVID-19 Vaccination in Kenya</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="story.html">Story Map</a></li>
+                <li><a href="explorer.html" class="active" aria-current="page">Map Explorer</a></li>
+                <li><a href="results.html">Results</a></li>
+                <li><a href="policy.html">Policy</a></li>
+                <li><a href="team.html">Team</a></li>
+            </ul>
+        </nav>
+        <button class="toggle-theme">
+            <span class="light-icon">☀️</span>
+            <span class="dark-icon">🌙</span>
+        </button>
+    </header>
+
+    <!-- Mobile sidebar toggle -->
+    <button class="mobile-toggle" id="mobile-toggle">
+        ≡
+    </button>
+
+    <!-- Main content container -->
+    <div class="container">
+        <!-- Sidebar with layers and filters -->
+        <div class="sidebar" id="sidebar">
+            <!-- Map Layers Section -->
+            <div class="layer-control">
+                <h3>Map Layers</h3>
+                
+                <!-- Base Layers -->
+                <div class="layer-group">
+                    <h4>Base Map</h4>
+                    <div class="layer-option">
+                        <label>
+                            <input type="radio" name="base-layer" value="vaccination" checked>
+                            COVID-19 Vaccination Rate
+                        </label>
+                        <div class="layer-description">County-level vaccination coverage (%)</div>
+                    </div>
+                    <div class="layer-option">
+                        <label>
+                            <input type="radio" name="base-layer" value="development">
+                            Development Index
+                        </label>
+                        <div class="layer-description">Composite score (0-100) of socioeconomic factors</div>
+                    </div>
+                    <div class="layer-option">
+                        <label>
+                            <input type="radio" name="base-layer" value="cluster">
+                            K-Means Clusters
+                        </label>
+                        <div class="layer-description">7 distinct geographic clusters based on multiple factors</div>
+                    </div>
+                </div>
+                
+                <!-- Overlay Layers -->
+                <div class="layer-group">
+                    <h4>Overlay Layers</h4>
+                    <div class="layer-option">
+                        <label>
+                            <input type="checkbox" name="overlay" value="banks">
+                            Bank Access
+                        </label>
+                        <div class="layer-description">Financial inclusion indicator</div>
+                    </div>
+                    <div class="layer-option">
+                        <label>
+                            <input type="checkbox" name="overlay" value="health-facilities">
+                            Health Facilities
+                        </label>
+                        <div class="layer-description">Hospitals, clinics, and vaccination centers</div>
+                    </div>
+                    <div class="layer-option">
+                        <label>
+                            <input type="checkbox" name="overlay" value="roads">
+                            Road Network
+                        </label>
+                        <div class="layer-description">Primary and secondary roads</div>
+                    </div>
+                    <div class="layer-option">
+                        <label>
+                            <input type="checkbox" name="overlay" value="precipitation">
+                            Precipitation
+                        </label>
+                        <div class="layer-description">Average annual rainfall patterns</div>
+                    </div>
+                </div>
+                
+                <!-- Visual Options -->
+                <div class="layer-group">
+                    <h4>Visual Options</h4>
+                    <div class="layer-option">
+                        <label>
+                            <input type="checkbox" name="visual-option" value="labels" checked>
+                            County Labels
+                        </label>
+                    </div>
+                    <div class="layer-option">
+                        <label>
+                            <input type="checkbox" name="visual-option" value="borders" checked>
+                            County Borders
+                        </label>
+                    </div>
+                    <div class="layer-option">
+                        <label>
+                            <input type="checkbox" name="visual-option" value="3d">
+                            3D Terrain
+                        </label>
+                        <div class="layer-description">Extrude counties by selected value</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filters Section -->
+            <div class="filters">
+                <h3>Filters & Analysis</h3>
+                
+                <!-- Vaccination Rate Filter -->
+                <div class="filter-group">
+                    <h4>Vaccination Rate (%)</h4>
+                    <input type="range" min="0" max="50" value="0" class="range-slider" id="vax-min">
+                    <div class="range-labels">
+                        <span>0%</span>
+                        <span id="vax-min-value">0%</span>
+                        <span>50%</span>
+                    </div>
+                </div>
+                
+                <!-- Development Index Filter -->
+                <div class="filter-group">
+                    <h4>Development Index</h4>
+                    <input type="range" min="0" max="100" value="0" class="range-slider" id="di-min">
+                    <div class="range-labels">
+                        <span>0</span>
+                        <span id="di-min-value">0</span>
+                        <span>100</span>
+                    </div>
+                </div>
+                
+                <!-- Cluster Filter -->
+                <div class="filter-group selection-filter">
+                    <h4>Cluster Type</h4>
+                    <select id="cluster-filter">
+                        <option value="all">All Clusters</option>
+                        <option value="0">Urban Mixed</option>
+                        <option value="1">Rural Dev</option>
+                        <option value="2">Rural Trans</option>
+                        <option value="3">Peri-urban</option>
+                        <option value="4">Semi-urban</option>
+                        <option value="5">Rural Remote</option>
+                        <option value="6">Urban High-Dev</option>
+                    </select>
+                </div>
+                
+                <!-- Bivariate Analysis -->
+                <div class="filter-group selection-filter">
+                    <h4>Bivariate Analysis</h4>
+                    <select id="bivariate-x">
+                        <option value="none">-- Select X Variable --</option>
+                        <option value="vaccination_rate">Vaccination Rate</option>
+                        <option value="development_index">Development Index</option>
+                        <option value="bank_access">Bank Access</option>
+                        <option value="sleeping_rooms_per_person">Sleeping Rooms</option>
+                        <option value="child_ratio">Child Ratio</option>
+                        <option value="child_immunization">Immunization Rate</option>
+                    </select>
+                    <div style="height: 10px;"></div>
+                    <select id="bivariate-y">
+                        <option value="none">-- Select Y Variable --</option>
+                        <option value="vaccination_rate">Vaccination Rate</option>
+                        <option value="development_index">Development Index</option>
+                        <option value="bank_access">Bank Access</option>
+                        <option value="sleeping_rooms_per_person">Sleeping Rooms</option>
+                        <option value="child_ratio">Child Ratio</option>
+                        <option value="child_immunization">Immunization Rate</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Map container -->
+        <div class="map-area" id="map-area">
+            <div id="explorer-map"></div>
+            
+            <!-- Map dashboard with selected county info -->
+            <div class="map-dashboard" id="map-dashboard">
+                <div class="dashboard-title">Kenya Overview</div>
+                <div class="dashboard-stat">
+                    <span class="stat-label">Selected Counties:</span>
+                    <span class="stat-value" id="selected-count">All (47)</span>
+                </div>
+                <div class="dashboard-stat">
+                    <span class="stat-label">Avg. Vaccination Rate:</span>
+                    <span class="stat-value" id="avg-vax">27.00%</span>
+                </div>
+                <div class="dashboard-stat">
+                    <span class="stat-label">Avg. Development Index:</span>
+                    <span class="stat-value" id="avg-di">48.36</span>
+                </div>
+                <div class="dashboard-stat">
+                    <span class="stat-label">Dominant Cluster:</span>
+                    <span class="stat-value" id="dominant-cluster">Rural Dev (12)</span>
+                </div>
+                <div class="dashboard-chart" id="dashboard-chart">
+                    <!-- D3 chart will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data-loader.js"></script>
+    <script>
+        // Global variables
+        let map;
+        let countyData = {};
+        let filteredCounties = [];
+        let activeBaseLayer = 'vaccination';
+        let activeOverlays = [];
+        let visualOptions = {
+            labels: true,
+            borders: true,
+            '3d': false
+        };
+        
+        // Initialize map when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+            loadCountyData();
+            setupEventListeners();
+            createDashboardChart();
+        });
+        
+        // Initialize the Mapbox map
+        function initializeMap() {
+            mapboxgl.accessToken = 'pk.eyJ1IjoieW91cmFjY291bnQiLCJhIjoiY2xhbXBsZXRva2VuaXNub3R2YWxpZCJ9.replacewiththistokenfrommapbox';
+            
+            map = new mapboxgl.Map({
+                container: 'explorer-map',
+                style: 'mapbox://styles/mapbox/light-v11', // Light theme
+                center: [37.8, 0.5], // Center on Kenya
+                zoom: 5.5,
+                minZoom: 5,
+                maxZoom: 12,
+                maxBounds: [
+                    [32.5, -5], // Southwest coordinates
+                    [42.5, 5.5]  // Northeast coordinates
+                ]
+            });
+            
+            // Add zoom and rotation controls
+            map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+            
+            // Check if dark mode is enabled and apply the appropriate map style
+            if (document.body.classList.contains('dark-theme')) {
+                map.setStyle('mapbox://styles/mapbox/dark-v11');
+            }
+            
+            // Map load event
+            map.on('load', function() {
+                setupMapLayers();
+            });
+        }
+        
+        // Setup map layers and sources
+        function setupMapLayers() {
+            // Similar setup as in map-config.js but with more advanced options
+            // Add source for Kenya counties
+            map.addSource('kenya-counties', {
+                type: 'geojson',
+                data: 'data/kenya-counties.geojson',
+                generateId: true
+            });
+            
+            // Add vaccination rate layer
+            map.addLayer({
+                id: 'vaccination-layer',
+                type: 'fill',
+                source: 'kenya-counties',
+                layout: {},
+                paint: {
+                    'fill-color': [
+                        'match',
+                        ['get', 'vaccination_rate_category'],
+                        '0-5', '#67001f',
+                        '5-10', '#b2182b',
+                        '10-15', '#d6604d',
+                        '15-20', '#f4a582',
+                        '20-25', '#fddbc7',
+                        '25-30', '#f7f7f7',
+                        '30-35', '#d1e5f0',
+                        '35-40', '#92c5de',
+                        '40-45', '#4393c3',
+                        '45-50', '#2166ac',
+                        '50+', '#053061',
+                        '#ccc' // default color
+                    ],
+                    'fill-opacity': 0.8
+                }
+            });
+            
+            // Add development index layer (hidden by default)
+            map.addLayer({
+                id: 'development-layer',
+                type: 'fill',
+                source: 'kenya-counties',
+                layout: {
+                    'visibility': 'none'
+                },
+                paint: {
+                    'fill-color': [
+                        'match',
+                        ['get', 'development_index_category'],
+                        'very-low', '#a50026',
+                        'low', '#d73027',
+                        'low-med', '#f46d43',
+                        'medium', '#fdae61',
+                        'med-high', '#fee090',
+                        'high', '#e0f3f8',
+                        'very-high', '#abd9e9',
+                        'highest', '#74add1',
+                        '#ccc' // default color
+                    ],
+                    'fill-opacity': 0.8
+                }
+            });
+            
+            // Add cluster layer (hidden by default)
+            map.addLayer({
+                id: 'cluster-layer',
+                type: 'fill',
+                source: 'kenya-counties',
+                layout: {
+                    'visibility': 'none'
+                },
+                paint: {
+                    'fill-color': [
+                        'match',
+                        ['get', 'cluster_category'],
+                        '0', '#7fc97f', // Urban Mixed
+                        '1', '#beaed4', // Rural Dev
+                        '2', '#fdc086', // Rural Trans
+                        '3', '#ffff99', // Peri-urban
+                        '4', '#386cb0', // Semi-urban
+                        '5', '#f0027f', // Rural Remote
+                        '6', '#bf5b17', // Urban High-Dev
+                        '#ccc' // default color
+                    ],
+                    'fill-opacity': 0.8
+                }
+            });
+            
+            // Add county outline layer
+            map.addLayer({
+                id: 'county-outline',
+                type: 'line',
+                source: 'kenya-counties',
+                layout: {},
+                paint: {
+                    'line-color': 'rgba(255, 255, 255, 0.5)',
+                    'line-width': 0.5
+                }
+            });
+            
+            // Add county name labels
+            map.addLayer({
+                id: 'county-labels',
+                type: 'symbol',
+                source: 'kenya-counties',
+                layout: {
+                    'text-field': ['get', 'county_name'],
+                    'text-size': 12,
+                    'text-anchor': 'center',
+                    'text-allow-overlap': false,
+                    'text-ignore-placement': false,
+                    'text-optional': true,
+                    'symbol-z-order': 'source'
+                },
+                paint: {
+                    'text-color': 'rgba(0, 0, 0, 0.7)',
+                    'text-halo-color': 'rgba(255, 255, 255, 0.8)',
+                    'text-halo-width': 1
+                }
+            });
+            
+            // Add click event for counties
+            map.on('click', 'vaccination-layer', onCountyClick);
+            map.on('click', 'development-layer', onCountyClick);
+            map.on('click', 'cluster-layer', onCountyClick);
+            
+            // Add hover effects
+            map.on('mouseenter', 'vaccination-layer', () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            map.on('mouseleave', 'vaccination-layer', () => {
+                map.getCanvas().style.cursor = '';
+            });
+            
+            // Do the same for other layers
+            map.on('mouseenter', 'development-layer', () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            map.on('mouseleave', 'development-layer', () => {
+                map.getCanvas().style.cursor = '';
+            });
+            
+            map.on('mouseenter', 'cluster-layer', () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            map.on('mouseleave', 'cluster-layer', () => {
+                map.getCanvas().style.cursor = '';
+            });
+        }
+        
+        // Load county data
+        function loadCountyData() {
+            fetch('data/vaccination-rates.json')
+                .then(response => response.json())
+                .then(data => {
+                    countyData = data;
+                    updateDashboard();
+                })
+                .catch(error => {
+                    console.error('Error loading county data:', error);
+                });
+        }
+        
+        // Handle county click event
+        function onCountyClick(e) {
+            const feature = e.features[0];
+            const countyId = feature.properties.county_id;
+            const countyName = feature.properties.county_name;
+            
+            // Update dashboard with selected county
+            document.getElementById('map-dashboard').querySelector('.dashboard-title').textContent = countyName + ' County';
+            document.getElementById('selected-count').textContent = '1';
+            document.getElementById('avg-vax').textContent = countyData[countyId].vaccination_rate.toFixed(2) + '%';
+            document.getElementById('avg-di').textContent = countyData[countyId].development_index.toFixed(2);
+            document.getElementById('dominant-cluster').textContent = getClusterName(countyData[countyId].cluster);
+            
+            // Highlight the selected county
+            if (map.getLayer('highlighted-county')) {
+                map.removeLayer('highlighted-county');
+            }
+            
+            if (map.getSource('highlighted-county')) {
+                map.removeSource('highlighted-county');
+            }
+            
+            map.addSource('highlighted-county', {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    geometry: feature.geometry,
+                    properties: feature.properties
+                }
+            });
+            
+            map.addLayer({
+                id: 'highlighted-county',
+                type: 'line',
+                source: 'highlighted-county',
+                paint: {
+                    'line-color': '#ffffff',
+                    'line-width': 2
+                }
+            });
+            
+            // Update chart for single county
+            updateDashboardChartForCounty(countyId);
+        }
+        
+        // Setup event listeners for UI controls
+        function setupEventListeners() {
+            // Base layer radio buttons
+            const baseLayerRadios = document.querySelectorAll('input[name="base-layer"]');
+            baseLayerRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Update active base layer
+                    activeBaseLayer = this.value;
+                    
+                    // Hide all base layers
+                    map.setLayoutProperty('vaccination-layer', 'visibility', 'none');
+                    map.setLayoutProperty('development-layer', 'visibility', 'none');
+                    map.setLayoutProperty('cluster-layer', 'visibility', 'none');
+                    
+                    // Show selected base layer
+                    if (activeBaseLayer === 'vaccination') {
+                        map.setLayoutProperty('vaccination-layer', 'visibility', 'visible');
+                    } else if (activeBaseLayer === 'development') {
+                        map.setLayoutProperty('development-layer', 'visibility', 'visible');
+                    } else if (activeBaseLayer === 'cluster') {
+                        map.setLayoutProperty('cluster-layer', 'visibility', 'visible');
+                    }
+                });
+            });
+            
+            // Overlay checkboxes
+            const overlayCheckboxes = document.querySelectorAll('input[name="overlay"]');
+            overlayCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const overlay = this.value;
+                    
+                    if (this.checked) {
+                        // Add overlay to active overlays
+                        activeOverlays.push(overlay);
+                        
+                        // Add overlay layer (placeholder for actual implementation)
+                        console.log(`Adding overlay: ${overlay}`);
+                    } else {
+                        // Remove overlay from active overlays
+                        activeOverlays = activeOverlays.filter(o => o !== overlay);
+                        
+                        // Remove overlay layer (placeholder for actual implementation)
+                        console.log(`Removing overlay: ${overlay}`);
+                    }
+                });
+            });
+            
+            // Visual option checkboxes
+            const visualOptionCheckboxes = document.querySelectorAll('input[name="visual-option"]');
+            visualOptionCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const option = this.value;
+                    visualOptions[option] = this.checked;
+                    
+                    // Update visual options
+                    if (option === 'labels') {
+                        map.setLayoutProperty('county-labels', 'visibility', this.checked ? 'visible' : 'none');
+                    } else if (option === 'borders') {
+                        map.setLayoutProperty('county-outline', 'visibility', this.checked ? 'visible' : 'none');
+                    } else if (option === '3d') {
+                        // Toggle 3D extrusion (placeholder for actual implementation)
+                        console.log(`3D extrusion: ${this.checked}`);
+                    }
+                });
+            });
+            
+            // Vaccination rate filter
+            const vaxMinSlider = document.getElementById('vax-min');
+            const vaxMinValue = document.getElementById('vax-min-value');
+            
+            vaxMinSlider.addEventListener('input', function() {
+                const minValue = parseInt(this.value);
+                vaxMinValue.textContent = minValue + '%';
+                
+                // Filter counties by vaccination rate
+                filterMapByVaccination(minValue);
+            });
+            
+            // Development index filter
+            const diMinSlider = document.getElementById('di-min');
+            const diMinValue = document.getElementById('di-min-value');
+            
+            diMinSlider.addEventListener('input', function() {
+                const minValue = parseInt(this.value);
+                diMinValue.textContent = minValue;
+                
+                // Filter counties by development index
+                filterMapByDevelopmentIndex(minValue);
+            });
+            
+            // Cluster filter
+            const clusterFilter = document.getElementById('cluster-filter');
+            
+            clusterFilter.addEventListener('change', function() {
+                const selectedCluster = this.value;
+                
+                // Filter counties by cluster
+                filterMapByCluster(selectedCluster);
+            });
+            
+            // Bivariate analysis
+            const bivariateX = document.getElementById('bivariate-x');
+            const bivariateY = document.getElementById('bivariate-y');
+            
+            bivariateX.addEventListener('change', updateBivariateAnalysis);
+            bivariateY.addEventListener('change', updateBivariateAnalysis);
+            
+            // Mobile sidebar toggle
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const mapArea = document.getElementById('map-area');
+            
+            mobileToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                mapArea.classList.toggle('expanded');
+                mobileToggle.textContent = sidebar.classList.contains('collapsed') ? '≡' : '×';
+            });
+            
+            // Theme toggle
+            const themeToggle = document.querySelector('.toggle-theme');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('dark-theme');
+                    
+                    // Update map style based on theme
+                    if (document.body.classList.contains('dark-theme')) {
+                        map.setStyle('mapbox://styles/mapbox/dark-v11');
+                    } else {
+                        map.setStyle('mapbox://styles/mapbox/light-v11');
+                    }
+                    
+                    // Re-add layers after style change
+                    map.once('style.load', () => {
+                        setupMapLayers();
+                        
+                        // Show the active base layer
+                        if (activeBaseLayer === 'vaccination') {
+                            map.setLayoutProperty('vaccination-layer', 'visibility', 'visible');
+                            map.setLayoutProperty('development-layer', 'visibility', 'none');
+                            map.setLayoutProperty('cluster-layer', 'visibility', 'none');
+                        } else if (activeBaseLayer === 'development') {
+                            map.setLayoutProperty('vaccination-layer', 'visibility', 'none');
+                            map.setLayoutProperty('development-layer', 'visibility', 'visible');
+                            map.setLayoutProperty('cluster-layer', 'visibility', 'none');
+                        } else if (activeBaseLayer === 'cluster') {
+                            map.setLayoutProperty('vaccination-layer', 'visibility', 'none');
+                            map.setLayoutProperty('development-layer', 'visibility', 'none');
+                            map.setLayoutProperty('cluster-layer', 'visibility', 'visible');
+                        }
+                        
+                        // Apply visual options
+                        map.setLayoutProperty('county-labels', 'visibility', visualOptions.labels ? 'visible' : 'none');
+                        map.setLayoutProperty('county-outline', 'visibility', visualOptions.borders ? 'visible' : 'none');
+                        
+                        // Re-apply filters
+                        applyAllFilters();
+                    });
+                    
+                    // Update dashboard chart
+                    createDashboardChart();
+                });
+            }
+        }
+        
+        // Filter functions
+        function filterMapByVaccination(minValue) {
+            // Create a filter expression for the vaccination rate
+            const filter = ['>=', ['get', 'vaccination_rate'], minValue];
+            
+            // Apply filter to all base layers
+            map.setFilter('vaccination-layer', filter);
+            map.setFilter('development-layer', filter);
+            map.setFilter('cluster-layer', filter);
+            
+            // Update dashboard with filtered counties
+            updateDashboardWithFilters();
+        }
+        
+        function filterMapByDevelopmentIndex(minValue) {
+            // Create a filter expression for the development index
+            const filter = ['>=', ['get', 'development_index'], minValue];
+            
+            // Apply filter to all base layers
+            map.setFilter('vaccination-layer', filter);
+            map.setFilter('development-layer', filter);
+            map.setFilter('cluster-layer', filter);
+            
+            // Update dashboard with filtered counties
+            updateDashboardWithFilters();
+        }
+        
+        function filterMapByCluster(selectedCluster) {
+            if (selectedCluster === 'all') {
+                // Clear cluster filter
+                map.setFilter('vaccination-layer', null);
+                map.setFilter('development-layer', null);
+                map.setFilter('cluster-layer', null);
+            } else {
+                // Create a filter expression for the cluster
+                const filter = ['==', ['get', 'cluster_category'], selectedCluster];
+                
+                // Apply filter to all base layers
+                map.setFilter('vaccination-layer', filter);
+                map.setFilter('development-layer', filter);
+                map.setFilter('cluster-layer', filter);
+            }
+            
+            // Update dashboard with filtered counties
+            updateDashboardWithFilters();
+        }
+        
+        function applyAllFilters() {
+            // Get current filter values
+            const vaxMin = parseInt(document.getElementById('vax-min').value);
+            const diMin = parseInt(document.getElementById('di-min').value);
+            const clusterValue = document.getElementById('cluster-filter').value;
+            
+            // Create combined filter
+            let combinedFilter = ['all'];
+            
+            if (vaxMin > 0) {
+                combinedFilter.push(['>=', ['get', 'vaccination_rate'], vaxMin]);
+            }
+            
+            if (diMin > 0) {
+                combinedFilter.push(['>=', ['get', 'development_index'], diMin]);
+            }
+            
+            if (clusterValue !== 'all') {
+                combinedFilter.push(['==', ['get', 'cluster_category'], clusterValue]);
+            }
+            
+            // Apply combined filter if there are any active filters
+            if (combinedFilter.length > 1) {
+                map.setFilter('vaccination-layer', combinedFilter);
+                map.setFilter('development-layer', combinedFilter);
+                map.setFilter('cluster-layer', combinedFilter);
+            } else {
+                // Clear filters if no active filters
+                map.setFilter('vaccination-layer', null);
+                map.setFilter('development-layer', null);
+                map.setFilter('cluster-layer', null);
+            }
+            
+            // Update dashboard with filtered counties
+            updateDashboardWithFilters();
+        }
+        
+        function updateBivariateAnalysis() {
+            const xVar = document.getElementById('bivariate-x').value;
+            const yVar = document.getElementById('bivariate-y').value;
+            
+            if (xVar !== 'none' && yVar !== 'none' && xVar !== yVar) {
+                console.log(`Bivariate analysis: ${xVar} vs ${yVar}`);
+                // Placeholder for actual bivariate analysis implementation
+                // This would typically involve creating a bivariate choropleth map
+                // or a scatter plot showing the relationship between the two variables
+            }
+        }
+        
+        // Helper functions
+        function getClusterName(cluster) {
+            switch(parseInt(cluster)) {
+                case 0: return 'Urban Mixed';
+                case 1: return 'Rural Dev';
+                case 2: return 'Rural Trans';
+                case 3: return 'Peri-urban';
+                case 4: return 'Semi-urban';
+                case 5: return 'Rural Remote';
+                case 6: return 'Urban High-Dev';
+                default: return 'Unknown';
+            }
+        }
+        
+        // Dashboard update functions
+        function updateDashboard() {
+            if (!countyData || Object.keys(countyData).length === 0) return;
+            
+            // Calculate averages for all counties
+            let totalVax = 0;
+            let totalDI = 0;
+            const clusterCounts = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
+            
+            for (const countyId in countyData) {
+                const county = countyData[countyId];
+                totalVax += county.vaccination_rate;
+                totalDI += county.development_index;
+                clusterCounts[county.cluster]++;
+            }
+            
+            const avgVax = totalVax / Object.keys(countyData).length;
+            const avgDI = totalDI / Object.keys(countyData).length;
+            
+            // Find dominant cluster
+            let dominantCluster = 0;
+            let maxCount = 0;
+            
+            for (const cluster in clusterCounts) {
+                if (clusterCounts[cluster] > maxCount) {
+                    maxCount = clusterCounts[cluster];
+                    dominantCluster = parseInt(cluster);
+                }
+            }
+            
+            // Update dashboard
+            document.getElementById('selected-count').textContent = `All (${Object.keys(countyData).length})`;
+            document.getElementById('avg-vax').textContent = avgVax.toFixed(2) + '%';
+            document.getElementById('avg-di').textContent = avgDI.toFixed(2);
+            document.getElementById('dominant-cluster').textContent = `${getClusterName(dominantCluster)} (${maxCount})`;
+            
+            // Update chart
+            updateDashboardChart();
+        }
+        
+        function updateDashboardWithFilters() {
+            // Get current filter values
+            const vaxMin = parseInt(document.getElementById('vax-min').value);
+            const diMin = parseInt(document.getElementById('di-min').value);
+            const clusterValue = document.getElementById('cluster-filter').value;
+            
+            // Filter counties based on current filters
+            const filteredCounties = Object.values(countyData).filter(county => {
+                let passesFilters = true;
+                
+                if (vaxMin > 0) {
+                    passesFilters = passesFilters && county.vaccination_rate >= vaxMin;
+                }
+                
+                if (diMin > 0) {
+                    passesFilters = passesFilters && county.development_index >= diMin;
+                }
+                
+                if (clusterValue !== 'all') {
+                    passesFilters = passesFilters && county.cluster.toString() === clusterValue;
+                }
+                
+                return passesFilters;
+            });
+            
+            // Calculate averages for filtered counties
+            if (filteredCounties.length > 0) {
+                let totalVax = 0;
+                let totalDI = 0;
+                const clusterCounts = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
+                
+                filteredCounties.forEach(county => {
+                    totalVax += county.vaccination_rate;
+                    totalDI += county.development_index;
+                    clusterCounts[county.cluster]++;
+                });
+                
+                const avgVax = totalVax / filteredCounties.length;
+                const avgDI = totalDI / filteredCounties.length;
+                
+                // Find dominant cluster
+                let dominantCluster = 0;
+                let maxCount = 0;
+                
+                for (const cluster in clusterCounts) {
+                    if (clusterCounts[cluster] > maxCount) {
+                        maxCount = clusterCounts[cluster];
+                        dominantCluster = parseInt(cluster);
+                    }
+                }
+                
+                // Update dashboard
+                document.getElementById('map-dashboard').querySelector('.dashboard-title').textContent = 'Filtered Counties';
+                document.getElementById('selected-count').textContent = `${filteredCounties.length} of 47`;
+                document.getElementById('avg-vax').textContent = avgVax.toFixed(2) + '%';
+                document.getElementById('avg-di').textContent = avgDI.toFixed(2);
+                document.getElementById('dominant-cluster').textContent = `${getClusterName(dominantCluster)} (${maxCount})`;
+                
+                // Update chart for filtered counties
+                updateDashboardChartForFiltered(filteredCounties);
+            } else {
+                // No counties match the filters
+                document.getElementById('map-dashboard').querySelector('.dashboard-title').textContent = 'No Matching Counties';
+                document.getElementById('selected-count').textContent = '0 of 47';
+                document.getElementById('avg-vax').textContent = 'N/A';
+                document.getElementById('avg-di').textContent = 'N/A';
+                document.getElementById('dominant-cluster').textContent = 'N/A';
+                
+                // Clear chart
+                d3.select('#dashboard-chart').html('');
+            }
+        }
+        
+        // Chart functions
+        function createDashboardChart() {
+            // Placeholder for dashboard chart initialization
+            // The actual chart will be created when data is loaded
+        }
+        
+        function updateDashboardChart() {
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#f0f0f0' : '#333333';
+            const bgColor = isDarkMode ? '#333' : '#fff';
+            
+            // Clear previous chart
+            d3.select('#dashboard-chart').html('');
+            
+            // Create a basic chart showing vaccination rates by cluster
+            const clusterData = [
+                {cluster: "Urban High-Dev", value: 0, count: 0},
+                {cluster: "Urban Mixed", value: 0, count: 0},
+                {cluster: "Peri-urban", value: 0, count: 0},
+                {cluster: "Semi-urban", value: 0, count: 0},
+                {cluster: "Rural Dev", value: 0, count: 0},
+                {cluster: "Rural Trans", value: 0, count: 0},
+                {cluster: "Rural Remote", value: 0, count: 0}
+            ];
+            
+            // Calculate average vaccination rate by cluster
+            for (const countyId in countyData) {
+                const county = countyData[countyId];
+                const clusterName = getClusterName(county.cluster);
+                const clusterIndex = clusterData.findIndex(c => c.cluster === clusterName);
+                
+                if (clusterIndex !== -1) {
+                    clusterData[clusterIndex].value += county.vaccination_rate;
+                    clusterData[clusterIndex].count++;
+                }
+            }
+            
+            // Calculate averages
+            clusterData.forEach(cluster => {
+                if (cluster.count > 0) {
+                    cluster.value = cluster.value / cluster.count;
+                }
+            });
+            
+            // Sort data by vaccination rate
+            clusterData.sort((a, b) => b.value - a.value);
+            
+            // Create SVG
+            const width = document.getElementById('dashboard-chart').clientWidth;
+            const height = document.getElementById('dashboard-chart').clientHeight;
+            const margin = {top: 10, right: 10, bottom: 30, left: 60};
+            
+            const svg = d3.select('#dashboard-chart')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+            
+            // Set up scales
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(clusterData, d => d.value)])
+                .range([0, width - margin.left - margin.right]);
+            
+            const y = d3.scaleBand()
+                .domain(clusterData.map(d => d.cluster))
+                .range([0, height - margin.top - margin.bottom])
+                .padding(0.1);
+            
+            // Add X axis
+            svg.append('g')
+                .attr('transform', `translate(0,${height - margin.top - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(5))
+                .selectAll('text')
+                .style('fill', textColor)
+                .style('font-size', '8px');
+            
+            // Add Y axis
+            svg.append('g')
+                .call(d3.axisLeft(y))
+                .selectAll('text')
+                .style('fill', textColor)
+                .style('font-size', '8px');
+            
+            // Add bars
+            svg.selectAll('.bar')
+                .data(clusterData)
+                .enter()
+                .append('rect')
+                .attr('class', 'bar')
+                .attr('x', 0)
+                .attr('y', d => y(d.cluster))
+                .attr('width', d => x(d.value))
+                .attr('height', y.bandwidth())
+                .attr('fill', '#2166ac');
+            
+            // Add value labels
+            svg.selectAll('.label')
+                .data(clusterData)
+                .enter()
+                .append('text')
+                .attr('class', 'label')
+                .attr('x', d => x(d.value) - 25)
+                .attr('y', d => y(d.cluster) + y.bandwidth() / 2)
+                .attr('dy', '.35em')
+                .text(d => d.value.toFixed(1) + '%')
+                .style('fill', 'white')
+                .style('font-size', '8px')
+                .style('font-weight', 'bold');
+        }
+        
+        function updateDashboardChartForCounty(countyId) {
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#f0f0f0' : '#333333';
+            const bgColor = isDarkMode ? '#333' : '#fff';
+            
+            // Clear previous chart
+            d3.select('#dashboard-chart').html('');
+            
+            // Get county data
+            const county = countyData[countyId];
+            if (!county) return;
+            
+            // Create data for comparison chart
+            const compareData = [
+                {label: "Vaccination", value: county.vaccination_rate, avg: 27.0},
+                {label: "Dev. Index", value: county.development_index, avg: 48.36},
+                {label: "Bank Access", value: county.bank_access * 100, avg: 42.0},
+                {label: "Child Ratio", value: county.child_ratio * 100, avg: 52.0}
+            ];
+            
+            // Create SVG
+            const width = document.getElementById('dashboard-chart').clientWidth;
+            const height = document.getElementById('dashboard-chart').clientHeight;
+            const margin = {top: 10, right: 10, bottom: 30, left: 70};
+            
+            const svg = d3.select('#dashboard-chart')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+            
+            // Set up scales
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(compareData, d => Math.max(d.value, d.avg)) * 1.1])
+                .range([0, width - margin.left - margin.right]);
+            
+            const y = d3.scaleBand()
+                .domain(compareData.map(d => d.label))
+                .range([0, height - margin.top - margin.bottom])
+                .padding(0.3);
+            
+            // Add X axis
+            svg.append('g')
+                .attr('transform', `translate(0,${height - margin.top - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(5))
+                .selectAll('text')
+                .style('fill', textColor)
+                .style('font-size', '8px');
+            
+            // Add Y axis
+            svg.append('g')
+                .call(d3.axisLeft(y))
+                .selectAll('text')
+                .style('fill', textColor)
+                .style('font-size', '8px');
+            
+            // Add county value bars
+            svg.selectAll('.bar-county')
+                .data(compareData)
+                .enter()
+                .append('rect')
+                .attr('class', 'bar-county')
+                .attr('x', 0)
+                .attr('y', d => y(d.label))
+                .attr('width', d => x(d.value))
+                .attr('height', y.bandwidth() / 2)
+                .attr('fill', '#2166ac');
+            
+            // Add average value bars
+            svg.selectAll('.bar-avg')
+                .data(compareData)
+                .enter()
+                .append('rect')
+                .attr('class', 'bar-avg')
+                .attr('x', 0)
+                .attr('y', d => y(d.label) + y.bandwidth() / 2)
+                .attr('width', d => x(d.avg))
+                .attr('height', y.bandwidth() / 2)
+                .attr('fill', '#d6604d');
+            
+            // Add legend
+            svg.append('rect')
+                .attr('x', 20)
+                .attr('y', 0)
+                .attr('width', 10)
+                .attr('height', 5)
+                .attr('fill', '#2166ac');
+            
+            svg.append('text')
+                .attr('x', 35)
+                .attr('y', 5)
+                .text('County')
+                .style('fill', textColor)
+                .style('font-size', '7px');
+            
+            svg.append('rect')
+                .attr('x', 80)
+                .attr('y', 0)
+                .attr('width', 10)
+                .attr('height', 5)
+                .attr('fill', '#d6604d');
+            
+            svg.append('text')
+                .attr('x', 95)
+                .attr('y', 5)
+                .text('National Avg')
+                .style('fill', textColor)
+                .style('font-size', '7px');
+        }
+        
+        function updateDashboardChartForFiltered(filteredCounties) {
+            // Similar to updateDashboardChart but using filteredCounties instead of all counties
+            // This would involve calculating cluster averages from the filtered counties
+        }
+    </script>
+</body>
+</html>
