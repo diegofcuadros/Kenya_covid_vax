@@ -339,7 +339,7 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="story.html">Story Map</a></li>
-                <li><a href="explorer.html">Map Explorer</a></li>
+                
                 <li><a href="results.html" class="active" aria-current="page">Results</a></li>
                 <li><a href="policy.html">Policy</a></li>
                 <li><a href="team.html">Team</a></li>
@@ -369,8 +369,21 @@
             <button class="gallery-control" data-filter="equity">Equity Analysis</button>
         </div>
         
+        <!-- Interactive Charts Section -->
+        <section class="results-interactive-charts" style="display: flex; flex-wrap: wrap; gap: 32px; margin-bottom: 48px;">
+            <div style="flex:1; min-width:320px; max-width:600px;">
+                <h3 style="margin-bottom:16px; color:#2166ac;">Development Index vs. Vaccination Rate</h3>
+                <div id="scatter-plot" style="height:340px;"></div>
+            </div>
+            <div style="flex:1; min-width:320px; max-width:600px;">
+                <h3 style="margin-bottom:16px; color:#2166ac;">Key Development Components by Cluster</h3>
+                <div id="bar-chart" style="height:340px;"></div>
+            </div>
+        </section>
+        
         <!-- Results Grid -->
-        <div class="results-grid">
+        <div class="responsive-results-grid">
+            <div class="results-note" style="margin-bottom:24px;font-size:1.05rem;color:#2166ac;">Explore key findings and visualizations. Tap a card for details.</div>
             <!-- Figure 1: Conceptual Model -->
             <div class="result-card" data-categories="maps,vaccination,development">
                 <div class="result-image">
@@ -579,6 +592,8 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://cdn.plotly.com/plotly-2.16.1.min.js"></script>
+    <script src="js/visualizations.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize charts

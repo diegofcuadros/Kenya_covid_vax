@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC Uganda Research Center | University of Cincinnati</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --uc-red: #E00122;
+            --uc-black: #000000;
+            --uc-gray: #5A5A5A;
+            --uc-light-gray: #F5F5F5;
+            --uc-white: #FFFFFF;
+            --accent-green: #2A9D8F;
+            --accent-blue: #264653;
+            --accent-yellow: #E9C46A;
+            --accent-orange: #F4A261;
+            --accent-red: #E76F51;
+            
+            /* New accent colors for enhanced design */
+            --accent-purple: #6A4C93;
+            --accent-teal: #1D7874;
+            --accent-mint: #8FC0A9;
+            --accent-gold: #D8B26E;
+        }
+        
+        body {
+            font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        /* Enhanced styling for more sophistication */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .animated-border {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .animated-border:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green), var(--accent-orange));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease-out;
+            z-index: -1;
+        }
+        
+        .animated-border:hover:after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        /* Enhanced navigation and buttons */
+        .navigation {
+            background-color: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+        
+        .nav-scrolled {
+            padding: 0.5rem 0;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-uc {
+            background: linear-gradient(135deg, var(--uc-red) 0%, #F32C51 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            transition: all 0.4s ease;
+            display: inline-block;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            border: none;
+        }
+        
+        .btn-uc:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #F32C51 0%, var(--uc-red) 100%);
+            z-index: -1;
+            transition: opacity 0.4s ease;
+            opacity: 0;
+        }
+        
+        .btn-uc:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(224, 1, 34, 0.4);
+        }
+        
+        .btn-uc:hover:before {
+            opacity: 1;
+        }
+        
+        /* Image and media enhancements */
+        .img-hover-zoom {
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        
+        .img-hover-zoom img {
+            transition: transform 0.8s ease;
+        }
+        
+        .img-hover-zoom:hover img {
+            transform: scale(1.08);
+        }
+        
+        /* Section and card enhancements */
+        .section-divider {
+            height: 4px;
+            width: 80px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+            margin: 1rem auto 2rem;
+            border-radius: 2px;
+        }
+        
+        .stat-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Advanced animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(42, 157, 143, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(42, 157, 143, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(42, 157, 143, 0); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Loading and transition effects */
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-green) 100%);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        
+        .page-transition.loaded {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        /* Original styling preserved and enhanced */
+        .uc-red {
+            color: var(--uc-red);
+        }
+        
+        .bg-uc-red {
+            background-color: var(--uc-red);
+        }
+        
+        .bg-accent-blue {
+            background-color: var(--accent-blue);
+        }
+        
+        .bg-accent-green {
+            background-color: var(--accent-green);
+        }
+        
+        .text-accent-green {
+            color: var(--accent-green);
+        }
+        
+        .text-accent-blue {
+            color: var(--accent-blue);
+        }
+        
+        .bg-gradient-hero {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-green) 100%);
+        }
+        
+        .hero-video-overlay {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%);
+        }
+        
+        .section-heading::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--uc-red), var(--accent-orange));
+            margin: 20px auto;
+            border-radius: 2px;
+        }
+        
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            background-color: var(--uc-red);
+            border-radius: 50%;
+            position: absolute;
+            left: -10px;
+            top: 0;
+            box-shadow: 0 0 0 5px rgba(224, 1, 34, 0.2);
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--uc-gray), var(--accent-green));
+        }
+        
+        .map-dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--uc-red);
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 0 0 rgba(224, 1, 34, 0.6);
+        }
+        
+        .map-dot:hover, .map-dot.active {
+            width: 16px;
+            height: 16px;
+            background-color: var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+        
+        .researcher-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        
+        .researcher-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .researcher-card img {
+            filter: grayscale(80%);
+            transition: all 0.5s ease;
+        }
+        
+        .researcher-card:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.05);
+        }
+        
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--uc-red), var(--accent-orange));
+            transition: width 0.4s ease;
+            border-radius: 2px;
+        }
+        
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .graph-bar {
+            height: 30px;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-teal));
+            width: 0;
+            transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+            position: relative;
+            border-radius: 15px;
+        }
+        
+        .graph-bar-label {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .counter {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--uc-red), var(--accent-orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .nav-pills .nav-link {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-right: 10px;
+            color: var(--uc-gray);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .nav-pills .nav-link:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+        
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-green) 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(38, 70, 83, 0.3);
+        }
+        
+        .tab-pane {
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            background-color: white;
+            transition: all 0.5s ease;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-blue);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-green);
+        }
+        
+        /* Tilt effect */
+        .tilt-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        /* 3D elements */
+        .depth-effect {
+            box-shadow: 
+                0 2.8px 2.2px rgba(0, 0, 0, 0.02),
+                0 6.7px 5.3px rgba(0, 0, 0, 0.028),
+                0 12.5px 10px rgba(0, 0, 0, 0.035),
+                0 22.3px 17.9px rgba(0, 0, 0, 0.042),
+                0 41.8px 33.4px rgba(0, 0, 0, 0.05),
+                0 100px 80px rgba(0, 0, 0, 0.07);
+        }
+        
+        /* Particle background */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        /* Modern hover effect for buttons */
+        .hover-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hover-effect:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            transform: skewX(-15deg);
+        }
+        
+        .hover-effect:hover:after {
+            transform: translateX(-180%) skewX(-15deg);
+        }
+        
+        /* Mouse scroll animation */
+        .mouse-scroll {
+            display: inline-block;
+        }
+        
+        .mouse {
+            height: 42px;
+            width: 24px;
+            border-radius: 14px;
+            border: 2px solid white;
+            display: block;
+            margin: 0 auto 8px;
+            position: relative;
+        }
+        
+        .wheel {
+            height: 6px;
+            width: 6px;
+            display: block;
+            margin: 8px auto;
+            background: white;
+            position: relative;
+            border-radius: 50%;
+            animation: mouse-wheel 1.6s ease infinite;
+        }
+        
+        @keyframes mouse-wheel {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+        }
+        
+        .arrow-scroll {
+            display: block;
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid white;
+            border-bottom: 2px solid white;
+            margin: 0 auto;
+            transform: rotate(45deg);
+            animation: arrow-scroll 2s infinite;
+        }
+        
+        .down-arrow-1 {
+            animation-delay: 0s;
+            animation-duration: 2s;
+        }
+        
+        .down-arrow-2 {
+            animation-delay: 0.2s;
+            animation-duration: 2s;
+        }
+        
+        .down-arrow-3 {
+            animation-delay: 0.4s;
+            animation-duration: 2s;
+        }
+        
+        @keyframes arrow-scroll {
+            0% {
+                opacity: 0;
+                transform: rotate(45deg) translate(-5px, -5px);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+        }
+        
+        /* Scale effect for cards on hover */
+        .hover\:scale-102:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Mouse tooltip styles */
+        .group:hover .group-hover\:opacity-100 {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page transition loader -->
+    <div class="page-transition">
+        <div class="loader">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" stroke="white" stroke-width="2" fill="none" />
+                <circle cx="50" cy="50" r="40" stroke="white" stroke-dasharray="250" stroke-width="4" fill="none">
+                    <animate attributeName="stroke-dashoffset" from="250" to="0" dur="2s" repeatCount="indefinite" />
+                </circle>
+            </svg>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="navigation fixed top-0 left-0 right-0 z-50 transition duration-300">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <img src="/api/placeholder/120/50" alt="University of Cincinnati Logo" class="h-10">
+                    <span class="ml-3 text-xl font-bold">Uganda Research Center</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#vision" class="nav-link animated-border">Vision</a>
+                    <a href="#researchers" class="nav-link animated-border">Researchers</a>
+                    <a href="#why-uganda" class="nav-link animated-border">Why Uganda</a>
+                    <a href="#research" class="nav-link animated-border">Research</a>
+                    <a href="#impact" class="nav-link animated-border">Impact</a>
+                    <a href="#partners" class="nav-link animated-border">Partners</a>
+                    <a href="#contact" class="btn-uc hover-effect">Support Us</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="md:hidden hidden mt-4">
+                <a href="#vision" class="block py-2">Vision</a>
+                <a href="#researchers" class="block py-2">Researchers</a>
+                <a href="#why-uganda" class="block py-2">Why Uganda</a>
+                <a href="#research" class="block py-2">Research</a>
+                <a href="#impact" class="block py-2">Impact</a>
+                <a href="#partners" class="block py-2">Partners</a>
+                <a href="#contact" class="block py-2 mt-4 btn-uc text-center">Support Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div id="particles-js" class="absolute inset-0 z-10"></div>
+        <div class="absolute inset-0 hero-video-overlay z-10"></div>
+        <img src="/api/placeholder/1920/1080" alt="UC Uganda Research" class="absolute inset-0 w-full h-full object-cover">
+        <div class="container mx-auto px-6 relative z-20 text-center">
+            <div data-aos="fade-up" data-aos-delay="300">
+                <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">University of Cincinnati<br><span class="gradient-text">Uganda Research Center</span></h1>
+                <p class="text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto">A transdisciplinary hub fusing genomics, spatial epidemiology, and implementation science to accelerate disease-control solutions across East Africa</p>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                    <a href="#vision" class="btn-uc hover-effect">Explore Our Vision</a>
+                    <a href="#impact" class="btn-uc btn-outline glass-effect hover-effect">View Our Impact</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Animated scroll indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white text-center z-20">
+            <p class="mb-2">Scroll to explore</p>
+            <div class="mouse-scroll">
+                <div class="mouse">
+                    <div class="wheel"></div>
+                </div>
+                <div>
+                    <span class="arrow-scroll down-arrow-1"></span>
+                    <span class="arrow-scroll down-arrow-2"></span>
+                    <span class="arrow-scroll down-arrow-3"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating elements animation -->
+        <div class="absolute z-20 left-[10%] top-[20%] float-animation" style="animation-delay: 0s;">
+            <div class="text-white opacity-20 text-6xl"><i class="fas fa-dna"></i></div>
+        </div>
+        <div class="absolute z-20 right-[15%] top-[30%] float-animation" style="animation-delay: 1s;">
+            <div class="text-white opacity-20 text-6xl"><i class="fas fa-virus"></i></div>
+        </div>
+        <div class="absolute z-20 left-[20%] bottom-[25%] float-animation" style="animation-delay: 2s;">
+            <div class="text-white opacity-20 text-6xl"><i class="fas fa-microscope"></i></div>
+        </div>
+        <div class="absolute z-20 right-[20%] bottom-[20%] float-animation" style="animation-delay: 3s;">
+            <div class="text-white opacity-20 text-6xl"><i class="fas fa-globe-africa"></i></div>
+        </div>
+    </section>
+
+    <!-- Vision Section with enhanced interactivity -->
+    <section id="vision" class="py-20 bg-white relative overflow-hidden">
+        <!-- Background decorative elements -->
+        <div class="absolute top-0 left-0 w-64 h-64 bg-accent-green opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-accent-blue opacity-5 rounded-full translate-x-1/2 translate-y-1/2"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4">Our Vision</h2>
+                <div class="section-divider"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Addressing critical challenges at the intersection of environmental change, infectious disease, and human adaptation in Uganda</p>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <div class="lg:w-1/2" data-aos="fade-right">
+                    <div class="img-hover-zoom depth-effect rounded-lg overflow-hidden">
+                        <img src="/api/placeholder/600/400" alt="UC Uganda Vision" class="w-full transition-transform duration-700 hover:scale-110">
+                    </div>
+                </div>
+                <div class="lg:w-1/2" data-aos="fade-left">
+                    <h3 class="text-3xl font-bold mb-6 gradient-text">A Convergence of Expertise</h3>
+                    <p class="text-lg text-gray-700 mb-6">The UC Uganda Research Center brings together three complementary fields of study to create a unique approach to global health challenges:</p>
+                    <div class="space-y-6">
+                        <div class="flex items-start card-hover p-4 rounded-lg">
+                            <div class="bg-accent-green text-white rounded-full p-3 mr-4 pulse-animation">
+                                <i class="fas fa-dna"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Genomics & Epigenetics</h4>
+                                <p class="text-gray-700">Understanding how environmental changes affect human biology at the molecular level</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start card-hover p-4 rounded-lg">
+                            <div class="bg-accent-blue text-white rounded-full p-3 mr-4 pulse-animation">
+                                <i class="fas fa-virus"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Infectious Disease Epidemiology</h4>
+                                <p class="text-gray-700">Tracking how viruses and pathogens spread through populations and respond to changing environments</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start card-hover p-4 rounded-lg">
+                            <div class="bg-accent-orange text-white rounded-full p-3 mr-4 pulse-animation">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Spatial Health Analytics</h4>
+                                <p class="text-gray-700">Using geographic mapping and AI to predict disease patterns and target interventions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Researcher Team Section -->
+    <section id="researchers" class="py-20 bg-gray-50 relative">
+        <!-- Decorative background pattern -->
+        <div class="absolute inset-0 opacity-5 z-0">
+            <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%239C92AC\" fill-opacity=\"0.4\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4">Meet the Team</h2>
+                <div class="section-divider"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Three University of Cincinnati researchers with established programs in Uganda</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="tilt-card" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" data-aos="fade-up" data-aos-delay="100">
+                    <div class="researcher-card bg-white rounded-lg overflow-hidden shadow-lg h-full">
+                        <div class="img-hover-zoom">
+                            <img src="/api/placeholder/400/400" alt="Dr. Kathleen Grogan" class="w-full h-64 object-cover">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold mb-2">Dr. Kathleen Grogan</h3>
+                            <p class="text-accent-green font-semibold mb-4">Evolutionary Geneticist & Biological Anthropologist</p>
+                            <p class="text-gray-700 mb-4">Studies how environmental and lifestyle transitions affect the human epigenome in Batwa rainforest hunter-gatherers</p>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-university mr-2"></i>
+                                <span>Anthropology & Biological Sciences</span>
+                            </div>
+                            
+                            <!-- Social media icons -->
+                            <div class="mt-6 flex space-x-3">
+                                <a href="#" class="text-gray-500 hover:text-accent-green transition-colors duration-300">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="text-gray-500 hover:text-accent-green transition-colors duration-300">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="text-gray-500 hover:text-accent-green transition-colors duration-300">
+                                    <i class="fas fa-globe"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tilt-card" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" data-aos="fade-up" data-aos-delay="200">
+                    <div class="researcher-card bg-white rounded-lg overflow-hidden shadow-lg h-full">
+                        <div class="img-hover-zoom">
+                            <img src="/api/placeholder/400/400" alt="Dr. Katherine Sabourin" class="w-full h-64 object-cover">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold mb-2">Dr. Katherine Sabourin</h3>
+                            <p class="text-accent-blue font-semibold mb-4">Infectious Disease Epidemiologist</p>
+                            <p class="text-gray-700 mb-4">Focuses on Kaposi's sarcoma-associated herpesvirus (KSHV) and how viral transmission is shaped by environmental factors</p>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-university mr-2"></i>
+                                <span>Environmental & Public Health Sciences</span>
+                            </div>
+                            
+                            <!-- Social media icons -->
+                            <div class="mt-6 flex space-x-3">
+                                <a href="#" class="text-gray-500 hover:text-accent-blue transition-colors duration-300">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="text-gray-500 hover:text-accent-blue transition-colors duration-300">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="text-gray-500 hover:text-accent-blue transition-colors duration-300">
+                                    <i class="fas fa-globe"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tilt-card" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" data-aos="fade-up" data-aos-delay="300">
+                    <div class="researcher-card bg-white rounded-lg overflow-hidden shadow-lg h-full">
+                        <div class="img-hover-zoom">
+                            <img src="/api/placeholder/400/400" alt="Dr. Diego Cuadros" class="w-full h-64 object-cover">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold mb-2">Dr. Diego Cuadros</h3>
+                            <p class="text-accent-orange font-semibold mb-4">Digital Epidemiologist & Geographer</p>
+                            <p class="text-gray-700 mb-4">Applies spatial analysis and predictive modeling to map disease patterns and develop targeted interventions</p>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-university mr-2"></i>
+                                <span>Geography & Health Geography Lab</span>
+                            </div>
+                            
+                            <!-- Social media icons -->
+                            <div class="mt-6 flex space-x-3">
+                                <a href="#" class="text-gray-500 hover:text-accent-orange transition-colors duration-300">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="text-gray-500 hover:text-accent-orange transition-colors duration-300">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="text-gray-500 hover:text-accent-orange transition-colors duration-300">
+                                    <i class="fas fa-globe"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-lg text-gray-700 max-w-3xl mx-auto mb-8">Together, these researchers bring complementary expertise that creates a unique approach to complex health challenges in Uganda</p>
+                <a href="#research" class="btn-uc hover-effect">Explore Our Research</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Uganda Section -->
+    <section id="why-uganda" class="py-20 bg-white relative overflow-hidden">
+        <!-- Background decoration -->
+        <div class="absolute inset-0 z-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Cg fill-rule=\'evenodd\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.4\'%3E%3Cpath opacity=\'.5\' d=\'M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4">Why Uganda?</h2>
+                <div class="section-divider"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">A unique confluence of factors makes Uganda the ideal location for this initiative</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="relative depth-effect" data-aos="fade-right">
+                    <div class="rounded-lg overflow-hidden">
+                        <img src="/api/placeholder/600/500" alt="Map of Uganda" class="w-full">
+                    </div>
+                    
+                    <!-- Interactive map dots with tooltips -->
+                    <div class="map-dot group" style="top: 30%; left: 40%;" id="dot1">
+                        <div class="opacity-0 group-hover:opacity-100 absolute top-0 left-0 transform -translate-y-full -translate-x-1/2 bg-white p-2 rounded shadow-lg text-sm w-48 transition-opacity duration-300 z-20 pointer-events-none">
+                            <strong>Kampala</strong>: Central hub for research operations with major institutional partners
+                        </div>
+                    </div>
+                    <div class="map-dot group" style="top: 45%; left: 60%;" id="dot2">
+                        <div class="opacity-0 group-hover:opacity-100 absolute top-0 left-0 transform -translate-y-full -translate-x-1/2 bg-white p-2 rounded shadow-lg text-sm w-48 transition-opacity duration-300 z-20 pointer-events-none">
+                            <strong>Eastern Region</strong>: Focus area for infectious disease research
+                        </div>
+                    </div>
+                    <div class="map-dot group" style="top: 65%; left: 35%;" id="dot3">
+                        <div class="opacity-0 group-hover:opacity-100 absolute top-0 left-0 transform -translate-y-full -translate-x-1/2 bg-white p-2 rounded shadow-lg text-sm w-48 transition-opacity duration-300 z-20 pointer-events-none">
+                            <strong>Southwest Region</strong>: Batwa communities and environmental transition studies
+                        </div>
+                    </div>
+                    <div class="map-dot group" style="top: 25%; left: 70%;" id="dot4">
+                        <div class="opacity-0 group-hover:opacity-100 absolute top-0 left-0 transform -translate-y-full -translate-x-1/2 bg-white p-2 rounded shadow-lg text-sm w-48 transition-opacity duration-300 z-20 pointer-events-none">
+                            <strong>Northern Uganda</strong>: Climate change and health adaptation research sites
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-8" data-aos="fade-left">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect transform transition-transform duration-300 hover:scale-105">
+                        <h3 class="text-2xl font-bold mb-4 gradient-text">Existing UC Footprint</h3>
+                        <p class="text-gray-700">Our three faculty members have established research programs across Uganda, providing immediate critical mass and operational foundation</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect transform transition-transform duration-300 hover:scale-105">
+                        <h3 class="text-2xl font-bold mb-4 gradient-text">Strong Partner Ecosystem</h3>
+                        <p class="text-gray-700">Dense network of high-capacity local partners (IDI, IDRC, Makerere University, UVRI) reduces start-up risk and accelerates impact</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect transform transition-transform duration-300 hover:scale-105">
+                        <h3 class="text-2xl font-bold mb-4 gradient-text">Epicenter of Research</h3>
+                        <p class="text-gray-700">Uganda sits at the intersection of HIV, malaria, and emerging-pathogen research, providing unparalleled training and grant opportunities</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect transform transition-transform duration-300 hover:scale-105">
+                        <h3 class="text-2xl font-bold mb-4 gradient-text">Environmental Diversity</h3>
+                        <p class="text-gray-700">Range of ecosystems and communities experiencing environmental transitions creates unique research opportunities</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Partner showcase with modern animation -->
+            <div class="mt-20">
+                <h3 class="text-3xl font-bold mb-8 text-center gradient-text" data-aos="fade-up">Key Ugandan Partners</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gray-50 p-8 rounded-lg shadow-md depth-effect" data-aos="fade-up" data-aos-delay="100">
+                        <div class="flex items-center mb-6">
+                            <div class="w-16 h-16 mr-4 rounded-full overflow-hidden img-hover-zoom">
+                                <img src="/api/placeholder/80/80" alt="IDI Logo" class="w-full h-full object-cover">
+                            </div>
+                            <h4 class="text-2xl font-bold">Infectious Diseases Institute (IDI)</h4>
+                        </div>
+                        <p class="text-gray-700 mb-4">A major research center at Makerere University with operations across 92% of Uganda's districts</p>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-accent-green mt-1 mr-2"></i>
+                                <span>Expertise in HIV, TB, and emerging infections</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-accent-green mt-1 mr-2"></i>
+                                <span>State-of-the-art laboratories and outpatient clinic</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-accent-green mt-1 mr-2"></i>
+                                <span>Played key role in Uganda's COVID-19 and Ebola responses</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-8 rounded-lg shadow-md depth-effect" data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex items-center mb-6">
+                            <div class="w-16 h-16 mr-4 rounded-full overflow-hidden img-hover-zoom">
+                                <img src="/api/placeholder/80/80" alt="IDRC Logo" class="w-full h-full object-cover">
+                            </div>
+                            <h4 class="text-2xl font-bold">Infectious Diseases Research Collaboration (IDRC)</h4>
+                        </div>
+                        <p class="text-gray-700 mb-4">A research institute with extensive malaria surveillance network across Uganda</p>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-accent-green mt-1 mr-2"></i>
+                                <span>Manages over 47 active research grants</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-accent-green mt-1 mr-2"></i>
+                                <span>Runs 70 malaria research centers across 15 districts</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-accent-green mt-1 mr-2"></i>
+                                <span>Developed AI-enabled surveillance systems</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Program Section -->
+    <section id="research" class="py-20 bg-gray-50 relative overflow-hidden">
+        <!-- Background decoration -->
+        <div class="absolute right-0 top-0 w-96 h-96 bg-accent-green opacity-5 rounded-full translate-x-1/2 -translate-y-1/2"></div>
+        <div class="absolute left-0 bottom-0 w-64 h-64 bg-accent-blue opacity-5 rounded-full -translate-x-1/2 translate-y-1/2"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4">Research Program</h2>
+                <div class="section-divider"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Exploring the connections between environmental change, infectious disease, and human adaptation</p>
+            </div>
+            
+            <div class="mb-12">
+                <ul class="nav nav-pills flex flex-wrap justify-center mb-8" id="research-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="genomics-tab" data-bs-toggle="pill" data-bs-target="#genomics" type="button" role="tab" aria-controls="genomics" aria-selected="true">
+                            <i class="fas fa-dna mr-2"></i>Genome-to-Population Health
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="virology-tab" data-bs-toggle="pill" data-bs-target="#virology" type="button" role="tab" aria-controls="virology" aria-selected="false">
+                            <i class="fas fa-virus mr-2"></i>Viral Oncology & Immunity
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="spatial-tab" data-bs-toggle="pill" data-bs-target="#spatial" type="button" role="tab" aria-controls="spatial" aria-selected="false">
+                            <i class="fas fa-map-marked-alt mr-2"></i>Precision Public Health
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="integrated-tab" data-bs-toggle="pill" data-bs-target="#integrated" type="button" role="tab" aria-controls="integrated" aria-selected="false">
+                            <i class="fas fa-project-diagram mr-2"></i>Integrated Approaches
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content depth-effect rounded-xl overflow-hidden" id="research-tab-content">
+                    <div class="tab-pane fade show active" id="genomics" role="tabpanel" aria-labelledby="genomics-tab">
+                        <div class="flex flex-col md:flex-row gap-8 p-8">
+                            <div class="md:w-1/3">
+                                <div class="img-hover-zoom rounded-lg overflow-hidden mb-4">
+                                    <img src="/api/placeholder/400/300" alt="Genomics Research" class="w-full h-auto">
+                                </div>
+                                <div class="flex items-center p-4 bg-white rounded-lg shadow-md">
+                                    <img src="/api/placeholder/60/60" alt="Dr. Kathleen Grogan" class="w-12 h-12 rounded-full mr-3">
+                                    <div>
+                                        <h4 class="font-bold">Dr. Kathleen Grogan</h4>
+                                        <p class="text-sm text-gray-600">Research Lead</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-2/3">
+                                <h3 class="text-2xl font-bold mb-4 gradient-text">Genome-to-Population Health</h3>
+                                <p class="text-gray-700 mb-4">This research pillar examines how environmental transitions affect human epigenomes and health outcomes, particularly in populations experiencing rapid lifestyle changes like the Batwa communities in Uganda.</p>
+                                <div class="space-y-4 mb-6">
+                                    <div class="bg-white p-4 rounded-lg shadow-sm transform transition-transform duration-300 hover:scale-102 hover:shadow-md">
+                                        <h4 class="font-bold mb-2 flex items-center">
+                                            <span class="w-8 h-8 flex items-center justify-center bg-accent-green text-white rounded-full mr-2">
+                                                <i class="fas fa-dna text-sm"></i>
+                                            </span>
+                                            Environmental Epigenetics
+                                        </h4>
+                                        <p class="text-gray-700">Studying how climate shifts, urbanization, and other environmental changes affect gene regulation at the molecular level</p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg shadow-sm transform transition-transform duration-300 hover:scale-102 hover:shadow-md">
+                                        <h4 class="font-bold mb-2 flex items-center">
+                                            <span class="w-8 h-8 flex items-center justify-center bg-accent-green text-white rounded-full mr-2">
+                                                <i class="fas fa-dna text-sm"></i>
+                                            </span>
+                                            Biological Adaptation
+                                        </h4>
+                                        <p class="text-gray-700">Tracking how human populations adapt to changing environments through genetic and epigenetic mechanisms</p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg shadow-sm transform transition-transform duration-300 hover:scale-102 hover:shadow-md">
+                                        <h4 class="font-bold mb-2 flex items-center">
+                                            <span class="w-8 h-8 flex items-center justify-center bg-accent-green text-white rounded-full mr-2">
+                                                <i class="fas fa-dna text-sm"></i>
+                                            </span>
+                                            Intergenerational Effects
+                                        </h4>
+                                        <p class="text-gray-700">Examining how environmental exposures may affect future generations through epigenetic inheritance</p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-start">
+                                    <a href="#" class="btn-uc hover-effect">Learn More About This Research</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Similar structure for other tabs, just showing one as example -->
+                    <div class="tab-pane fade" id="virology" role="tabpanel" aria-labelledby="virology-tab">
+                        <!-- Content for virology tab -->
+                    </div>
+                    
+                    <div class="tab-pane fade" id="spatial" role="tabpanel" aria-labelledby="spatial-tab">
+                        <!-- Content for spatial tab -->
+                    </div>
+                    
+                    <div class="tab-pane fade" id="integrated" role="tabpanel" aria-labelledby="integrated-tab">
+                        <!-- Content for integrated tab -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Research metrics with animated counters -->
+            <div class="mt-16">
+                <h3 class="text-3xl font-bold mb-8 text-center gradient-text" data-aos="fade-up">Research Impact</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="stat-card bg-white p-6 rounded-lg text-center" data-aos="fade-up" data-aos-delay="100">
+                        <div class="text-5xl font-bold mb-4">
+                            <span class="counter" data-target="14">0</span>
+                            <span class="text-accent-green">+</span>
+                        </div>
+                        <div class="w-16 h-1 bg-accent-green mx-auto mb-4"></div>
+                        <p class="text-xl font-semibold mb-2">Active Projects</p>
+                        <p class="text-gray-600">Across Uganda</p>
+                    </div>
+                    <div class="stat-card bg-white p-6 rounded-lg text-center" data-aos="fade-up" data-aos-delay="200">
+                        <div class="text-5xl font-bold mb-4">
+                            <span class="counter" data-target="36">0</span>
+                            <span class="text-accent-blue">+</span>
+                        </div>
+                        <div class="w-16 h-1 bg-accent-blue mx-auto mb-4"></div>
+                        <p class="text-xl font-semibold mb-2">Publications</p>
+                        <p class="text-gray-600">In the last 5 years</p>
+                    </div>
+                    <div class="stat-card bg-white p-6 rounded-lg text-center" data-aos="fade-up" data-aos-delay="300">
+                        <div class="text-5xl font-bold mb-4">
+                            <span class="counter" data-target="8">0</span>
+                            <span class="text-accent-orange">M</span>
+                        </div>
+                        <div class="w-16 h-1 bg-accent-orange mx-auto mb-4"></div>
+                        <p class="text-xl font-semibold mb-2">External Funding</p>
+                        <p class="text-gray-600">Dollars secured</p>
+                    </div>
+                    <div class="stat-card bg-white p-6 rounded-lg text-center" data-aos="fade-up" data-aos-delay="400">
+                        <div class="text-5xl font-bold mb-4">
+                            <span class="counter" data-target="12">0</span>
+                            <span class="text-uc-red">+</span>
+                        </div>
+                        <div class="w-16 h-1 bg-uc-red mx-auto mb-4"></div>
+                        <p class="text-xl font-semibold mb-2">Partners</p>
+                        <p class="text-gray-600">Local and international</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Educational Impact Section -->
+    <section id="impact" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <!-- Existing educational impact content -->
+        </div>
+    </section>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/ScrollTrigger.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Handle page transition loader
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const loader = document.querySelector('.page-transition');
+                loader.classList.add('loaded');
+            }, 1500);
+        });
+        
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100,
+            easing: 'ease-in-out'
+        });
+        
+        // Initialize Vanilla Tilt for 3D card effect
+        VanillaTilt.init(document.querySelectorAll(".tilt-card"), {
+            max: 5,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.2,
+        });
+        
+        // Initialize Particles.js for hero section
+        if (document.getElementById('particles-js')) {
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 80,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#ffffff"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.5,
+                        "random": false,
+                        "anim": {
+                            "enable": false,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#ffffff",
+                        "opacity": 0.4,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 2,
+                        "direction": "none",
+                        "random": false,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 1
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200,
+                            "duration": 0.4
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+        }
+        
+        // Mobile Menu Toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+        
+        // Enhanced Sticky Navigation
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.navigation');
+            if (window.scrollY > 50) {
+                nav.classList.add('nav-scrolled');
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('nav-scrolled');
+                nav.classList.remove('shadow-md');
+            }
+        });
+        
+        // Improved Animated Counter Numbers
+        function animateCounters() {
+            const counterElements = document.querySelectorAll('.counter');
+            counterElements.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const duration = 1500; // ms
+                const stepTime = 5; // ms
+                const increment = Math.ceil(target / (duration / stepTime));
+                let count = 0;
+                
+                const interval = setInterval(() => {
+                    count += increment;
+                    if (count >= target) {
+                        counter.innerText = target;
+                        clearInterval(interval);
+                    } else {
+                        counter.innerText = count;
+                    }
+                }, stepTime);
+            });
+        }
+        
+        // Enhanced Graph Bars Animation
+        function animateGraphBars() {
+            const graphBars = document.querySelectorAll('.graph-bar');
+            graphBars.forEach(bar => {
+                const width = bar.getAttribute('data-width');
+                gsap.to(bar, {
+                    width: width,
+                    duration: 1.5,
+                    ease: "power2.out"
+                });
+            });
+        }
+        
+        // Map Tooltips Enhanced
+        const mapDots = document.querySelectorAll('.map-dot');
+        mapDots.forEach(dot => {
+            dot.addEventListener('mouseenter', function() {
+                mapDots.forEach(d => d.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Smooth scroll to section when clicking on navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active nav link
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+        
+        // Initialize GSAP ScrollTrigger for enhanced animations
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Animate gradient-text elements on scroll
+        gsap.utils.toArray('.gradient-text').forEach(element => {
+            gsap.fromTo(element, 
+                { backgroundSize: '0% 100%', opacity: 0.7 }, 
+                { 
+                    backgroundSize: '100% 100%', 
+                    opacity: 1, 
+                    duration: 1,
+                    scrollTrigger: {
+                        trigger: element,
+                        start: 'top 80%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+        });
+        
+        // Parallax effect for decorative elements
+        gsap.utils.toArray('.parallax-bg').forEach(element => {
+            gsap.to(element, {
+                y: -80,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: element.parentNode,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
+                }
+            });
+        });
+        
+        // Initialize Animations on Scroll with better viewport detection using Intersection Observer
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.id === 'impact' || entry.target.classList.contains('stats-section')) {
+                        animateCounters();
+                        animateGraphBars();
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('#impact, .stats-section').forEach(section => {
+            observer.observe(section);
+        });
+        
+        // Enhanced tab functionality
+        document.querySelectorAll('button[data-bs-toggle="pill"]').forEach(tab => {
+            tab.addEventListener('click', function(event) {
+                event.preventDefault();
+                
+                // Remove active class from all tabs and panels
+                document.querySelectorAll('.nav-link').forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                document.querySelectorAll('.tab-pane').forEach(p => {
+                    p.classList.remove('show');
+                    p.classList.remove('active');
+                });
+                
+                // Add active class to clicked tab and corresponding panel
+                tab.classList.add('active');
+                tab.setAttribute('aria-selected', 'true');
+                const target = document.querySelector(tab.getAttribute('data-bs-target'));
+                if (target) {
+                    target.classList.add('show');
+                    target.classList.add('active');
+                    
+                    // Add a nice fade-in effect with GSAP
+                    gsap.fromTo(target, 
+                        { opacity: 0, y: 10 }, 
+                        { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }
+                    );
+                }
+            });
+        });
+        
+        // Utility: Check if Element is in Viewport (enhanced version)
+        function isElementInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.8 &&
+                rect.bottom >= 0
+            );
+        }
+    </script>
+</body>
+</html> 

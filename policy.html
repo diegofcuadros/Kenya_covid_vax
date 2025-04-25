@@ -10,10 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Mapbox GL JS -->
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
-    
     <!-- CSS -->
     <link rel="stylesheet" href="css/main.css">
     
@@ -238,14 +234,6 @@
             line-height: 1.5;
         }
         
-        .policy-map {
-            margin-top: 50px;
-            height: 500px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-        }
-        
         @media (max-width: 768px) {
             .policy-grid {
                 grid-template-columns: 1fr;
@@ -275,7 +263,7 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="story.html">Story Map</a></li>
-                <li><a href="explorer.html">Map Explorer</a></li>
+                
                 <li><a href="results.html">Results</a></li>
                 <li><a href="policy.html" class="active" aria-current="page">Policy</a></li>
                 <li><a href="team.html">Team</a></li>
@@ -299,7 +287,7 @@
             <!-- Mobile Vaccination Units -->
             <div class="policy-item">
                 <div class="policy-image">
-                    <img src="img/policy/mobile-units.jpg" alt="Mobile Vaccination Units">
+                    <img src="images/Mobile_vax.jpg" alt="Mobile Vaccination Units">
                 </div>
                 <div class="policy-content">
                     <h3 class="policy-title">Mobile Vaccination Units</h3>
@@ -318,7 +306,7 @@
                         </div>
                     </div>
                     <div class="policy-cta">
-                        <a href="#implementation-map" class="policy-button">View Implementation Map</a>
+                        <a href="#implementation-plan" class="policy-button">View Implementation Plan</a>
                     </div>
                 </div>
             </div>
@@ -326,7 +314,7 @@
             <!-- Financial Inclusion -->
             <div class="policy-item">
                 <div class="policy-image">
-                    <img src="img/policy/fintech.jpg" alt="Financial Technology Integration">
+                    <img src="images/Mpesa.jpg" alt="M-Pesa Integration & Subsidies">
                 </div>
                 <div class="policy-content">
                     <h3 class="policy-title">M-Pesa Integration & Subsidies</h3>
@@ -353,7 +341,7 @@
             <!-- Immunization Integration -->
             <div class="policy-item">
                 <div class="policy-image">
-                    <img src="img/policy/immunization.jpg" alt="Immunization Program Integration">
+                    <img src="images/Routine_inmun.jpg" alt="Routine Immunization Integration">
                 </div>
                 <div class="policy-content">
                     <h3 class="policy-title">Routine Immunization Integration</h3>
@@ -380,7 +368,7 @@
             <!-- Climate Resilience -->
             <div class="policy-item">
                 <div class="policy-image">
-                    <img src="img/policy/climate.jpg" alt="Climate-Resilient Infrastructure">
+                    <img src="images/Climate.jpg" alt="Climate-Resilient Health Infrastructure">
                 </div>
                 <div class="policy-content">
                     <h3 class="policy-title">Climate-Resilient Health Infrastructure</h3>
@@ -471,220 +459,24 @@
                     <h3 class="step-title">Iterative Evaluation</h3>
                     <p class="step-description">Conduct quarterly geospatial analyses to identify persistent gaps and emerging patterns, with rapid policy adjustments based on spatial equity metrics.</p>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Implementation Map Section -->
-        <div class="policy-map" id="implementation-map">
-            <!-- Mapbox map will be rendered here -->
-        </div>
+
     </div>
+
+    <!-- Roadmap full-width image -->
+    <div style="width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;margin-top:40px;">
+        <img src="images/Roadmap.jpg" alt="Implementation Roadmap" style="width:100vw;max-width:100vw;height:auto;display:block;">
+    </div>
+
 
     <!-- Scripts -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize implementation map
-            mapboxgl.accessToken = 'pk.eyJ1IjoieW91cmFjY291bnQiLCJhIjoiY2xhbXBsZXRva2VuaXNub3R2YWxpZCJ9.replacewiththistokenfrommapbox';
-            
-            const map = new mapboxgl.Map({
-                container: 'implementation-map',
-                style: 'mapbox://styles/mapbox/light-v11',
-                center: [37.8, 0.5], // Center on Kenya
-                zoom: 5.5,
-                minZoom: 5,
-                maxZoom: 12,
-                maxBounds: [
-                    [32.5, -5], // Southwest coordinates
-                    [42.5, 5.5]  // Northeast coordinates
-                ]
+        // Toggle theme
+        const themeToggle = document.querySelector('.toggle-theme');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-theme');
             });
-            
-            // Add zoom and rotation controls
-            map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-            
-            // Check if dark mode is enabled and apply the appropriate map style
-            if (document.body.classList.contains('dark-theme')) {
-                map.setStyle('mapbox://styles/mapbox/dark-v11');
-            }
-            
-            // Map load event
-            map.on('load', function() {
-                // Add source for Kenya counties
-                map.addSource('kenya-counties', {
-                    type: 'geojson',
-                    data: 'data/kenya-counties.geojson'
-                });
-                
-                // Add vaccination rate layer
-                map.addLayer({
-                    id: 'vaccination-layer',
-                    type: 'fill',
-                    source: 'kenya-counties',
-                    layout: {},
-                    paint: {
-                        'fill-color': [
-                            'match',
-                            ['get', 'vaccination_rate_category'],
-                            '0-5', '#67001f',
-                            '5-10', '#b2182b',
-                            '10-15', '#d6604d',
-                            '15-20', '#f4a582',
-                            '20-25', '#fddbc7',
-                            '25-30', '#f7f7f7',
-                            '30-35', '#d1e5f0',
-                            '35-40', '#92c5de',
-                            '40-45', '#4393c3',
-                            '45-50', '#2166ac',
-                            '50+', '#053061',
-                            '#ccc' // default color
-                        ],
-                        'fill-opacity': 0.7
-                    }
-                });
-                
-                // Add county outline layer
-                map.addLayer({
-                    id: 'county-outline',
-                    type: 'line',
-                    source: 'kenya-counties',
-                    layout: {},
-                    paint: {
-                        'line-color': 'rgba(255, 255, 255, 0.5)',
-                        'line-width': 0.5
-                    }
-                });
-                
-                // Add markers for mobile vaccination units
-                const mobileUnits = [
-                    { name: "Garissa", coordinates: [39.6401, 0.4536], priority: "High" },
-                    { name: "Wajir", coordinates: [40.0573, 1.7471], priority: "High" },
-                    { name: "Mandera", coordinates: [40.1008, 3.9366], priority: "High" },
-                    { name: "Marsabit", coordinates: [37.9909, 2.3354], priority: "High" },
-                    { name: "Turkana", coordinates: [35.5988, 3.1157], priority: "High" },
-                    { name: "Samburu", coordinates: [36.7820, 1.0929], priority: "Medium" },
-                    { name: "Tana River", coordinates: [39.1009, -1.4873], priority: "Medium" },
-                    { name: "West Pokot", coordinates: [35.1188, 1.7587], priority: "Medium" }
-                ];
-                
-                // Add custom markers for mobile units
-                mobileUnits.forEach(unit => {
-                    // Create a DOM element for the marker
-                    const el = document.createElement('div');
-                    el.className = 'marker';
-                    el.style.backgroundImage = 'url(img/icons/mobile-unit.png)';
-                    el.style.width = '32px';
-                    el.style.height = '32px';
-                    el.style.backgroundSize = '100%';
-                    
-                    // Add marker to map
-                    new mapboxgl.Marker(el)
-                        .setLngLat(unit.coordinates)
-                        .setPopup(new mapboxgl.Popup({ offset: 25 })
-                            .setHTML(`<h3>${unit.name} County</h3><p>Priority: ${unit.priority}</p><p>Mobile vaccination unit deployment</p>`))
-                        .addTo(map);
-                });
-                
-                // Add legend
-                const legend = document.createElement('div');
-                legend.className = 'map-legend';
-                legend.style.position = 'absolute';
-                legend.style.bottom = '20px';
-                legend.style.right = '20px';
-                legend.style.padding = '10px';
-                legend.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-                legend.style.borderRadius = '4px';
-                legend.style.zIndex = '1';
-                legend.innerHTML = `
-                    <h4 style="margin-top: 0; margin-bottom: 10px; font-size: 12px;">Vaccination Coverage & Interventions</h4>
-                    <div style="display: flex; margin-bottom: 5px; align-items: center;">
-                        <img src="img/icons/mobile-unit.png" style="width: 20px; height: 20px; margin-right: 5px;">
-                        <span style="font-size: 12px;">Mobile Vaccination Unit</span>
-                    </div>
-                    <div style="height: 10px; margin-top: 10px; margin-bottom: 5px; display: flex;">
-                        <div style="flex: 1; background-color: #67001f;"></div>
-                        <div style="flex: 1; background-color: #b2182b;"></div>
-                        <div style="flex: 1; background-color: #d6604d;"></div>
-                        <div style="flex: 1; background-color: #f4a582;"></div>
-                        <div style="flex: 1; background-color: #fddbc7;"></div>
-                        <div style="flex: 1; background-color: #f7f7f7;"></div>
-                        <div style="flex: 1; background-color: #d1e5f0;"></div>
-                        <div style="flex: 1; background-color: #92c5de;"></div>
-                        <div style="flex: 1; background-color: #4393c3;"></div>
-                        <div style="flex: 1; background-color: #2166ac;"></div>
-                        <div style="flex: 1; background-color: #053061;"></div>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 10px;">
-                        <span>5%</span>
-                        <span>25%</span>
-                        <span>50%</span>
-                    </div>
-                `;
-                document.getElementById('implementation-map').appendChild(legend);
-            });
-            
-            // Toggle theme
-            const themeToggle = document.querySelector('.toggle-theme');
-            if (themeToggle) {
-                themeToggle.addEventListener('click', function() {
-                    document.body.classList.toggle('dark-theme');
-                    
-                    // Update map style based on theme
-                    if (document.body.classList.contains('dark-theme')) {
-                        map.setStyle('mapbox://styles/mapbox/dark-v11');
-                    } else {
-                        map.setStyle('mapbox://styles/mapbox/light-v11');
-                    }
-                    
-                    // Re-add layers after style change
-                    map.once('style.load', () => {
-                        // Add source for Kenya counties
-                        map.addSource('kenya-counties', {
-                            type: 'geojson',
-                            data: 'data/kenya-counties.geojson'
-                        });
-                        
-                        // Add vaccination rate layer
-                        map.addLayer({
-                            id: 'vaccination-layer',
-                            type: 'fill',
-                            source: 'kenya-counties',
-                            layout: {},
-                            paint: {
-                                'fill-color': [
-                                    'match',
-                                    ['get', 'vaccination_rate_category'],
-                                    '0-5', '#67001f',
-                                    '5-10', '#b2182b',
-                                    '10-15', '#d6604d',
-                                    '15-20', '#f4a582',
-                                    '20-25', '#fddbc7',
-                                    '25-30', '#f7f7f7',
-                                    '30-35', '#d1e5f0',
-                                    '35-40', '#92c5de',
-                                    '40-45', '#4393c3',
-                                    '45-50', '#2166ac',
-                                    '50+', '#053061',
-                                    '#ccc' // default color
-                                ],
-                                'fill-opacity': 0.7
-                            }
-                        });
-                        
-                        // Add county outline layer
-                        map.addLayer({
-                            id: 'county-outline',
-                            type: 'line',
-                            source: 'kenya-counties',
-                            layout: {},
-                            paint: {
-                                'line-color': 'rgba(255, 255, 255, 0.5)',
-                                'line-width': 0.5
-                            }
-                        });
-                    });
-                });
-            }
-        });
+        }
     </script>
 </body>
 </html>

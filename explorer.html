@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Map Explorer Removed</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <div style="max-width:600px;margin:80px auto;padding:48px 32px;text-align:center;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(33,102,172,0.10);">
+    <h2 style="color:#2166ac;">Map Explorer Feature Removed</h2>
+    <p>The Map Explorer is no longer part of this website.<br>
+    Please use the navigation bar to access the Home, Story Map, Results, Policy, or Team pages.</p>
+    <a href="index.html" class="enter-button" style="margin-top:32px;display:inline-block;">Return Home</a>
+  </div>
+</body>
+</html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Map Explorer - COVID-19 Vaccination in Kenya</title>
@@ -14,8 +30,10 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
     
-    <!-- D3.js for charts -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Plotly.js for interactive charts -->
+    <script src="https://cdn.plot.ly/plotly-2.31.1.min.js"></script>
+    <!-- D3.js for legacy charts (optional, can remove later) -->
+    <!-- <script src="https://d3js.org/d3.v7.min.js"></script> -->
     
     <!-- CSS -->
     <link rel="stylesheet" href="css/main.css">
@@ -267,7 +285,7 @@
 </head>
 <body>
     <!-- Main header with navigation -->
-    <header class="main-header">
+    <!-- Navigation removed -->
         <div class="logo">
             <h1>COVID-19 Vaccination in Kenya</h1>
         </div>
@@ -296,6 +314,11 @@
     <div class="container">
         <!-- Sidebar with layers and filters -->
         <div class="sidebar" id="sidebar">
+            <!-- Modern Interactive Charts -->
+            <div style="margin-bottom:32px;">
+                <div id="scatter-plot" style="height:320px;margin-bottom:32px;"></div>
+                <div id="bar-chart" style="height:320px;"></div>
+            </div>
             <!-- Map Layers Section -->
             <div class="layer-control">
                 <h3>Map Layers</h3>
@@ -474,14 +497,13 @@
                     <span class="stat-label">Dominant Cluster:</span>
                     <span class="stat-value" id="dominant-cluster">Rural Dev (12)</span>
                 </div>
-                <div class="dashboard-chart" id="dashboard-chart">
-                    <!-- D3 chart will be rendered here -->
-                </div>
+                <!-- <div id="dashboard-chart"></div> --> <!-- Old D3 chart, now replaced by Plotly charts above -->
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
+    <script src="https://cdn.plotly.com/plotly-2.16.1.min.js"></script>
     <script src="js/data-loader.js"></script>
     <script>
         // Global variables
@@ -1357,5 +1379,6 @@
             // This would involve calculating cluster averages from the filtered counties
         }
     </script>
+    <script src="js/visualizations.js"></script>
 </body>
 </html>

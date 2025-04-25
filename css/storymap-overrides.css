@@ -7,7 +7,7 @@
     font-size: 11px;
     background-color: rgba(255, 255, 255, 0.7);
     padding: 2px 5px;
-    border-radius: 3px;
+    border-radius: 16px;
     z-index: 1000;
 }
 
@@ -41,10 +41,16 @@
 }
 
 .dark-theme .vco-storymap {
+    background: linear-gradient(120deg, #f7f7f7 0%, #e0e0e0 100%); 
+    box-shadow: 0 2px 12px rgba(33,102,172,0.07); 
+    border-radius: 16px;
     background-color: #121212 !important;
 }
 
 .dark-theme .vco-storymap .vco-slider .slider-container-mask .slider-container .slider-item .content .content-container .text {
+    background: linear-gradient(120deg, #f7f7f7 0%, #e0e0e0 100%); 
+    box-shadow: 0 2px 12px rgba(33,102,172,0.07); 
+    border-radius: 16px;
     background-color: #222 !important;
     color: #f0f0f0 !important;
 }

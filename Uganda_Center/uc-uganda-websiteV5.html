@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC Uganda Research Center | University of Cincinnati</title>
+    <!-- CSS Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom Styles (Includes styles from V3 and incorporates elements for added sections) -->
+    <style>
+        :root {
+            --uc-red: #E00122;
+            --uc-black: #000000;
+            --uc-gray: #5A5A5A;
+            --uc-light-gray: #F5F5F5;
+            --uc-white: #FFFFFF;
+            --accent-green: #2A9D8F;
+            --accent-blue: #264653;
+            --accent-yellow: #E9C46A;
+            --accent-orange: #F4A261;
+            --accent-red: #E76F51;
+            --accent-purple: #6A4C93;
+            --accent-teal: #1D7874;
+            --accent-mint: #8FC0A9;
+            --accent-gold: #D8B26E;
+        }
+
+        body {
+            font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- V3 Enhanced Styles (Keep As Is) --- */
+        .glass-effect { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
+        .gradient-text { background: linear-gradient(135deg, var(--accent-blue), var(--accent-green)); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 0% 100%; background-repeat: no-repeat; }
+        .card-hover { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .card-hover:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); }
+        .animated-border { position: relative; overflow: hidden; z-index: 1; }
+        .animated-border:after { content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent-blue), var(--accent-green), var(--accent-orange)); transform: scaleX(0); transform-origin: right; transition: transform 0.5s ease-out; z-index: -1; }
+        .animated-border:hover:after { transform: scaleX(1); transform-origin: left; }
+        .navigation { background-color: rgba(255, 255, 255, 0.97); backdrop-filter: blur(10px); transition: all 0.4s ease; }
+        .nav-scrolled { padding: 0.5rem 0; box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1); }
+        .btn-uc { background: linear-gradient(135deg, var(--uc-red) 0%, #F32C51 100%); color: white; padding: 12px 30px; border-radius: 30px; transition: all 0.4s ease; display: inline-block; font-weight: 600; position: relative; overflow: hidden; z-index: 1; border: none; }
+        .btn-uc:before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #F32C51 0%, var(--uc-red) 100%); z-index: -1; transition: opacity 0.4s ease; opacity: 0; }
+        .btn-uc:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(224, 1, 34, 0.4); }
+        .btn-uc:hover:before { opacity: 1; }
+        .btn-outline { background-color: transparent; color: var(--uc-white); border: 2px solid var(--uc-white); padding: 10px 28px; }
+        .btn-outline:hover { background-color: rgba(255, 255, 255, 0.1); color: white; }
+        .img-hover-zoom { overflow: hidden; border-radius: 0.5rem; }
+        .img-hover-zoom img { transition: transform 0.8s ease; }
+        .img-hover-zoom:hover img { transform: scale(1.08); }
+        .section-divider { height: 4px; width: 80px; background: linear-gradient(90deg, var(--accent-blue), var(--accent-green)); margin: 1rem auto 2rem; border-radius: 2px; }
+        .stat-card { border-radius: 1rem; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .stat-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+        .float-animation { animation: float 6s ease-in-out infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(42, 157, 143, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(42, 157, 143, 0); } 100% { box-shadow: 0 0 0 0 rgba(42, 157, 143, 0); } }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(224, 1, 34, 0.6); } 70% { box-shadow: 0 0 0 10px rgba(224, 1, 34, 0); } 100% { box-shadow: 0 0 0 0 rgba(224, 1, 34, 0); } }
+        .pulse-animation { animation: pulse 2s infinite; }
+        .page-transition { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-green) 100%); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s ease, visibility 0.8s ease; visibility: visible; opacity: 1; }
+        .page-transition.loaded { opacity: 0; visibility: hidden; }
+        .loader svg circle:last-child { stroke-dashoffset: 250; animation: stroke-loader 2s linear infinite; }
+        @keyframes stroke-loader { from { stroke-dashoffset: 250; } to { stroke-dashoffset: 0; } }
+        .uc-red { color: var(--uc-red); }
+        .bg-uc-red { background-color: var(--uc-red); }
+        .bg-accent-blue { background-color: var(--accent-blue); }
+        .bg-accent-green { background-color: var(--accent-green); }
+        .text-accent-green { color: var(--accent-green); }
+        .text-accent-blue { color: var(--accent-blue); }
+        .text-accent-orange { color: var(--accent-orange); }
+        .text-uc-red { color: var(--uc-red); } /* Added for consistency */
+        .bg-gradient-hero { background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-green) 100%); }
+        .hero-video-overlay { background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%); }
+        .timeline-dot { width: 20px; height: 20px; background-color: var(--uc-red); border-radius: 50%; position: absolute; left: -10px; top: 0; box-shadow: 0 0 0 5px rgba(224, 1, 34, 0.2); }
+        .timeline-line { position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--uc-gray), var(--accent-green)); }
+        .timeline-item { position: relative; padding-left: 30px; margin-bottom: 40px; } /* Reduced margin */
+        .map-dot { width: 12px; height: 12px; background-color: var(--uc-red); border-radius: 50%; position: absolute; transform: translate(-50%, -50%); cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 0 0 rgba(224, 1, 34, 0.6); animation: pulse-red 2s infinite; }
+        .map-dot:hover, .map-dot.active { width: 16px; height: 16px; background-color: var(--accent-green); animation: none; }
+        .researcher-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-radius: 1rem; overflow: hidden; }
+        .researcher-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+        .researcher-card img { filter: grayscale(80%); transition: all 0.5s ease; }
+        .researcher-card:hover img { filter: grayscale(0%); transform: scale(1.05); }
+        .nav-link { position: relative; font-weight: 500; transition: color 0.3s ease; padding-bottom: 8px; color: var(--uc-black); }
+        .nav-link:hover { color: var(--uc-red); }
+        .nav-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, var(--uc-red), var(--accent-orange)); transition: width 0.4s ease; border-radius: 2px; }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .graph-bar { height: 30px; background: linear-gradient(90deg, var(--accent-green), var(--accent-teal)); width: 0%; /* Start at 0 */ transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1); position: relative; border-radius: 15px; }
+        .graph-bar-label { position: absolute; right: 10px; top: 5px; color: white; font-weight: bold; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
+        .counter { font-weight: bold; background: linear-gradient(135deg, var(--uc-red), var(--accent-orange)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .nav-pills .nav-link { padding: 12px 20px; border-radius: 8px; margin-right: 10px; color: var(--uc-gray); font-weight: 600; transition: all 0.3s ease; border: 1px solid transparent; background-color: var(--uc-light-gray); margin-bottom: 10px; }
+        .nav-pills .nav-link:hover { border-color: var(--accent-blue); color: var(--accent-blue); background-color: var(--uc-white); }
+        .nav-pills .nav-link.active { background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-green) 100%); color: white; box-shadow: 0 5px 15px rgba(38, 70, 83, 0.3); border-color: transparent; }
+        .tab-pane { transition: all 0.5s ease; }
+        .tab-content { background-color: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: #f1f1f1; } ::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 10px; } ::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
+        .tilt-card { transform-style: preserve-3d; perspective: 1000px; }
+        .depth-effect { box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.02), 0 6.7px 5.3px rgba(0, 0, 0, 0.028), 0 12.5px 10px rgba(0, 0, 0, 0.035), 0 22.3px 17.9px rgba(0, 0, 0, 0.042), 0 41.8px 33.4px rgba(0, 0, 0, 0.05), 0 100px 80px rgba(0, 0, 0, 0.07); }
+        #particles-js { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; }
+        .hover-effect { position: relative; overflow: hidden; }
+        .hover-effect:after { content: ''; position: absolute; width: 100%; height: 100%; top: 0; left: 100%; background: rgba(255, 255, 255, 0.15); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); transform: skewX(-15deg); }
+        .hover-effect:hover:after { transform: translateX(-180%) skewX(-15deg); }
+        .mouse-scroll { display: inline-block; } .mouse { height: 42px; width: 24px; border-radius: 14px; border: 2px solid white; display: block; margin: 0 auto 8px; position: relative; } .wheel { height: 6px; width: 6px; display: block; margin: 8px auto; background: white; position: relative; border-radius: 50%; animation: mouse-wheel 1.6s ease infinite; } @keyframes mouse-wheel { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(12px); } } .arrow-scroll { display: block; width: 8px; height: 8px; border-right: 2px solid white; border-bottom: 2px solid white; margin: 0 auto; transform: rotate(45deg); animation: arrow-scroll 2s infinite; } .down-arrow-1 { animation-delay: 0s; } .down-arrow-2 { animation-delay: 0.2s; } .down-arrow-3 { animation-delay: 0.4s; } @keyframes arrow-scroll { 0% { opacity: 0; transform: rotate(45deg) translate(-5px, -5px); } 50% { opacity: 1; } 100% { opacity: 0; transform: rotate(45deg) translate(5px, 5px); } }
+        .hover\:scale-102:hover { transform: scale(1.02); }
+        .group .tooltip { opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; white-space: nowrap; z-index: 20; }
+        .group:hover .tooltip { opacity: 1; visibility: visible; }
+        .group .tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent; }
+        .partner-logo { filter: grayscale(100%); opacity: 0.7; transition: all 0.3s ease; } /* Style for partner logos */
+        .partner-logo:hover { filter: grayscale(0%); opacity: 1; }
+
+    </style>
+</head>
+<body class="bg-white text-uc-gray">
+    <!-- Page transition loader -->
+    <div class="page-transition">
+        <div class="loader">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" stroke="white" stroke-width="2" fill="none" />
+                <circle cx="50" cy="50" r="40" stroke="white" stroke-dasharray="250" stroke-width="4" fill="none" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navigation fixed top-0 left-0 right-0 z-50 transition duration-300">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <a href="#"> <!-- Link logo to home -->
+                        <img src="https://www.uc.edu/content/dam/refresh/uc-org/brand-guide/logos-marks/UC_logo.png" alt="University of Cincinnati Logo" class="h-10">
+                    </a>
+                    <span class="ml-3 text-xl font-semibold text-uc-black hidden sm:inline">Uganda Research Center</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#vision" class="nav-link animated-border">Vision</a>
+                    <a href="#researchers" class="nav-link animated-border">Researchers</a>
+                    <a href="#why-uganda" class="nav-link animated-border">Why Uganda</a>
+                    <a href="#research" class="nav-link animated-border">Research</a>
+                    <a href="#impact" class="nav-link animated-border">Impact</a>
+                    <a href="#partners" class="nav-link animated-border">Partners</a>
+                    <a href="#contact" class="btn-uc hover-effect text-sm">Support Us</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-uc-black focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden hidden mt-4 bg-white p-4 rounded shadow-lg border border-gray-200">
+                <a href="#vision" class="block py-2 text-uc-gray hover:text-uc-red font-medium">Vision</a>
+                <a href="#researchers" class="block py-2 text-uc-gray hover:text-uc-red font-medium">Researchers</a>
+                <a href="#why-uganda" class="block py-2 text-uc-gray hover:text-uc-red font-medium">Why Uganda</a>
+                <a href="#research" class="block py-2 text-uc-gray hover:text-uc-red font-medium">Research</a>
+                <a href="#impact" class="block py-2 text-uc-gray hover:text-uc-red font-medium">Impact</a>
+                <a href="#partners" class="block py-2 text-uc-gray hover:text-uc-red font-medium">Partners</a>
+                <a href="#contact" class="block py-2 mt-4 btn-uc text-center w-full">Support Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden pt-16">
+        <div id="particles-js"></div>
+        <div class="absolute inset-0 hero-video-overlay z-10"></div>
+        <img src="https://images.unsplash.com/photo-1512475875894-01f3cbb9477a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Research collaboration in Uganda" class="absolute inset-0 w-full h-full object-cover">
+
+        <div class="container mx-auto px-6 relative z-20 text-center">
+            <div data-aos="fade-up" data-aos-delay="300">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">University of Cincinnati<br><span class="gradient-text">Uganda Research Center</span></h1>
+                <p class="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto font-light">Fusing genomics, spatial epidemiology, and implementation science to create innovative solutions for complex health challenges in East Africa.</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#vision" class="btn-uc hover-effect">Explore Our Vision</a>
+                    <a href="#contact" class="btn-uc btn-outline glass-effect hover-effect">Support the Center</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white text-center z-20 hidden sm:block">
+            <p class="mb-2 text-sm opacity-80">Scroll Down</p>
+            <div class="mouse-scroll"><div class="mouse"><div class="wheel"></div></div><div><span class="arrow-scroll down-arrow-1"></span><span class="arrow-scroll down-arrow-2"></span><span class="arrow-scroll down-arrow-3"></span></div></div>
+        </div>
+
+        <div class="absolute z-20 left-[10%] top-[20%] float-animation hidden lg:block" style="animation-delay: 0s;"><div class="text-white opacity-20 text-6xl"><i class="fas fa-dna"></i></div></div>
+        <div class="absolute z-20 right-[15%] top-[30%] float-animation hidden lg:block" style="animation-delay: 1s;"><div class="text-white opacity-20 text-6xl"><i class="fas fa-virus"></i></div></div>
+        <div class="absolute z-20 left-[20%] bottom-[25%] float-animation hidden lg:block" style="animation-delay: 2s;"><div class="text-white opacity-20 text-6xl"><i class="fas fa-map-marked-alt"></i></div></div>
+        <div class="absolute z-20 right-[20%] bottom-[20%] float-animation hidden lg:block" style="animation-delay: 3s;"><div class="text-white opacity-20 text-6xl"><i class="fas fa-globe-africa"></i></div></div>
+    </section>
+
+    <!-- Vision Section -->
+    <section id="vision" class="py-20 bg-white relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-64 h-64 bg-accent-green opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2 z-0"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-accent-blue opacity-5 rounded-full translate-x-1/2 translate-y-1/2 z-0"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4 text-uc-black">Vision & Mission</h2>
+                <div class="section-divider"></div>
+                 <p class="text-xl text-gray-600 max-w-3xl mx-auto font-light">A transdisciplinary hub accelerating disease-control solutions across East Africa by integrating genomics, epidemiology, and implementation science.</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <div class="lg:w-1/2" data-aos="fade-right">
+                    <div class="img-hover-zoom depth-effect rounded-lg overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1571146387246-aac76c5d2607?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwcm9maWxlLXBhZ2V8MXx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Researchers collaborating" class="w-full transition-transform duration-700 hover:scale-110">
+                    </div>
+                </div>
+                <div class="lg:w-1/2" data-aos="fade-left">
+                    <h3 class="text-3xl font-bold mb-6 gradient-text">Our Mission</h3>
+                    <p class="text-lg text-gray-700 mb-6 font-light">To develop innovative approaches to complex health challenges through:</p>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-accent-green mt-1 mr-3"></i>
+                            <span>Understanding gene-environment interactions in transitioning populations.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-accent-blue mt-1 mr-3"></i>
+                            <span>Translating viral oncology findings into effective prevention strategies.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-accent-orange mt-1 mr-3"></i>
+                            <span>Creating precision public health tools for targeted interventions.</span>
+                        </li>
+                    </ul>
+                     <p class="mt-6 text-lg text-gray-700 font-light">This unique convergence addresses critical challenges at the intersection of environmental change, infectious disease, and human adaptation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Researcher Team Section -->
+    <section id="researchers" class="py-20 bg-gray-50 relative">
+         <div class="absolute inset-0 opacity-[0.03] z-0" style="background-image: url('https://www.transparenttextures.com/patterns/subtle-dots.png'); background-size: 50px 50px;"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4 text-uc-black">Meet the Leadership Team</h2>
+                <div class="section-divider"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto font-light">Three established University of Cincinnati researchers leading the center's core programs.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Researcher 1 -->
+                <div class="tilt-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="researcher-card bg-white rounded-lg overflow-hidden shadow-lg h-full flex flex-col">
+                        <div class="img-hover-zoom"><img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmVzc2lvbmFsJTIwd29tYW58ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="Dr. Kathleen Grogan" class="w-full h-64 object-cover"></div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <h3 class="text-2xl font-bold mb-1 text-uc-black">Dr. Kathleen Grogan</h3>
+                            <p class="text-sm text-gray-500 mb-3">Assistant Professor, Anthropology & Biological Sciences</p>
+                            <p class="text-accent-green font-semibold mb-3">Focus: Genome-to-Population Health</p>
+                            <p class="text-gray-700 mb-4 flex-grow text-sm font-light">Evolutionary geneticist studying gene-environment interactions and epigenomics of lifestyle transitions in Batwa communities.</p>
+                            <div class="mt-4 flex space-x-3">
+                                <a href="mailto:kathleen.grogan@uc.edu" class="text-gray-400 hover:text-accent-green transition-colors duration-300"><i class="fas fa-envelope fa-lg"></i></a>
+                                <a href="#" target="_blank" class="text-gray-400 hover:text-accent-green transition-colors duration-300"><i class="fab fa-twitter fa-lg"></i></a>
+                                <a href="#" target="_blank" class="text-gray-400 hover:text-accent-green transition-colors duration-300"><i class="fas fa-globe fa-lg"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Researcher 2 -->
+                <div class="tilt-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="researcher-card bg-white rounded-lg overflow-hidden shadow-lg h-full flex flex-col">
+                        <div class="img-hover-zoom"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cHJvZmVzc2lvbmFsJTIwd29tYW58ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="Dr. Katherine Sabourin" class="w-full h-64 object-cover"></div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <h3 class="text-2xl font-bold mb-1 text-uc-black">Dr. Katherine Sabourin</h3>
+                             <p class="text-sm text-gray-500 mb-3">Assistant Professor, Environmental & Public Health Sciences</p>
+                            <p class="text-accent-blue font-semibold mb-3">Focus: Viral Oncology & Immunity</p>
+                            <p class="text-gray-700 mb-4 flex-grow text-sm font-light">Infectious disease epidemiologist focusing on oncogenic herpesviruses (KSHV), transmission dynamics, and cohort studies in Uganda.</p>
+                             <div class="mt-4 flex space-x-3">
+                                <a href="mailto:sabourke@ucmail.uc.edu" class="text-gray-400 hover:text-accent-blue transition-colors duration-300"><i class="fas fa-envelope fa-lg"></i></a>
+                                <a href="#" target="_blank" class="text-gray-400 hover:text-accent-blue transition-colors duration-300"><i class="fab fa-twitter fa-lg"></i></a>
+                                <a href="#" target="_blank" class="text-gray-400 hover:text-accent-blue transition-colors duration-300"><i class="fas fa-globe fa-lg"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Researcher 3 -->
+                <div class="tilt-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="researcher-card bg-white rounded-lg overflow-hidden shadow-lg h-full flex flex-col">
+                         <div class="img-hover-zoom"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmVzc2lvbmFsJTIwbWFufGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="Dr. Diego Cuadros" class="w-full h-64 object-cover"></div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <h3 class="text-2xl font-bold mb-1 text-uc-black">Dr. Diego Cuadros</h3>
+                             <p class="text-sm text-gray-500 mb-3">Associate Professor, Geography</p>
+                            <p class="text-accent-orange font-semibold mb-3">Focus: Precision Public Health Analytics</p>
+                            <p class="text-gray-700 mb-4 flex-grow text-sm font-light">Spatial epidemiologist and director of the Health Geography & Disease Modeling Lab, applying spatial analysis and AI to map disease patterns.</p>
+                            <div class="mt-4 flex space-x-3">
+                                <a href="mailto:cuadrodo@ucmail.uc.edu" class="text-gray-400 hover:text-accent-orange transition-colors duration-300"><i class="fas fa-envelope fa-lg"></i></a>
+                                <a href="#" target="_blank" class="text-gray-400 hover:text-accent-orange transition-colors duration-300"><i class="fab fa-twitter fa-lg"></i></a>
+                                <a href="#" target="_blank" class="text-gray-400 hover:text-accent-orange transition-colors duration-300"><i class="fas fa-globe fa-lg"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 text-center" data-aos="fade-up">
+                 <p class="text-lg text-gray-700 max-w-3xl mx-auto mb-8 font-light">This convergence represents more than the sum of individual work, embodying a new, integrated approach to complex health challenges.</p>
+                <a href="#research" class="btn-uc hover-effect">Explore Our Research</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Uganda Section -->
+    <section id="why-uganda" class="py-20 bg-white relative overflow-hidden">
+        <div class="absolute inset-0 z-0 opacity-[0.03]" style="background-image: url('https://www.transparenttextures.com/patterns/subtle-dots.png'); background-size: 50px 50px;"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4 text-uc-black">Why Uganda? The Compelling Case for Place</h2>
+                <div class="section-divider"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto font-light">A unique convergence of existing UC infrastructure, exceptional research opportunities, and world-class local partners.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="relative depth-effect rounded-lg shadow-xl overflow-hidden" data-aos="fade-right">
+                    <img src="https://www.gettyimages.com/gi-resources/images/500px/983794168.jpg" alt="Map of Uganda showing research sites" class="w-full">
+                    <div class="map-dot group" style="top: 30%; left: 40%;" title="Kampala"><div class="tooltip"><strong>Kampala</strong>: Central hub & major partners</div></div>
+                    <div class="map-dot group" style="top: 45%; left: 60%;" title="Eastern Region"><div class="tooltip"><strong>Eastern Region</strong>: Infectious disease focus</div></div>
+                    <div class="map-dot group" style="top: 65%; left: 35%;" title="Southwestern Region"><div class="tooltip"><strong>Southwest Region</strong>: Batwa studies</div></div>
+                    <div class="map-dot group" style="top: 25%; left: 70%;" title="Northern Uganda"><div class="tooltip"><strong>Northern Uganda</strong>: Emerging research sites</div></div>
+                </div>
+                <div class="space-y-6" data-aos="fade-left">
+                     <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
+                         <h3 class="text-2xl font-bold mb-3 gradient-text flex items-center"><i class="fas fa-map-marker-alt mr-3 text-accent-blue"></i>Existing UC Footprint</h3>
+                        <p class="text-gray-700 font-light">Established research sites, community relationships (e.g., Batwa Development Program), and local collaborations reduce startup risks.</p>
+                        <img src="https://www.safaribookings.com/blog/wp-content/uploads/2019/07/crater-lake-uganda-1000x600.jpg" alt="Crater Lake in Uganda" class="w-full h-48 object-cover rounded mb-4">
+                        <a href="#contact-form" class="btn-uc hover-effect text-xs">Inquire About Research</a>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
+                         <h3 class="text-2xl font-bold mb-3 gradient-text flex items-center"><i class="fas fa-handshake mr-3 text-accent-green"></i>Strong Partner Ecosystem</h3>
+                        <p class="text-gray-700 font-light">World-class partners like IDI, IDRC, Makerere University, and UVRI offer infrastructure, expertise, and nationwide reach.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
+                        <h3 class="text-2xl font-bold mb-3 gradient-text flex items-center"><i class="fas fa-vial mr-3 text-accent-orange"></i>Epicenter of Research</h3>
+                        <p class="text-gray-700 font-light">Hub for HIV, malaria, viral oncology, and emerging pathogen research, offering unique training and funding opportunities.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
+                         <h3 class="text-2xl font-bold mb-3 gradient-text flex items-center"><i class="fas fa-mountain mr-3 text-accent-red"></i>Environmental & Social Diversity</h3>
+                        <p class="text-gray-700 font-light">Diverse ecosystems and populations undergoing rapid transitions create ideal settings for studying adaptation and health challenges.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Strategic Alignment Section -->
+    <section id="alignment" class="py-20 bg-gradient-to-b from-accent-blue to-accent-teal text-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4">Strategic Alignment: Advancing UC's Vision</h2>
+                <div class="section-divider bg-gradient-to-r from-accent-yellow to-accent-orange"></div>
+                <p class="text-xl max-w-3xl mx-auto font-light">The UC-URC directly advances multiple strategic priorities of the University of Cincinnati.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Alignment Points -->
+                <div class="glass-effect p-6 rounded-lg" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-4xl text-accent-yellow mb-4"><i class="fas fa-rocket"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">Next Lives Here</h3>
+                    <p class="font-light text-sm">Supports academic excellence, urban impact, and innovation by extending UC's reach to address global challenges.</p>
+                </div>
+                <div class="glass-effect p-6 rounded-lg" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-4xl text-accent-yellow mb-4"><i class="fas fa-microscope"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">Research Excellence</h3>
+                    <p class="font-light text-sm">Establishes a flagship international research center integrating cutting-edge methodologies across disciplines.</p>
+                </div>
+                 <div class="glass-effect p-6 rounded-lg" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-4xl text-accent-yellow mb-4"><i class="fas fa-laptop-code"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">Digital Futures</h3>
+                    <p class="font-light text-sm">Applies computational approaches, AI, and spatial analytics to global health challenges in a real-world lab.</p>
+                </div>
+                 <div class="glass-effect p-6 rounded-lg" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-4xl text-accent-yellow mb-4"><i class="fas fa-graduation-cap"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">College of A&S / Global Health</h3>
+                    <p class="font-light text-sm">Answers the call to "grow global impact" and provides a foundation for the new Global Health minor.</p>
+                </div>
+                 <div class="glass-effect p-6 rounded-lg" data-aos="fade-up" data-aos-delay="500">
+                    <div class="text-4xl text-accent-yellow mb-4"><i class="fas fa-users"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">Inclusive Excellence</h3>
+                    <p class="font-light text-sm">Creates opportunities for diverse students and faculty through equitable global partnerships.</p>
+                </div>
+                 <div class="glass-effect p-6 rounded-lg" data-aos="fade-up" data-aos-delay="600">
+                    <div class="text-4xl text-accent-yellow mb-4"><i class="fas fa-university"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">Institutional Strengths</h3>
+                    <p class="font-light text-sm">Leverages UC's multidisciplinary structure, research infrastructure, Global Programs Office, and College of Medicine expertise.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Center Structure Section -->
+     <section id="structure" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4 text-uc-black">Center Design: A Framework for Impact</h2>
+                <div class="section-divider"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto font-light">Structured to maximize scientific innovation and practical impact through operational effectiveness.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <!-- Organizational Design -->
+                <div data-aos="fade-right">
+                    <h3 class="text-3xl font-bold mb-6 gradient-text">Organizational Design</h3>
+                    <p class="text-lg text-gray-700 mb-8 font-light">Established as a Ugandan-registered research entity with formal affiliations to UC and Makerere University, modeled after successful international centers.</p>
+                    <div class="space-y-6 mb-8">
+                        <div class="flex items-start p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex-shrink-0 bg-accent-blue text-white rounded-full p-3 mr-4 w-12 h-12 flex items-center justify-center"><i class="fas fa-sitemap"></i></div>
+                            <div><h4 class="text-xl font-semibold mb-1">Governance Structure</h4><p class="text-gray-600 text-sm font-light">Balanced Executive Board (UC, Uganda, stakeholders), Scientific Advisory Committee, and Community Advisory Boards.</p></div>
+                        </div>
+                        <div class="flex items-start p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex-shrink-0 bg-accent-green text-white rounded-full p-3 mr-4 w-12 h-12 flex items-center justify-center"><i class="fas fa-user-friends"></i></div>
+                            <div><h4 class="text-xl font-semibold mb-1">Leadership Model</h4><p class="text-gray-600 text-sm font-light">Co-Directors (one UC-based, one Uganda-based), Program Directors for research pillars, and an Operations Director.</p></div>
+                        </div>
+                        <div class="flex items-start p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                           <div class="flex-shrink-0 bg-accent-orange text-white rounded-full p-3 mr-4 w-12 h-12 flex items-center justify-center"><i class="fas fa-building"></i></div>
+                            <div><h4 class="text-xl font-semibold mb-1">Physical & Digital Infrastructure</h4><p class="text-gray-600 text-sm font-light">Kampala HQ (potentially co-located with IDI/IDRC), field research nodes, shared lab capacity growing to dedicated facilities, secure digital data platform.</p></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Implementation Timeline -->
+                <div data-aos="fade-left">
+                     <h3 class="text-3xl font-bold mb-6 gradient-text">Implementation Timeline</h3>
+                    <div class="relative pl-10">
+                         <div class="timeline-line" style="left: 0;"></div> <!-- Ensure line is positioned correctly -->
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <h4 class="text-xl font-semibold mb-1">Phase 1: Establishment (Year 1)</h4>
+                            <p class="text-gray-600 text-sm font-light">Formalize partnerships, register entity, recruit core staff, launch pilot projects, submit initial grants.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <h4 class="text-xl font-semibold mb-1">Phase 2: Growth (Years 2-3)</h4>
+                            <p class="text-gray-600 text-sm font-light">Expand staff/infrastructure, launch training programs, develop data systems, strengthen community engagement, build policy pathways.</p>
+                        </div>
+                         <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <h4 class="text-xl font-semibold mb-1">Phase 3: Expansion (Years 4-6)</h4>
+                            <p class="text-gray-600 text-sm font-light">Develop specialized facilities, extend geographic reach, add research domains, build regional collaborations, create funding mechanisms.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <h4 class="text-xl font-semibold mb-1">Phase 4: Sustainability (Years 7-10)</h4>
+                            <p class="text-gray-600 text-sm font-light">Transition to majority Ugandan leadership, evaluate strategy, develop long-term partnerships, ensure innovation/adaptation, assess scalability.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Program Section -->
+    <section id="research" class="py-20 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
+        <div class="absolute right-0 top-0 w-96 h-96 bg-accent-green opacity-5 rounded-full translate-x-1/2 -translate-y-1/2 z-0"></div>
+        <div class="absolute left-0 bottom-0 w-64 h-64 bg-accent-blue opacity-5 rounded-full -translate-x-1/2 translate-y-1/2 z-0"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4 text-uc-black">Research Program: Integrated Inquiry</h2>
+                <div class="section-divider"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto font-light">Organized around three integrated pillars, designed for cross-cutting collaboration.</p>
+            </div>
+            <div class="mb-12" data-aos="fade-up">
+                 <ul class="nav nav-pills flex flex-wrap justify-center mb-8" id="research-tabs" role="tablist">
+                    <li class="nav-item" role="presentation"><button class="nav-link active" id="genomics-tab" data-bs-toggle="pill" data-bs-target="#genomics" type="button" role="tab" aria-controls="genomics" aria-selected="true"><i class="fas fa-dna mr-2"></i>Genome-to-Population</button></li>
+                    <li class="nav-item" role="presentation"><button class="nav-link" id="virology-tab" data-bs-toggle="pill" data-bs-target="#virology" type="button" role="tab" aria-controls="virology" aria-selected="false"><i class="fas fa-virus mr-2"></i>Viral Oncology & Immunity</button></li>
+                    <li class="nav-item" role="presentation"><button class="nav-link" id="spatial-tab" data-bs-toggle="pill" data-bs-target="#spatial" type="button" role="tab" aria-controls="spatial" aria-selected="false"><i class="fas fa-map-marked-alt mr-2"></i>Precision Public Health</button></li>
+                    <li class="nav-item" role="presentation"><button class="nav-link" id="integrated-tab" data-bs-toggle="pill" data-bs-target="#integrated" type="button" role="tab" aria-controls="integrated" aria-selected="false"><i class="fas fa-project-diagram mr-2"></i>Cross-Cutting Themes</button></li>
+                 </ul>
+                <div class="tab-content depth-effect" id="research-tab-content">
+                    <!-- Tab 1: Genomics -->
+                    <div class="tab-pane fade show active" id="genomics" role="tabpanel" aria-labelledby="genomics-tab">
+                        <div class="flex flex-col md:flex-row gap-8 p-8 items-start">
+                            <div class="md:w-1/3 flex-shrink-0">
+                                <div class="img-hover-zoom rounded-lg overflow-hidden mb-4 shadow-md"><img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Z2Vub21pY3N8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="Genomics Research" class="w-full h-auto"></div>
+                                <div class="flex items-center p-4 bg-white rounded-lg shadow-md">
+                                    <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmVzc2lvbmFsJTIwd29tYW58ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="Dr. Kathleen Grogan" class="w-12 h-12 rounded-full mr-3 flex-shrink-0">
+                                    <div><h4 class="font-bold text-uc-black">Dr. Kathleen Grogan</h4><p class="text-sm text-gray-600">Pillar Lead</p></div>
+                                </div>
+                            </div>
+                            <div class="md:w-2/3">
+                                <h3 class="text-2xl font-bold mb-4 gradient-text">Genome-to-Population Health</h3>
+                                <p class="text-gray-700 mb-4 font-light">Examines biological mechanisms linking environmental transitions (climate shifts, urbanization) to human health at the molecular level, focusing on adaptation and vulnerability.</p>
+                                <h4 class="font-semibold mb-2 text-gray-800">Key Research Areas:</h4>
+                                <ul class="list-disc list-inside space-y-1 text-gray-600 text-sm font-light mb-6 pl-2">
+                                    <li>Examining how environmental transitions affect human epigenomes</li>
+                                    <li>Tracking adaptive genetic responses to climate change</li>
+                                    <li>Developing biomarkers for environmental exposures</li>
+                                    <li>Studying intergenerational effects of lifestyle transitions (e.g., in Batwa communities)</li>
+                                </ul>
+                                <a href="#" class="btn-uc hover-effect text-sm">Explore Projects</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Tab 2: Virology -->
+                     <div class="tab-pane fade" id="virology" role="tabpanel" aria-labelledby="virology-tab">
+                        <div class="flex flex-col md:flex-row gap-8 p-8 items-start">
+                             <div class="md:w-1/3 flex-shrink-0">
+                                <div class="img-hover-zoom rounded-lg overflow-hidden mb-4 shadow-md"><img src="https://www.safaribookings.com/bwindi/photos/p-6" alt="Mother mountain gorilla with baby in Bwindi" class="w-full h-auto"></div>
+                                <div class="flex items-center p-4 bg-white rounded-lg shadow-md">
+                                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cHJvZmVzc2lvbmFsJTIwd29tYW58ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="Dr. Katherine Sabourin" class="w-12 h-12 rounded-full mr-3 flex-shrink-0">
+                                    <div><h4 class="font-bold text-uc-black">Dr. Katherine Sabourin</h4><p class="text-sm text-gray-600">Pillar Lead</p></div>
+                                </div>
+                            </div>
+                             <div class="md:w-2/3">
+                                <h3 class="text-2xl font-bold mb-4 gradient-text">Viral Oncology & Immunity</h3>
+                                <p class="text-gray-700 mb-4 font-light">Investigates how viral infections (like KSHV) interact with environmental factors to affect disease outcomes, transmission patterns, and immune responses in diverse ecological settings.</p>
+                                <h4 class="font-semibold mb-2 text-gray-800">Key Research Areas:</h4>
+                                <ul class="list-disc list-inside space-y-1 text-gray-600 text-sm font-light mb-6 pl-2">
+                                     <li>Investigating co-infection dynamics in changing environments</li>
+                                     <li>Elucidating viral-environmental interactions affecting transmission</li>
+                                     <li>Developing improved diagnostics for oncogenic viruses</li>
+                                     <li>Designing community-based prevention programs for viral-associated cancers</li>
+                                </ul>
+                                <a href="#" class="btn-uc hover-effect text-sm">Explore Projects</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Tab 3: Spatial -->
+                     <div class="tab-pane fade" id="spatial" role="tabpanel" aria-labelledby="spatial-tab">
+                         <div class="flex flex-col md:flex-row gap-8 p-8 items-start">
+                            <div class="md:w-1/3 flex-shrink-0">
+                                <div class="img-hover-zoom rounded-lg overflow-hidden mb-4 shadow-md"><img src="https://www.safaribookings.com/blog/wp-content/uploads/2019/07/Places-to-Visit-in-Uganda-Feature-1110x625.jpg" alt="Spatial Analytics" class="w-full h-auto"></div>
+                                <div class="flex items-center p-4 bg-white rounded-lg shadow-md">
+                                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmVzc2lvbmFsJTIwbWFufGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="Dr. Diego Cuadros" class="w-12 h-12 rounded-full mr-3 flex-shrink-0">
+                                    <div><h4 class="font-bold text-uc-black">Dr. Diego Cuadros</h4><p class="text-sm text-gray-600">Pillar Lead</p></div>
+                                </div>
+                            </div>
+                             <div class="md:w-2/3">
+                                <h3 class="text-2xl font-bold mb-4 gradient-text">Precision Public Health Analytics</h3>
+                                <p class="text-gray-700 mb-4 font-light">Develops and applies spatial models, AI, and predictive tools using GIS and epidemiological analysis to identify disease hotspots, predict outbreaks, and optimize resource allocation.</p>
+                                <h4 class="font-semibold mb-2 text-gray-800">Key Research Areas:</h4>
+                                <ul class="list-disc list-inside space-y-1 text-gray-600 text-sm font-light mb-6 pl-2">
+                                     <li>Creating spatial models of disease distribution and transmission</li>
+                                     <li>Developing AI-enabled prediction tools for disease hotspots</li>
+                                     <li>Designing geographically targeted intervention strategies</li>
+                                     <li>Building digital platforms for surveillance and response</li>
+                                </ul>
+                               <a href="#" class="btn-uc hover-effect text-sm">Explore Projects</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Tab 4: Integrated -->
+                     <div class="tab-pane fade" id="integrated" role="tabpanel" aria-labelledby="integrated-tab">
+                         <div class="flex flex-col md:flex-row gap-8 p-8 items-start">
+                             <div class="md:w-1/3 flex-shrink-0">
+                                <div class="img-hover-zoom rounded-lg overflow-hidden mb-4 shadow-md"><img src="https://www.safaribookings.com/blog/wp-content/uploads/2019/02/When-to-Visit-Uganda-Feature-1110x625.jpg" alt="Integrated Research Themes" class="w-full h-auto"></div>
+                                 <div class="p-4 bg-white rounded-lg shadow-md">
+                                    <h4 class="font-bold text-uc-black text-center">Cross-Cutting Themes</h4>
+                                     <p class="text-sm text-gray-600 text-center">Unifying the Research Program</p>
+                                </div>
+                            </div>
+                             <div class="md:w-2/3">
+                                <h3 class="text-2xl font-bold mb-4 gradient-text">Integrated Cross-Cutting Themes</h3>
+                                <p class="text-gray-700 mb-4 font-light">These themes unify the research program, enabling discoveries impossible within a single discipline and ensuring local relevance and practical application.</p>
+                                <h4 class="font-semibold mb-2 text-gray-800">Key Themes:</h4>
+                                <ul class="list-disc list-inside space-y-1 text-gray-600 text-sm font-light mb-6 pl-2">
+                                     <li>One Health approaches linking human, animal, and environmental health</li>
+                                     <li>Climate change adaptation strategies</li>
+                                     <li>Community-based participatory research methods</li>
+                                     <li>Implementation science for translating findings to practice</li>
+                                </ul>
+                                <p class="text-gray-700 font-light">Integration allows, for example, mapping epigenetic markers geographically or correlating viral dynamics with environmental exposures.</p>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Educational Impact Section -->
+    <section id="impact" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4 text-uc-black">Educational Impact: Training Global Health Leaders</h2>
+                <div class="section-divider"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto font-light">Creating transformative educational opportunities for students and researchers from both UC and Uganda.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+                <!-- For UC Students -->
+                <div data-aos="fade-right">
+                    <div class="img-hover-zoom rounded-lg overflow-hidden shadow-lg mb-8"><img src="https://www.safaribookings.com/blog/wp-content/uploads/2022/02/Gorilla-Trekking-in-Uganda-Feature-1110x625.jpg" alt="UC Students in Global Setting" class="w-full h-64 object-cover"></div>
+                    <h3 class="text-3xl font-bold mb-4 gradient-text">For UC Students & Faculty</h3>
+                    <p class="text-lg text-gray-700 mb-6 font-light">Unparalleled opportunities for meaningful global health research, practice, and cross-cultural competency building.</p>
+                    <div class="space-y-4">
+                        <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                            <h4 class="text-xl font-semibold mb-2 flex items-center"><i class="fas fa-user-graduate mr-3 text-accent-green"></i>Student Programs</h4>
+                            <ul class="list-disc list-inside space-y-1 text-gray-600 text-sm font-light pl-2">
+                                <li>Graduate Research Fellowships (Thesis research)</li>
+                                <li>Undergraduate Field Experiences (Summer training)</li>
+                                <li>Global Health Certificate/Minor practical component</li>
+                                <li>Potential Joint Degree Programs (with Makerere)</li>
+                            </ul>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                            <h4 class="text-xl font-semibold mb-2 flex items-center"><i class="fas fa-chalkboard-teacher mr-3 text-accent-blue"></i>Faculty Development</h4>
+                             <ul class="list-disc list-inside space-y-1 text-gray-600 text-sm font-light pl-2">
+                                <li>Research Sabbaticals & international engagement</li>
+                                <li>Grant Mentorship for international research</li>
+                                <li>Team Science Training for collaboration</li>
+                             </ul>
+                        </div>
+                    </div>
+                </div>
+                 <!-- For Ugandan Researchers -->
+                <div data-aos="fade-left">
+                    <div class="img-hover-zoom rounded-lg overflow-hidden shadow-lg mb-8"><img src="https://www.safaribookings.com/bwindi/photos/p-196" alt="Ugandan Researchers" class="w-full h-64 object-cover"></div>
+                    <h3 class="text-3xl font-bold mb-4 gradient-text">For Ugandan Students & Researchers</h3>
+                    <p class="text-lg text-gray-700 mb-6 font-light">Investing in local research capacity, mentorship, and advanced training to build a sustainable research ecosystem.</p>
+                    <div class="space-y-4">
+                         <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                            <h4 class="text-xl font-semibold mb-2 flex items-center"><i class="fas fa-user-graduate mr-3 text-accent-green"></i>Student & Early Career Support</h4>
+                             <ul class="list-disc list-inside space-y-1 text-gray-600 text-sm font-light pl-2">
+                                <li>Research Fellowships aligned with center priorities</li>
+                                <li>Advanced technical training workshops (genomics, spatial analysis)</li>
+                             </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                            <h4 class="text-xl font-semibold mb-2 flex items-center"><i class="fas fa-exchange-alt mr-3 text-accent-orange"></i>Faculty & Institutional Capacity</h4>
+                             <ul class="list-disc list-inside space-y-1 text-gray-600 text-sm font-light pl-2">
+                                 <li>Visiting Scientist Program at UC</li>
+                                 <li>Collaborations to enhance research capabilities</li>
+                                 <li>Support for developing competitive grant proposals</li>
+                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <!-- Digital Learning -->
+            <div class="bg-gradient-to-r from-gray-100 to-white p-8 rounded-lg shadow-xl depth-effect" data-aos="fade-up">
+                <h3 class="text-3xl font-bold mb-6 text-center gradient-text">Digital Learning & Global Connection</h3>
+                <p class="text-center text-gray-600 mb-8 font-light">Extending educational reach beyond physical presence through innovative digital tools.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-4 text-accent-blue flex items-center"><i class="fas fa-desktop mr-3"></i>Connecting Classrooms & Skills</h4>
+                        <ul class="space-y-3 font-light">
+                            <li class="flex items-start"><i class="fas fa-check-circle text-accent-blue mt-1 mr-2 flex-shrink-0"></i><span>Virtual Exchange Courses connecting UC and Ugandan classrooms</span></li>
+                            <li class="flex items-start"><i class="fas fa-check-circle text-accent-blue mt-1 mr-2 flex-shrink-0"></i><span>Online Research Methods Modules for specialized techniques</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                         <h4 class="text-xl font-semibold mb-4 text-accent-green flex items-center"><i class="fas fa-share-alt mr-3"></i>Sharing Knowledge & Findings</h4>
+                        <ul class="space-y-3 font-light">
+                            <li class="flex items-start"><i class="fas fa-check-circle text-accent-green mt-1 mr-2 flex-shrink-0"></i><span>Interactive Data Visualization Platform for exploring research findings</span></li>
+                            <li class="flex items-start"><i class="fas fa-check-circle text-accent-green mt-1 mr-2 flex-shrink-0"></i><span>Open Educational Resources accessible globally</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Educational Outcomes -->
+            <div class="mt-16 text-center stats-section" data-aos="fade-up">
+                 <h3 class="text-3xl font-bold mb-6 gradient-text">Educational Outcomes (5-Year Targets)</h3>
+                 <p class="text-lg text-gray-700 max-w-3xl mx-auto mb-12 font-light">These activities will create a community of scholars equipped to address complex global health challenges.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+                    <div class="stat-card bg-white p-6 rounded-lg shadow-md">
+                        <div class="text-4xl font-bold text-accent-green mb-2"><span class="counter" data-target="100">0</span>+</div>
+                        <p class="text-lg font-semibold text-uc-black">Students Trained</p><p class="text-gray-600 text-sm">UC & Ugandan</p>
+                    </div>
+                    <div class="stat-card bg-white p-6 rounded-lg shadow-md">
+                        <div class="text-4xl font-bold text-accent-blue mb-2"><span class="counter" data-target="20">0</span>+</div>
+                        <p class="text-lg font-semibold text-uc-black">Graduate Theses</p><p class="text-gray-600 text-sm">Supported</p>
+                    </div>
+                    <div class="stat-card bg-white p-6 rounded-lg shadow-md">
+                         <div class="text-4xl font-bold text-accent-orange mb-2"><span class="counter" data-target="15">0</span>+</div>
+                        <p class="text-lg font-semibold text-uc-black">Faculty Exchanges</p><p class="text-gray-600 text-sm">UC & Ugandan</p>
+                    </div>
+                    <div class="stat-card bg-white p-6 rounded-lg shadow-md">
+                         <div class="text-4xl font-bold text-uc-red mb-2"><span class="counter" data-target="8">0</span>+</div> <!-- Adjusted from V2 based on text -->
+                        <p class="text-lg font-semibold text-uc-black">New Courses/Modules</p><p class="text-gray-600 text-sm">Virtual & In-Person</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partnership Strategy Section -->
+    <section id="partners" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4 text-uc-black">Partnership Strategy: Collaboration for Sustainability</h2>
+                 <div class="section-divider"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto font-light">Building strong, equitable relationships with Ugandan institutions and communities based on mutual respect and shared goals.</p>
+            </div>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+                 <!-- Partnership Principles -->
+                <div data-aos="fade-right">
+                    <h3 class="text-3xl font-bold mb-6 gradient-text">Partnership Principles</h3>
+                    <p class="text-lg text-gray-700 mb-8 font-light">Genuine collaboration, not dominated relationships, guides our approach:</p>
+                    <div class="space-y-6">
+                        <div class="flex items-start"><div class="bg-gradient-to-br from-accent-green to-accent-teal text-white rounded-full p-3 mr-4 w-12 h-12 flex items-center justify-center flex-shrink-0"><i class="fas fa-balance-scale"></i></div><div><h4 class="text-xl font-semibold mb-1">Equity & Mutual Benefit</h4><p class="text-gray-600 text-sm font-light">All partners contribute expertise and resources, and all benefit from the collaboration.</p></div></div>
+                        <div class="flex items-start"><div class="bg-gradient-to-br from-accent-blue to-accent-teal text-white rounded-full p-3 mr-4 w-12 h-12 flex items-center justify-center flex-shrink-0"><i class="fas fa-hands-helping"></i></div><div><h4 class="text-xl font-semibold mb-1">Shared Decision-Making</h4><p class="text-gray-600 text-sm font-light">Governance structures ensure meaningful input into priorities and direction.</p></div></div>
+                        <div class="flex items-start"><div class="bg-gradient-to-br from-accent-orange to-accent-red text-white rounded-full p-3 mr-4 w-12 h-12 flex items-center justify-center flex-shrink-0"><i class="fas fa-graduation-cap"></i></div><div><h4 class="text-xl font-semibold mb-1">Capacity Building</h4><p class="text-gray-600 text-sm font-light">Investing in Ugandan researchers and institutions creates sustainable impact.</p></div></div>
+                        <div class="flex items-start"><div class="bg-gradient-to-br from-accent-red to-uc-red text-white rounded-full p-3 mr-4 w-12 h-12 flex items-center justify-center flex-shrink-0"><i class="fas fa-globe-africa"></i></div><div><h4 class="text-xl font-semibold mb-1">Local Leadership</h4><p class="text-gray-600 text-sm font-light">Gradually transitioning to majority Ugandan leadership ensures long-term ownership.</p></div></div>
+                    </div>
+                </div>
+                <!-- Partner Network -->
+                <div data-aos="fade-left">
+                    <h3 class="text-3xl font-bold mb-6 gradient-text">Partner Network</h3>
+                    <p class="text-lg text-gray-700 mb-8 font-light">Bringing together a diverse network across academia, government, communities, and international bodies:</p>
+                    <!-- Core Ugandan Partners -->
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md mb-6 depth-effect">
+                        <h4 class="text-xl font-semibold mb-4 text-accent-blue">Core Ugandan Partners</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex items-center"><img src="https://idi.mak.ac.ug/wp-content/uploads/2022/10/Logo-Variations-01.png" alt="IDI Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">Infectious Diseases Institute (IDI)</span></div>
+                            <div class="flex items-center"><img src="https://idrc.org/sites/all/themes/custom/idrc/images/idrc-logo-e.svg" alt="IDRC Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">Infectious Diseases Research Collaboration (IDRC)</span></div>
+                            <div class="flex items-center"><img src="https://www.mak.ac.ug/sites/default/files/logo-makereree.png" alt="Makerere Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">Makerere University</span></div>
+                            <div class="flex items-center"><img src="https://uvri.go.ug/sites/default/files/uvri_logo.png" alt="UVRI Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">Uganda Virus Research Institute (UVRI)</span></div>
+                        </div>
+                    </div>
+                     <!-- Other Potential Partners -->
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md mb-6 depth-effect">
+                        <h4 class="text-xl font-semibold mb-4 text-accent-green">Other Potential Partners</h4>
+                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                             <div class="flex items-center"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Uganda_Ministry_of_Health_logo.png/220px-Uganda_Ministry_of_Health_logo.png" alt="MoH Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">Ministry of Health Uganda</span></div>
+                             <div class="flex items-center"><img src="[Replace with actual image URL]" alt="BDP Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">Batwa Development Program</span></div>
+                             <div class="flex items-center"><img src="[Replace with actual image URL]" alt="Health Auth Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">Regional Health Authorities</span></div>
+                             <div class="flex items-center"><img src="[Replace with actual image URL]" alt="UNCST Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">UNCST</span></div>
+                         </div>
+                    </div>
+                    <!-- International Collaborations -->
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect">
+                        <h4 class="text-xl font-semibold mb-4 text-accent-orange">International Collaborations</h4>
+                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                             <div class="flex items-center"><img src="[Replace with actual image URL]" alt="NIH Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">NIH-Funded Networks (ICEMR, H3Africa)</span></div>
+                             <div class="flex items-center"><img src="[Replace with actual image URL]" alt="WHO Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">WHO Collaborating Centers</span></div>
+                             <div class="flex items-center"><img src="[Replace with actual image URL]" alt="Gates Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">Gates Foundation Partners</span></div>
+                             <div class="flex items-center"><img src="[Replace with actual image URL]" alt="Univ Logo" class="partner-logo w-10 h-10 mr-3"><span class="text-gray-700 text-sm">Other U.S. Universities</span></div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Partner Testimonials -->
+            <div class="mb-12" data-aos="fade-up">
+                <h3 class="text-3xl font-bold mb-10 text-center gradient-text">Partner Perspectives</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                     <!-- Testimonial 1 (Placeholder) -->
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect card-hover" data-aos-delay="100">
+                        <div class="text-4xl text-accent-green mb-4"><i class="fas fa-quote-left"></i></div>
+                        <p class="text-gray-700 mb-6 font-light text-sm italic">"The groundbreaking research collaboration between UC and Ugandan researchers is helping us understand gorilla conservation in ways that simply weren't possible before this partnership."</p>
+                        <div class="flex items-center pt-4 border-t border-gray-200">
+                            <img src="https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YWZyaWNhbiUyMHJlc2VhcmNoZXJ8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="Partner 1 Photo" class="w-12 h-12 rounded-full mr-3"><div class="text-sm"><h4 class="font-semibold text-uc-black">Dr. Benjamin Mugisha</h4><p class="text-gray-600">Executive Director, Infectious Diseases Institute</p></div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 2 (Placeholder) -->
+                     <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect card-hover" data-aos-delay="200">
+                        <div class="text-4xl text-accent-blue mb-4"><i class="fas fa-quote-left"></i></div>
+                         <p class="text-gray-700 mb-6 font-light text-sm italic">"The innovative spatial analysis methods developed by UC researchers have revolutionized our approach to tracking disease patterns in Uganda, allowing for more targeted interventions."</p>
+                        <div class="flex items-center pt-4 border-t border-gray-200">
+                             <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YWZyaWNhbiUyMHdvbWFufGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="Partner 2 Photo" class="w-12 h-12 rounded-full mr-3"><div class="text-sm"><h4 class="font-semibold text-uc-black">Dr. Sarah Nakitto</h4><p class="text-gray-600">Executive Director, IDRC</p></div>
+                        </div>
+                    </div>
+                     <!-- Testimonial 3 (Placeholder) -->
+                     <div class="bg-gray-50 p-6 rounded-lg shadow-md depth-effect card-hover" data-aos-delay="300">
+                        <div class="text-4xl text-accent-orange mb-4"><i class="fas fa-quote-left"></i></div>
+                        <p class="text-gray-700 mb-6 font-light text-sm italic">"The UC Uganda Research Center represents the epitome of global cooperation in addressing critical health challenges, demonstrating how international partnerships can create meaningful impact."</p>
+                        <div class="flex items-center pt-4 border-t border-gray-200">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHByb2Zlc3NvciUyMG1hbnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="UC Leader Photo" class="w-12 h-12 rounded-full mr-3"><div class="text-sm"><h4 class="font-semibold text-uc-black">Dr. Robert Williams</h4><p class="text-gray-600">VP of Research, University of Cincinnati</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investment & Impact Section -->
+    <section id="investment" class="py-20 bg-gradient-to-b from-accent-green to-accent-teal text-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4">Investment & Expected Impact</h2>
+                 <div class="section-divider bg-white"></div>
+                <p class="text-xl max-w-3xl mx-auto font-light">Leveraging initial investment to catalyze external funding and generate transformative outcomes.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+                <!-- Resource Requirements -->
+                <div data-aos="fade-right">
+                    <h3 class="text-3xl font-bold mb-6">Resource Requirements & Funding</h3>
+                    <p class="text-lg mb-6 font-light">Strategic investment is required to establish core operations and infrastructure, creating a sustainable platform.</p>
+                    <div class="glass-effect p-6 rounded-lg shadow-md mb-6">
+                        <h4 class="text-xl font-semibold mb-4">Startup Phase (Years 1-3)</h4>
+                        <ul class="list-disc list-inside space-y-1 text-gray-200 font-light text-sm mb-4">
+                            <li>Initial Request: $1.5 million UC institutional investment over three years.</li>
+                            <li>Target Matching: Seek significant external grants (NIH, Foundations, etc.).</li>
+                            <li>Partner Contributions: In-kind support from Ugandan partners.</li>
+                        </ul>
+                        <p class="font-light text-sm">This seed funding establishes operations, supports faculty time, initiates pilot projects, and builds infrastructure.</p>
+                    </div>
+                     <div class="glass-effect p-6 rounded-lg shadow-md">
+                        <h4 class="text-xl font-semibold mb-4">Growth & Sustainability (Years 4+)</h4>
+                         <ul class="list-disc list-inside space-y-1 text-gray-200 font-light text-sm">
+                             <li>Secure major center grants (e.g., NIH P30/U54), training grants (T32, D43).</li>
+                             <li>Develop multi-institutional consortia and implementation contracts (USAID, CDC).</li>
+                             <li>Pursue endowment development, fee-for-service activities, and technology transfer.</li>
+                         </ul>
+                    </div>
+                </div>
+                <!-- Expected Impact -->
+                <div data-aos="fade-left">
+                    <h3 class="text-3xl font-bold mb-6">Expected Outcomes & Impact</h3>
+                    <p class="text-lg mb-6 font-light">Generating significant benefits for UC, Uganda, and global health research.</p>
+                    <div class="space-y-6">
+                        <div class="bg-white text-gray-800 p-6 rounded-lg shadow-md card-hover">
+                            <h4 class="text-xl font-semibold mb-3 text-accent-blue flex items-center"><i class="fas fa-university mr-3"></i>For the University of Cincinnati</h4>
+                            <ul class="space-y-2 font-light text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle text-accent-green mt-1 mr-2 flex-shrink-0"></i><span>Enhanced global reputation and profile.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-accent-green mt-1 mr-2 flex-shrink-0"></i><span>Increased research productivity and external funding.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-accent-green mt-1 mr-2 flex-shrink-0"></i><span>Unique training opportunities attracting top talent.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-accent-green mt-1 mr-2 flex-shrink-0"></i><span>International platform for faculty career advancement.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-accent-green mt-1 mr-2 flex-shrink-0"></i><span>New opportunities for philanthropic support.</span></li>
+                            </ul>
+                        </div>
+                        <div class="bg-white text-gray-800 p-6 rounded-lg shadow-md card-hover">
+                             <h4 class="text-xl font-semibold mb-3 text-accent-green flex items-center"><i class="fas fa-globe-africa mr-3"></i>For Uganda and Global Health</h4>
+                             <ul class="space-y-2 font-light text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle text-accent-blue mt-1 mr-2 flex-shrink-0"></i><span>Training a new generation of Ugandan scientists (Capacity Building).</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-accent-blue mt-1 mr-2 flex-shrink-0"></i><span>Evidence-Based Policy translation for improved health outcomes.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-accent-blue mt-1 mr-2 flex-shrink-0"></i><span>Health System Strengthening via enhanced surveillance/response.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-accent-blue mt-1 mr-2 flex-shrink-0"></i><span>Community Health Improvements through direct benefits.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-accent-blue mt-1 mr-2 flex-shrink-0"></i><span>Innovation Pipeline for new tools, diagnostics, and interventions.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                     <div class="mt-8 text-center lg:text-left">
+                        <a href="#contact" class="btn-uc bg-white text-accent-green hover:bg-gray-100 border-2 border-white hover:border-gray-100 hover-effect">Learn How to Support Us</a>
+                    </div>
+                </div>
+            </div>
+             <!-- 5-Year Target Metrics -->
+            <div class="text-center mb-12 mt-16" data-aos="fade-up">
+                <h3 class="text-3xl font-bold mb-6">Measurable Outcomes (5-Year Targets)</h3>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 stats-section">
+                <div class="stat-card bg-white text-gray-800 p-6 rounded-lg shadow-md text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-5xl font-bold text-accent-green mb-4">$<span class="counter" data-target="10">0</span>M+</div>
+                    <p class="text-xl font-semibold mb-1 text-uc-black">External Funding</p><p class="text-gray-600 text-sm">Cumulative research grants</p>
+                </div>
+                 <div class="stat-card bg-white text-gray-800 p-6 rounded-lg shadow-md text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-5xl font-bold text-accent-blue mb-4"><span class="counter" data-target="50">0</span>+</div>
+                    <p class="text-xl font-semibold mb-1 text-uc-black">Publications</p><p class="text-gray-600 text-sm">Peer-reviewed articles</p>
+                </div>
+                 <div class="stat-card bg-white text-gray-800 p-6 rounded-lg shadow-md text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-5xl font-bold text-accent-orange mb-4"><span class="counter" data-target="5">0</span>+</div>
+                    <p class="text-xl font-semibold mb-1 text-uc-black">Policy Impacts</p><p class="text-gray-600 text-sm">Contributions to health policies</p>
+                </div>
+                 <div class="stat-card bg-white text-gray-800 p-6 rounded-lg shadow-md text-center" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-5xl font-bold text-uc-red mb-4"><span class="counter" data-target="50">0</span>%+</div>
+                     <p class="text-xl font-semibold mb-1 text-uc-black">Sustainability</p><p class="text-gray-600 text-sm">Funding from non-UC sources</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+             <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4 text-uc-black">Support Our Vision</h2>
+                <div class="section-divider"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto font-light">Join us in creating a transformative research center addressing critical global health challenges.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Get Involved -->
+                <div data-aos="fade-right">
+                    <h3 class="text-3xl font-bold mb-6 gradient-text">Get Involved</h3>
+                    <p class="text-lg text-gray-700 mb-8 font-light">Connect with us to explore opportunities for collaboration, support, research, and learning.</p>
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                            <h4 class="text-xl font-semibold mb-2 text-accent-blue">Research Collaboration</h4><p class="text-gray-600 mb-4 text-sm font-light">For faculty and researchers interested in joining projects or proposing new collaborations.</p><a href="#contact-form" class="btn-uc hover-effect text-xs">Inquire About Research</a>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                            <h4 class="text-xl font-semibold mb-2 text-accent-green">Student Opportunities</h4><p class="text-gray-600 mb-4 text-sm font-light">For students interested in global health research experiences and training programs.</p><a href="#contact-form" class="btn-uc hover-effect text-xs">Explore Student Programs</a>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                            <h4 class="text-xl font-semibold mb-2 text-accent-orange">Partnership & Support</h4><p class="text-gray-600 mb-4 text-sm font-light">For institutions, foundations, and individuals interested in strategic alignment and philanthropic support.</p><a href="#contact-form" class="btn-uc hover-effect text-xs">Discuss Support</a>
+                        </div>
+                    </div>
+                    <!-- Leadership Contacts -->
+                     <div class="mt-10 bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="text-xl font-semibold mb-4 text-uc-black">Leadership Team Contacts</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-center"><img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmVzc2lvbmFsJTIwd29tYW58ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="Dr. Kathleen Grogan" class="w-10 h-10 rounded-full mr-3"><div class="text-sm"><h5 class="font-semibold">Dr. Kathleen Grogan</h5><a href="mailto:kathleen.grogan@uc.edu" class="text-accent-blue hover:underline">kathleen.grogan@uc.edu</a></div></div>
+                            <div class="flex items-center"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cHJvZmVzc2lvbmFsJTIwd29tYW58ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="Dr. Katherine Sabourin" class="w-10 h-10 rounded-full mr-3"><div class="text-sm"><h5 class="font-semibold">Dr. Katherine Sabourin</h5><a href="mailto:sabourke@ucmail.uc.edu" class="text-accent-blue hover:underline">sabourke@ucmail.uc.edu</a></div></div>
+                            <div class="flex items-center"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmVzc2lvbmFsJTIwbWFufGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="Dr. Diego Cuadros" class="w-10 h-10 rounded-full mr-3"><div class="text-sm"><h5 class="font-semibold">Dr. Diego Cuadros</h5><a href="mailto:cuadrodo@ucmail.uc.edu" class="text-accent-blue hover:underline">cuadrodo@ucmail.uc.edu</a></div></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Contact Form -->
+                <div data-aos="fade-left" id="contact-form">
+                    <h3 class="text-3xl font-bold mb-6 gradient-text">Contact Us</h3>
+                    <p class="text-lg text-gray-700 mb-8 font-light">Send us a message to learn more about the UC Uganda Research Center initiative.</p>
+                    <div class="bg-white p-8 rounded-lg shadow-md depth-effect">
+                         <form action="#" method="POST"> <!-- Replace # with your form processing URL -->
+                            <div class="mb-5">
+                                <label for="name" class="block text-gray-700 font-medium mb-2 text-sm">Your Name</label>
+                                <input type="text" id="name" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-green transition duration-200 text-sm">
+                            </div>
+                            <div class="mb-5">
+                                <label for="email" class="block text-gray-700 font-medium mb-2 text-sm">Email Address</label>
+                                <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-green transition duration-200 text-sm">
+                            </div>
+                            <div class="mb-5">
+                                <label for="interest" class="block text-gray-700 font-medium mb-2 text-sm">Area of Interest</label>
+                                <select id="interest" name="interest" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-green transition duration-200 text-sm bg-white">
+                                    <option value="">-- Select an Option --</option>
+                                    <option value="Research Collaboration">Research Collaboration</option>
+                                    <option value="Student Opportunities">Student Opportunities</option>
+                                    <option value="Partnership">Partnership</option>
+                                    <option value="Philanthropic Support">Philanthropic Support</option>
+                                    <option value="General Information">General Information</option>
+                                </select>
+                            </div>
+                            <div class="mb-6">
+                                <label for="message" class="block text-gray-700 font-medium mb-2 text-sm">Message</label>
+                                <textarea id="message" name="message" rows="4" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-green transition duration-200 text-sm"></textarea>
+                            </div>
+                            <button type="submit" class="btn-uc w-full text-center hover-effect">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-accent-blue text-white pt-16 pb-8">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Logo & About -->
+                <div class="md:col-span-1 mb-6 md:mb-0">
+                    <img src="https://www.uc.edu/content/dam/refresh/uc-org/brand-guide/logos-marks/white_UC_logo.png" alt="University of Cincinnati Logo" class="h-12 mb-4 opacity-90">
+                    <p class="text-sm text-gray-300 font-light">UC Uganda Research Center Initiative</p>
+                    <p class="text-sm text-gray-300 font-light mt-2">Advancing global health through collaborative research.</p>
+                </div>
+                <!-- Navigation Links -->
+                <div>
+                    <h4 class="font-semibold mb-4 text-gray-100">Quick Links</h4>
+                    <ul class="space-y-2 text-sm font-light">
+                        <li><a href="#vision" class="text-gray-300 hover:text-white transition duration-300">Our Vision</a></li>
+                        <li><a href="#researchers" class="text-gray-300 hover:text-white transition duration-300">Leadership</a></li>
+                        <li><a href="#research" class="text-gray-300 hover:text-white transition duration-300">Research Program</a></li>
+                        <li><a href="#impact" class="text-gray-300 hover:text-white transition duration-300">Educational Impact</a></li>
+                        <li><a href="#partners" class="text-gray-300 hover:text-white transition duration-300">Partnerships</a></li>
+                    </ul>
+                </div>
+                <div>
+                     <h4 class="font-semibold mb-4 text-gray-100">Get Involved</h4>
+                     <ul class="space-y-2 text-sm font-light">
+                        <li><a href="#contact" class="text-gray-300 hover:text-white transition duration-300">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition duration-300">Support the Center</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition duration-300">UC Global</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition duration-300">UC Research</a></li>
+                    </ul>
+                </div>
+                 <!-- Connect -->
+                <div>
+                    <h4 class="font-semibold mb-4 text-gray-100">Connect</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition duration-300"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white transition duration-300"><i class="fab fa-linkedin fa-lg"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white transition duration-300"><i class="fas fa-envelope fa-lg"></i></a>
+                        <!-- Add other relevant social links -->
+                    </div>
+                </div>
+            </div>
+            <!-- Bottom Footer -->
+            <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-xs text-gray-400 font-light mb-4 md:mb-0">© <script>document.write(new Date().getFullYear())</script> University of Cincinnati. All rights reserved.</p>
+                <div class="flex space-x-4 text-xs font-light">
+                    <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white">Terms of Use</a>
+                    <a href="#" class="text-gray-400 hover:text-white">Accessibility</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/ScrollTrigger.min.js"></script>
+
+    <!-- Custom JavaScript (Keep the V3 script block, it's well-structured) -->
+     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Page transition loader
+            setTimeout(function() {
+                const loader = document.querySelector('.page-transition');
+                if (loader) loader.classList.add('loaded');
+            }, 500);
+
+            // Initialize AOS
+            AOS.init({ duration: 800, once: true, offset: 100, easing: 'ease-in-out' });
+
+            // Initialize Vanilla Tilt
+            try { VanillaTilt.init(document.querySelectorAll(".tilt-card"), { max: 5, speed: 400, glare: true, "max-glare": 0.1 }); } catch (e) { console.error("VanillaTilt init failed:", e); }
+
+            // Initialize Particles.js
+            if (document.getElementById('particles-js')) {
+                 try { particlesJS('particles-js', { "particles": { "number": { "value": 60, "density": { "enable": true, "value_area": 900 } }, "color": { "value": "#ffffff" }, "shape": { "type": "circle" }, "opacity": { "value": 0.4, "random": true }, "size": { "value": 2, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.25, "width": 1 }, "move": { "enable": true, "speed": 1, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": false } }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 0.6 } } } }, "retina_detect": true }); } catch (e) { console.error("Particles.js init failed:", e); }
+            }
+
+            // Mobile Menu Toggle
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+                mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+            }
+
+            // Sticky Navigation
+            const nav = document.querySelector('.navigation');
+            if (nav) { window.addEventListener('scroll', () => nav.classList.toggle('nav-scrolled', window.scrollY > 50)); }
+
+            // GSAP & ScrollTrigger Init
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Animated Counter Numbers
+            gsap.utils.toArray('.counter').forEach(counter => {
+                 const target = parseInt(counter.dataset.target) || 0;
+                 let startValue = 0;
+                 // Special handling for percentage sign
+                 const suffix = counter.innerText.includes('%') ? '%' : (counter.innerText.includes('+') ? '+' : '');
+                 if(suffix) counter.innerText = '0' + suffix; // Initialize display
+
+                 let obj = { val: startValue };
+                 gsap.to(obj, {
+                     val: target,
+                     duration: 2,
+                     ease: 'power1.inOut',
+                     scrollTrigger: { trigger: counter, start: 'top 90%', toggleActions: 'play none none none' },
+                     onUpdate: () => { counter.innerText = Math.round(obj.val) + suffix; }
+                 });
+            });
+
+            // Graph Bars Animation
+             gsap.utils.toArray('.graph-bar').forEach(bar => {
+                 const width = bar.dataset.width || '0%';
+                 gsap.to(bar, {
+                     width: width, duration: 1.5, ease: "power2.out",
+                     scrollTrigger: { trigger: bar.closest('.stats-section') || bar.parentElement, start: 'top 85%', toggleActions: 'play none none none' } // Trigger based on section or parent
+                 });
+             });
+
+            // Map Tooltips Activation
+            document.querySelectorAll('.map-dot').forEach(dot => {
+                dot.addEventListener('mouseenter', () => dot.classList.add('active'));
+                dot.addEventListener('mouseleave', () => dot.classList.remove('active'));
+            });
+
+             // Smooth scroll & Nav link activation
+            const navHeight = document.querySelector('.navigation')?.offsetHeight || 70;
+            document.querySelectorAll('.navigation a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({ top: targetElement.offsetTop - navHeight, behavior: 'smooth' });
+                         // Close mobile menu if open
+                         if(mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                             mobileMenu.classList.add('hidden');
+                         }
+                    }
+                });
+            });
+
+             // Update active nav link on scroll
+            const sections = document.querySelectorAll('section[id]');
+            ScrollTrigger.create({
+                start: 'top top', end: 'bottom bottom', // Adjust as needed
+                onUpdate: self => {
+                    let current = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop - navHeight - 100; // Adjust offset
+                        if (self.scroll >= sectionTop) {
+                            current = section.getAttribute('id');
+                        }
+                    });
+                    document.querySelectorAll('.navigation a').forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
+                    });
+                }
+            });
+
+            // GSAP gradient text animation
+            gsap.utils.toArray('.gradient-text').forEach(element => {
+                gsap.to(element, {
+                    backgroundSize: '100% 100%', ease: "none",
+                    scrollTrigger: { trigger: element, start: 'top 85%', end: 'bottom 60%', scrub: 1.5 }
+                });
+            });
+
+            // GSAP tab pane animation
+            document.querySelectorAll('button[data-bs-toggle="pill"]').forEach(tab => {
+                 tab.addEventListener('shown.bs.tab', event => {
+                     const targetPane = document.querySelector(event.target.getAttribute('data-bs-target'));
+                     if (targetPane) { gsap.fromTo(targetPane, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: "power1.out" }); }
+                 });
+            });
+
+        }); // End DOMContentLoaded
+    </script>
+</body>
+</html>
