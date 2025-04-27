@@ -551,6 +551,38 @@ nav a:hover, nav a.active {
     }
 }
 @media (max-width: 600px) {
+    #hamburger-menu {
+        display: block !important;
+        position: absolute;
+        top: 10px;
+        right: 18px;
+        z-index: 1100;
+        font-size: 2rem;
+        background: none;
+        border: none;
+        color: #2166ac;
+        cursor: pointer;
+        padding: 4px 10px;
+        border-radius: 6px;
+        transition: background 0.2s;
+    }
+    #hamburger-menu:focus, #hamburger-menu:hover {
+        background: #f7fafd;
+        outline: 2px solid #b2182b;
+    }
+    #mobile-nav {
+        display: none !important;
+    }
+    #mobile-nav.show {
+        display: block !important;
+        animation: fadeInDown 0.3s;
+    }
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+}
+
     .story-timeline {
         padding: 16px 8px;
         margin: 24px 0;

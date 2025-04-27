@@ -74,7 +74,8 @@
         <div class="logo">
             <h1>COVID-19 Vaccination in Kenya</h1>
         </div>
-        <nav aria-label="Main navigation">
+        <button id="hamburger-menu" aria-label="Open navigation" style="display:none;" tabindex="0">&#9776;</button>
+        <nav id="mobile-nav" aria-label="Main navigation">
             <ul>
                 <li><a href="index.html" class="active" aria-current="page">Home</a></li>
                 <li><a href="story.html">Story Map</a></li>
@@ -89,6 +90,19 @@
             <span class="dark-icon" aria-hidden="true">🌙</span>
         </button>
     </header>
+
+    <script>
+    // Hamburger menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      var hamburger = document.getElementById('hamburger-menu');
+      var nav = document.getElementById('mobile-nav');
+      if(hamburger && nav) {
+        hamburger.addEventListener('click', function() {
+          nav.classList.toggle('show');
+        });
+      }
+    });
+    </script>
 
     <!-- Full-screen map container -->
     <main id="map-container">
