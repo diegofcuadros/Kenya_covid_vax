@@ -330,21 +330,43 @@
     </style>
 </head>
 <body>
-    <!-- Main header with navigation -->
-    <header class="main-header">
-        <div class="logo">
-            <h1>COVID-19 Vaccination in Kenya</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="story.html">Story Map</a></li>
                 
-                <li><a href="results.html" class="active" aria-current="page">Results</a></li>
-                <li><a href="policy.html">Policy</a></li>
-                <li><a href="team.html">Team</a></li>
-            </ul>
-        </nav>
+                .results-header h1 {
+                    font-size: 2rem;
+                }
+                
+                .modal-content {
+                    width: 95%;
+                    max-height: 95%;
+                }
+                
+                .modal-details {
+                    padding: 20px;
+                }
+                
+                .modal-title {
+                    font-size: 1.5rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Main header with navigation -->
+        <header class="main-header">
+            <div class="logo">
+                <h1>COVID-19 Vaccination in Kenya</h1>
+            </div>
+            <button id="hamburger-menu" aria-label="Open navigation" style="display:none;" tabindex="0">&#9776;</button>
+            <nav id="mobile-nav" aria-label="Main navigation">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="story.html">Story Map</a></li>
+                    <li><a href="results.html" class="active" aria-current="page">Results</a></li>
+                    <li><a href="policy.html">Policy</a></li>
+                    <li><a href="team.html">Team</a></li>
+                </ul>
+            </nav>
+        </header>
     </header>
 
     <script>
