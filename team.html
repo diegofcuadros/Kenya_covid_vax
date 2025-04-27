@@ -434,6 +434,19 @@
         </button>
     </header>
 
+    <script>
+    // Hamburger menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      var hamburger = document.getElementById('hamburger-menu');
+      var nav = document.getElementById('mobile-nav');
+      if(hamburger && nav) {
+        hamburger.addEventListener('click', function() {
+          nav.classList.toggle('show');
+        });
+      }
+    });
+    </script>
+
     <!-- Main team container -->
     <div class="team-container">
         <div class="team-header">

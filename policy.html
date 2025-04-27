@@ -269,11 +269,22 @@
                 <li><a href="team.html">Team</a></li>
             </ul>
         </nav>
-        <button class="toggle-theme">
-            <span class="light-icon">☀️</span>
-            <span class="dark-icon">🌙</span>
-        </button>
+        <button id="hamburger-menu" aria-label="Open navigation" style="display:none;" tabindex="0">&#9776;</button>
+        <nav id="mobile-nav" aria-label="Main navigation"></nav>
     </header>
+
+    <script>
+    // Hamburger menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      var hamburger = document.getElementById('hamburger-menu');
+      var nav = document.getElementById('mobile-nav');
+      if(hamburger && nav) {
+        hamburger.addEventListener('click', function() {
+          nav.classList.toggle('show');
+        });
+      }
+    });
+    </script>
 
     <!-- Main policy container -->
     <div class="policy-container">

@@ -345,11 +345,20 @@
                 <li><a href="team.html">Team</a></li>
             </ul>
         </nav>
-        <button class="toggle-theme">
-            <span class="light-icon">☀️</span>
-            <span class="dark-icon">🌙</span>
-        </button>
     </header>
+
+    <script>
+    // Hamburger menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      var hamburger = document.getElementById('hamburger-menu');
+      var nav = document.getElementById('mobile-nav');
+      if(hamburger && nav) {
+        hamburger.addEventListener('click', function() {
+          nav.classList.toggle('show');
+        });
+      }
+    });
+    </script>
 
     <!-- Main results container -->
     <div class="results-container">
